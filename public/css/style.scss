@@ -1,0 +1,396 @@
+@import "mysettings";
+/* Logo */
+.logo{
+  width: 100%;
+  height: 110px;
+  float: left;
+  margin: 30px 0 0 0;
+  a{
+    color: black;
+  }
+  #tag-save-life{
+    font-size: 30px;
+    font-weight: normal;
+    color: rgba(128, 128, 128, 0.76);
+    margin-left: 10px;
+    position: absolute;
+    top: 55px;
+    left: 290px;
+  }
+  #tag-line{
+    position: absolute;
+    top: 105px;
+    left: 15px;
+  }
+}
+@media #{$small-only}{
+  .logo {
+    text-align: center !important;
+    height: initial !important;
+    margin: 20px auto !important;
+  }
+  .breadcrumbs {
+    height: initial !important;
+    margin: 0 !important;
+  }
+}
+@media #{$medium-only} {
+  .breadcrumbs {
+    height: initial !important;
+    margin: 0px !important;
+  }
+}
+/* Top Bar Menu*/
+#menu{
+  border-top: 1px solid #cacaca;
+  border-bottom: 1px solid #cacaca;
+  background-color: #ffffff;
+}
+.top-bar{
+  width: 80%;
+  height: 63px;
+  margin: 0 auto;
+  ul li a {
+    color: #3c3c3c;
+    text-decoration: none;
+    display: block;
+    padding: 15px 25px !important;
+    text-transform: uppercase;
+    font-size: 15px;
+    line-height: 33px;
+    position: relative;
+    -webkit-transition: color .25s;
+    -moz-transition: color .25s;
+    -ms-transition: color .25s;
+    -o-transition: color .25s;
+    transition: color .25s;
+  }
+  ul li a:hover {
+    color: #333333;
+  }
+  ul li a:hover:before {
+    width: 100%;
+  }
+  ul li a:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 5px;
+    width: 0;
+    background: $secondary-color;
+    -webkit-transition: width .25s;
+    -moz-transition: width .25s;
+    -ms-transition: width .25s;
+    -o-transition: width .25s;
+    transition: width .25s;
+  }
+  ul li.last > a:after,
+  #cssMenu ul li:last-child > a:after {
+    display: none;
+  }
+}
+.top-bar-section ul li a:hover {
+  color: $secondary-color;
+  ul li.active a {
+    color: $secondary-color;
+  }
+}
+.resp-menu{
+  height: 63px;
+  li a{
+    height: 47px !important;
+    line-height: 15px !important;
+  }
+}
+.top-bar-section .has-dropdown > a:after {
+  top: 38px;
+}
+@media only screen and (max-width: 1150px) {
+  .top-bar{
+    width: 85%;
+  }
+  .myCenter{
+    width: 90% !important;
+  }
+  .center-container{
+    width: 90% !important;
+  }
+}
+@media only screen and (max-width: 1085px) {
+  .top-bar{
+    width: 90%;
+  }
+  .myCenter{
+    width: 100% !important;
+  }
+  .center-container{
+    width: 100% !important;
+  }
+}
+@media only screen and (max-width: 1025px) {
+  .top-bar{
+    width: 100%;
+  }
+}
+/*Center alinged structure*/
+.myCenter{
+  width: 85%;
+  margin: 0 auto;
+  .breadcrumbs{
+    height: 148px;
+  }
+}
+@media #{$medium-only} {
+  .myCenter .breadcrumbs{
+  }
+}
+/*Search Bar*/
+.search-bar{
+  background-color: $secondary-color;
+  select{
+    border: 1px solid #cac0bf;
+    cursor: pointer;
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 35px 0 0 0px;
+    width: 100%;
+    min-width: 125px;
+    height: 41px;
+  }
+  #search-btn{
+    text-align: center;
+    a {
+      color: white;
+      cursor: pointer;
+      margin: 30px 20px;
+      border: 1px solid #cac0bf;
+    }
+  }
+}
+.donors {
+  text-align: center;
+  h3{
+    font-family: "Trebuchet MS";
+    color: #ffffff;
+    font-size: 42px;
+    margin: 0;
+    font-weight: bold;
+    @media #{$small-only}{
+      font-size: 35px;
+    }
+  }
+  span{
+    font-family: "Trebuchet MS";
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: bold;
+  }
+}
+/*Center container*/
+.center-container{
+  width: 85%;
+  height: auto;
+  margin: 52px auto;
+}
+/* Donation Video */
+#donation-vid{
+  div:first-child{
+    border: 1px solid #cacaca;
+    margin-top: 30px;
+    margin-right: 40px;
+    padding: 15px;
+  }
+  h5{
+    color: $secondary-color;
+  }
+  p{
+    color: $primary-color;
+  }
+}
+/*Blood Need*/
+#blood-need{
+  margin: 10px 0px 10px 0px;
+  padding: 2px;
+  h5{
+    color: $secondary-color;
+    margin: 20px 0px 0px 0px;
+  }
+  .fa-plus:before{
+    color: $secondary-color;
+    content: "?";
+    margin-right: 15px;
+    font-size: 12px;
+  }
+  ul{
+    list-style: none;
+    margin: 0px;
+  }
+}
+/* Twitter Wish List*/
+#wish-list{
+  h5{
+    font-weight: bold;
+    span{
+      color: #18bbd3;
+    }
+  }
+  table{
+    .pinned{
+      width: 65px !important;
+    }
+    .scrollable{
+      margin-left: 19% !important;
+    }
+    tr{
+      th{
+        background-color: $primary-color;
+        border: 1px solid #cacaca;
+        padding: 10px 5px;
+        font-size: 14px;
+        color: white;
+        text-align: center;
+      }
+      td{
+        :first-child{
+          color: $secondary-color;
+          font-weight: bold;
+        }
+        border: 1px solid #f7f7f7;
+        padding: 5px;
+        color: #828181;
+        line-height: 16px;
+        font-size: 12px;
+      }
+    }
+  }
+  .btn{
+    text-align: right;
+  }
+  @media #{$small-only} {
+    .btn{
+      text-align: center;
+    }
+  }
+}
+/* Right Container */
+#right-container{
+  border: 1px solid #cacaca;
+}
+/* Promote Pakblood */
+#promote-pakblood{
+  h5{
+    background-color: $primary-color;
+    color: white;
+    padding: 20px;
+    margin: 0px;
+  }
+  p{
+    color: $secondary-color;
+    margin: 30px 20px;
+    font-size: 14px;
+  }
+  .promotion-imges{
+    margin: 45px auto;
+    overflow: hidden;
+    text-align: center;
+    .blood-group-img{
+      float: left;
+      margin: 0px 25px 30px 25px;
+      a img{
+        opacity: 0.6;
+      }
+      a img:hover{
+        opacity: 0.9;
+      }
+    }
+    @media #{$small-only} {
+      .blood-group-img{
+        margin: 0px 0px 30px 40px;
+      }
+    }
+  }
+}
+/* latest Updates */
+#latest-updates{
+  #heading{
+    background-color: $secondary-color;
+    color: #ffffff;
+    margin: 0 0 0 0;
+    padding: 15px;
+  }
+  p{
+    margin: 40px 20px;
+    color: #353940;
+    font-size: 14px;
+  }
+  .readmore{
+    float: right;
+    height: 34px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin: -60px 30px 0 0;
+    width: 121px;
+  }
+  .inner-heading{
+    margin: 40px 20px;
+  }
+  .btn{
+    text-align: right;
+    margin: 20px;
+  }
+  @media #{$small-only} {
+    .btn {
+      text-align: center;
+    }
+  }
+}
+@media #{$small-only} {
+  .btn {
+    text-align: center;
+  }
+}
+/*Footer */
+.footer{
+  background-color: #333333;
+  footer{
+    width: 85%;
+    margin: 0 auto;
+    padding-top: 35px;
+  }
+  div:first-child{
+    border-bottom: 1px solid #424242;
+  }
+  nav{
+    height: 30px;
+    color: white;
+    a {
+      color: white;
+      font-size: 16px;
+      border-right: 1px solid white;
+    }
+    a:last-child {
+      border-right: 0;
+    }
+    a {
+      padding: 0 12px 0 12px;
+    }
+    a:hover {
+      color: rgba(152, 152, 152, 0.84);
+    }
+  }
+  h5,p,a{
+    color: white;
+    font-weight: normal;
+    margin-top: 20px;
+    text-align: center;
+  }
+  @media #{$small-only} {
+    nav{
+      display: inline-block;
+    }
+  }
+}
