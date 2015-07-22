@@ -7543,7 +7543,7 @@ th {
 /* Top Bar Menu*/
 #menu {
   border-top: 1px solid #cacaca;
-  border-top: 1px solid #cacaca;
+  border-bottom: 1px solid #cacaca;
   background-color: #ffffff; }
 
 .top-bar {
@@ -7748,13 +7748,10 @@ th {
   margin: 45px auto;
   overflow: hidden;
   text-align: center; }
-  #promote-pakblood .promotion-imges .blood-group-img {
-    float: left;
-    margin: 0px 25px 30px 25px; }
-    #promote-pakblood .promotion-imges .blood-group-img a img {
-      opacity: 0.6; }
-    #promote-pakblood .promotion-imges .blood-group-img a img:hover {
-      opacity: 0.9; }
+  #promote-pakblood .promotion-imges a img {
+    opacity: 0.6; }
+  #promote-pakblood .promotion-imges a img:hover {
+    opacity: 0.9; }
   @media only screen and (max-width: 40em) {
     #promote-pakblood .promotion-imges .blood-group-img {
       margin: 0px 0px 30px 40px; } }
@@ -7819,5 +7816,99 @@ th {
   @media only screen and (max-width: 40em) {
     .footer nav {
       display: inline-block; } }
+
+/* Add Member page */
+#left-container {
+  margin-bottom: 20px; }
+
+#add_member .inline-list {
+  display: inline; }
+#add_member #add_member_nav {
+  color: #d32118;
+  border-bottom: 1px solid #cac0bf;
+  padding-bottom: 20px; }
+  #add_member #add_member_nav a {
+    border-right: 1px solid #d32118;
+    color: #d32118;
+    font-weight: bold;
+    padding: 0px 10px 0px 10px; }
+  #add_member #add_member_nav a:first-child {
+    padding-left: 0; }
+  #add_member #add_member_nav a:last-child {
+    border: none; }
+  #add_member #add_member_nav a:hover, #add_member #add_member_nav a:active {
+    color: #333333;
+    font-weight: bold; }
+#add_member #add_member_heading h5 {
+  color: #d32118;
+  margin-top: 32px;
+  font-weight: bold; }
+#add_member #add_member_heading p {
+  color: #353940;
+  font-size: 14px;
+  margin: 20px auto; }
+#add_member #add_member_form label {
+  margin-left: 40px; }
+#add_member #add_member_form select {
+  cursor: pointer;
+  font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  margin-bottom: 16px; }
+#add_member #add_member_form #submit_btn {
+  text-align: center; }
+
+/* Login Page */
+#login h5 {
+  font-size: 20px;
+  color: #d32118;
+  padding-bottom: 15px; }
+#login .login_btn {
+  text-align: right; }
+@media only screen and (max-width: 40em) {
+  #login h5 {
+    text-align: center; }
+  #login .login_btn {
+    text-align: center; } }
+
+/* Add Organization Page */
+#add_org h5 {
+  font-size: 20px;
+  color: #d32118;
+  margin-bottom: 25px; }
+#add_org span {
+  font-size: 14px;
+  color: #d32118; }
+#add_org p {
+  font-size: 14px;
+  color: #639300; }
+#add_org a {
+  color: #353940; }
+#add_org input[type=file] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 0;
+  background-color: #FFFFFF;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #cccccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+  display: block;
+  font-family: inherit;
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  padding: 0.5rem;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: border-color 0.15s linear, background 0.15s linear;
+  -moz-transition: border-color 0.15s linear, background 0.15s linear;
+  -ms-transition: border-color 0.15s linear, background 0.15s linear;
+  -o-transition: border-color 0.15s linear, background 0.15s linear;
+  transition: border-color 0.15s linear, background 0.15s linear; }
+@media only screen and (max-width: 40em) {
+  #add_org h5 {
+    text-align: center; } }
 
 /*# sourceMappingURL=style.css.map */

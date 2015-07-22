@@ -14,3 +14,12 @@
 Route::get('/', function () {
     return view('index');
 });
+Route::get('/addmember', function () {
+    return view('add_member');
+});
+Route::get('/login', function () {
+    return view('login');
+});
+Route::get('/addorg', function () {
+    return view('add_org');
+});
