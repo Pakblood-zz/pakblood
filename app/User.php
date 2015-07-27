@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -17,14 +19,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var string
      */
-    protected $table = 'users';
+    protected $table = 'pb_users';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'username', 'email', 'password', 'gender', 'dob', 'phone', 'address', 'city_id', 'status'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -32,4 +34,28 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    public function ActivateAccount($code) {
+        $user = User::where('confirmation_code', '=', $code)->first();
+        $user->status = 'active';
+        $user->confirmation_code = '';
+        if($user->save()) {
+            Auth::login($user);
+        }
+        return true;
+    }
+    public function accountIsActive($email){
+        $user = User::where('email', '=', $email)->first();
+        if($user->status == 'active'){
+            return true;
+        }
+        return 0;
+    }
+    public function hasUser($email){
+        $user = DB::select('select * from pb_users where email = ?', [$email]);
+        if(count($user)>0){
+            return true;
+        }
+        return 0;
+    }
 }
