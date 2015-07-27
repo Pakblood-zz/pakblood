@@ -56,6 +56,14 @@ $topbar-menu-icon-color: $secondary-color;
 $topbar-menu-link-color-toggled: $secondary-color;
 $topbar-menu-icon-color-toggled: $secondary-color;
 
+//Tabs settings
+$tabs-navigation-font-color: $secondary-color;
+$tabs-navigation-active-font-color: #333333;
+$tabs-navigation-bg-color: white;
+$tabs-navigation-active-bg-color: white;
+$tabs-navigation-hover-bg-color: white;
+
+
 
 @import "zurb/foundation/functions";
 @import "zurb/foundation/settings";

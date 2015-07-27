@@ -29,4 +29,9 @@ class PasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+    public function postReset(Request $request)
+    {
+        return view('org_profile');
+    }
 }

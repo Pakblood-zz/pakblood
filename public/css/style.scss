@@ -1,5 +1,5 @@
 @import "mysettings";
-/* Logo */
+/* Logo & Top user nav bar*/
 .logo{
   width: 100%;
   height: 110px;
@@ -39,6 +39,21 @@
     height: initial !important;
     margin: 0px !important;
   }
+}
+#user_nav a{
+  //text-transform: uppercase;
+  color: #000000;
+}
+#user_nav > a:after{
+  position: relative;
+  left: 5px;
+  border: inset 5px;
+  content: "";
+  height: 0;
+  width: 0;
+  border-color: rgba(0, 0, 0, 0.4) transparent transparent transparent;
+  border-top-style: solid;
+  top: 0.7rem;
 }
 /* Top Bar Menu*/
 #menu{
@@ -194,6 +209,9 @@
   width: 85%;
   height: auto;
   margin: 52px auto;
+  select{
+    font-size: 0.875rem;
+  }
 }
 /* Donation Video */
 #donation-vid{
@@ -365,24 +383,29 @@
     color: white;
     a {
       color: white;
-      font-size: 16px;
+      font-size: 12px;
       border-right: 1px solid white;
+      padding: 0 12px 0 12px;
     }
     a:last-child {
       border-right: 0;
-    }
-    a {
-      padding: 0 12px 0 12px;
     }
     a:hover {
       color: rgba(152, 152, 152, 0.84);
     }
   }
-  h5,p,a{
+  h6,p,a{
     color: white;
     font-weight: normal;
     margin-top: 20px;
     text-align: center;
+  }
+  p{
+    font-size: 12px;
+  }
+  h6 a{
+    color: $primary-color !important;
+    text-decoration: underline;
   }
   @media #{$small-only} {
     nav{
@@ -457,12 +480,23 @@
   .login_btn{
     text-align: right;
   }
+  form{
+    margin: auto 30%;
+  }
   @media #{$small-only}{
     h5{
       text-align: center;
     }
     .login_btn{
       text-align: center;
+    }
+    form{
+      margin: 0 !important;
+    }
+  }
+  @media #{$medium-only} {
+    form{
+      margin: auto 25%;
     }
   }
 }
@@ -513,5 +547,31 @@
     h5{
       text-align: center;
     }
+  }
+}
+/* User and Organization Profile */
+.profile{
+  border-bottom: 1px solid #cac0bf;
+  ul{
+    color: $secondary-color;
+  }
+  ul li a{
+    border-right: 1px solid $secondary-color;
+    color: $secondary-color;
+    font-weight: bold;
+    padding: 0px 10px 0px 10px !important;
+  }
+  ul li:first-child a{
+    padding-left: 0 !important;
+  }
+  ul li:last-child a{
+    border: none;
+  }
+  ul li a:hover, a:active {
+    color: #333333;
+    font-weight: bold;
+  }
+  p{
+    border-bottom: 1px solid;
   }
 }

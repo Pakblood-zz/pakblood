@@ -1,86 +1,4 @@
-
-<!doctype html>
-<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
-<html class="no-js" lang="en" dir="ltr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Pakblood</title>
-
-    <meta name="description" content="Pakblood...">
-    <meta name="author" content="Pakblood website">
-    <meta name="copyright" content="Pakblood inc">
-
-    {!! HTML::style('css/style.css') !!}
-    {!! HTML::style('css/responsive-tables.css') !!}
-
-    {!! HTML::script('js/vendor/modernizr.js') !!}
-    {!! HTML::script('js/vendor/fastclick.js') !!}
-    {!! HTML::script('js/vendor/jquery.js') !!}
-    {!! HTML::script('js/vendor/jquery.cookie.js') !!}
-    {!! HTML::script('js/vendor/placeholder.js') !!}
-    {!! HTML::script('js/foundation.js') !!}
-    {!! HTML::script('js/responsive-tables.js') !!}
-
-    <script>
-        $(function(){
-            $(document).foundation();
-        });
-    </script>
-</head>
-<body>
-<!-- HEADER -->
-<header>
-    <div class="row myCenter">
-        <div class="medium-20 large-9 columns right">
-            <ul class="breadcrumbs right">
-                <li><a href="#">Sign up </a></li>
-                <li><a href="#">Login </a></li>
-                <li><a href="#">Forgot Password? </a></li>
-            </ul>
-        </div>
-        <div class="medium-20 large-11 columns left">
-            <!-- LOGO -->
-            <div class="logo">
-                <a href="#">
-                    {!! HTML::image('images/PAKblood.png', 'Pakblood', array('title' => 'pakblood logo')) !!}
-                    <span class="hide-for-small-only" id="tag-save-life">save life</span>
-                    <span class="hide-for-small-only" id="tag-line">And whoever save one Life - it is as if he had saved mankind entirely</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- Navigation -->
-<div id="menu" class="row sticky">
-    <nav class="top-bar" data-topbar role="navigation" data-options="scrolltop:false">
-        <ul class="title-area resp-menu">
-            <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-            <li class="active toggle-topbar menu-icon" style="width: 100%"><a href="#"><span>Menu</span></a></li>
-        </ul>
-        <section class="top-bar-section">
-            <!-- Right Nav Section -->
-            <ul>
-                <li class="active"><a href="#">Home </a></li>
-                <li class="has-dropdown">
-                    <a href="#">Dead Body Transfers </a>
-                    <ul class="dropdown">
-                        <li><a href="#">First link in dropdown </a></li>
-                        <li class=""><a href="#">Active link in dropdown </a></li>
-                    </ul>
-                </li>
-                <li class=""><a href="#">Help Line </a></li>
-                <li class=""><a href="#">News </a></li>
-                <li class=""><a href="#">Videos </a></li>
-                <li class=""><a href="#">FAQ </a></li>
-                <li class=""><a href="#">Contact Us </a></li>
-            </ul>
-        </section>
-    </nav>
-</div>
-
+@include('header')
 <!-- Slider -->
 <div class="row hide-for-small-only">
     <div class="slider">
@@ -183,14 +101,6 @@
 <div class="row center-container">
     <!-- left container -->
     <div class="small-20 medium-13 large-13 columns">
-        <div style="text-align: center">
-            <div class="small-20 medium-9 large-9 colums" style="display: inline-block">
-                <a href="#">{!! HTML::image('images/register-your-self.jpg') !!}</a>
-            </div>
-            <div class="small-20 medium-9 large-9 colums" style="display: inline-block">
-                <a href="#"> {!! HTML::image('images/register-our-organization.jpg') !!}</a>
-            </div>
-        </div>
         <div id="donation-vid" class="">
             <div class="small-20 large-20">
                 {!! HTML::image('images/video.jpg') !!}
@@ -381,30 +291,4 @@
         </div>
     </div>
 </div>
-<!-- FOOTER -->
-<div class="footer">
-    <footer>
-        <div class="row">
-            <nav>
-                <a href="#">Home </a>
-                <a href="#">Help Line </a>
-                <a href="#">News </a>
-                <a href="#">Articles </a>
-                <a href="#">About </a>
-                <a href="#">FAQ </a>
-                <a href="#">Contact Us</a>
-            </nav>
-        </div>
-        <div class="row">
-            <h5> Pakblood © 2015 by <a href="#">AA'LA Solutions.</a> All rights reserved</h5>
-            <p>"Pakblood" is not responsible of any misuse of the information, numbers or any other material presented on
-                the site.</p>
-        </div>
-    </footer>
-</div>
-</body>
-
-
-</html>
-
-
+@include('footer')

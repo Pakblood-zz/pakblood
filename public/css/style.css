@@ -4963,18 +4963,18 @@ table {
     .tabs dd > a,
     .tabs .tab-title > a {
       display: block;
-      background-color: #EFEFEF;
-      color: #222222;
+      background-color: white;
+      color: #d32118;
       font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
       font-size: 1rem;
       padding: 1rem 2rem; }
       .tabs dd > a:hover,
       .tabs .tab-title > a:hover {
-        background-color: #e1e1e1; }
+        background-color: white; }
     .tabs dd.active a,
     .tabs .tab-title.active a {
-      background-color: #FFFFFF;
-      color: #222222; }
+      background-color: white;
+      color: #333333; }
   .tabs.radius dd:first-child a,
   .tabs.radius .tab:first-child a {
     -webkit-border-bottom-left-radius: 3px;
@@ -7506,7 +7506,7 @@ td,
 th {
   padding: 0; }
 
-/* Logo */
+/* Logo & Top user nav bar*/
 .logo {
   width: 100%;
   height: 110px;
@@ -7540,6 +7540,20 @@ th {
   .breadcrumbs {
     height: initial !important;
     margin: 0px !important; } }
+#user_nav a {
+  color: #000000; }
+
+#user_nav > a:after {
+  position: relative;
+  left: 5px;
+  border: inset 5px;
+  content: "";
+  height: 0;
+  width: 0;
+  border-color: rgba(0, 0, 0, 0.4) transparent transparent transparent;
+  border-top-style: solid;
+  top: 0.7rem; }
+
 /* Top Bar Menu*/
 #menu {
   border-top: 1px solid #cacaca;
@@ -7671,6 +7685,8 @@ th {
   width: 85%;
   height: auto;
   margin: 52px auto; }
+  .center-container select {
+    font-size: 0.875rem; }
 
 /* Donation Video */
 #donation-vid div:first-child {
@@ -7800,19 +7816,23 @@ th {
     color: white; }
     .footer nav a {
       color: white;
-      font-size: 16px;
-      border-right: 1px solid white; }
+      font-size: 12px;
+      border-right: 1px solid white;
+      padding: 0 12px 0 12px; }
     .footer nav a:last-child {
       border-right: 0; }
-    .footer nav a {
-      padding: 0 12px 0 12px; }
     .footer nav a:hover {
       color: rgba(152, 152, 152, 0.84); }
-  .footer h5, .footer p, .footer a {
+  .footer h6, .footer p, .footer a {
     color: white;
     font-weight: normal;
     margin-top: 20px;
     text-align: center; }
+  .footer p {
+    font-size: 12px; }
+  .footer h6 a {
+    color: #65910a !important;
+    text-decoration: underline; }
   @media only screen and (max-width: 40em) {
     .footer nav {
       display: inline-block; } }
@@ -7864,11 +7884,18 @@ th {
   padding-bottom: 15px; }
 #login .login_btn {
   text-align: right; }
+#login form {
+  margin: auto 30%; }
 @media only screen and (max-width: 40em) {
   #login h5 {
     text-align: center; }
   #login .login_btn {
-    text-align: center; } }
+    text-align: center; }
+  #login form {
+    margin: 0 !important; } }
+@media only screen and (min-width: 40.0625em) and (max-width: 64em) {
+  #login form {
+    margin: auto 25%; } }
 
 /* Add Organization Page */
 #add_org h5 {
@@ -7910,5 +7937,25 @@ th {
 @media only screen and (max-width: 40em) {
   #add_org h5 {
     text-align: center; } }
+
+/* User and Organization Profile */
+.profile {
+  border-bottom: 1px solid #cac0bf; }
+  .profile ul {
+    color: #d32118; }
+  .profile ul li a {
+    border-right: 1px solid #d32118;
+    color: #d32118;
+    font-weight: bold;
+    padding: 0px 10px 0px 10px !important; }
+  .profile ul li:first-child a {
+    padding-left: 0 !important; }
+  .profile ul li:last-child a {
+    border: none; }
+  .profile ul li a:hover, .profile a:active {
+    color: #333333;
+    font-weight: bold; }
+  .profile p {
+    border-bottom: 1px solid; }
 
 /*# sourceMappingURL=style.css.map */
