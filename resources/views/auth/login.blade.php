@@ -103,6 +103,20 @@
                     @endforeach
                 </div>
             @endif
+            @if(Session::get('message') != NULL)
+                @if((Session::has('type')) && (Session::get('type')=='success'))
+                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                        {{ Session::get('message') }}
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                @endif
+                @if((Session::has('type')) && (Session::get('type')=='error'))
+                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                        {{ Session::get('message') }}
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                @endif
+            @endif
             <div class="row">
                 <div class="hide-for-small-only medium-6 large-6 columns">
                     {!! Form::label('email', 'Email :' ,array('class' => 'inline')) !!}

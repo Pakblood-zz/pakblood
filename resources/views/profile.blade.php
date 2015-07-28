@@ -1,202 +1,78 @@
 @include('header')
-<!-- Search area -->
-<div class="row search-bar">
-    <div class="myCenter">
-        <div class="small-20 medium-20 large-7 colums left donors">
-            <h3>1020 Donors</h3>
-            <span>163 Organizations Registered</span>
-        </div>
-        <div class="medium-10 large-5 columns">
-            <select>
-                <option value="">Blood Group</option>
-                <option value="Ap">A+</option>
-                <option value="An">A-</option>
-                <option value="ABp">AB+</option>
-                <option value="ABn">AB-</option>
-                <option value="Bp">B+</option>
-                <option value="Bn">B-</option>
-                <option value="Op">O+</option>
-                <option value="On">O-</option>
-            </select>
-        </div>
-        <div class="medium-10 large-5 columns">
-            <select>
-                <option value="">Location/City</option>
-                <option value="208">Lahore</option>
-                <option value="169">Karachi</option>
-                <option value="130">Islamabad</option>
-                <option value="1">Abbotabad</option>
-                <option value="4">Adda shaiwala</option>
-                <option value="9">Arif wala</option>
-                <option value="10">Arifwala</option>
-                <option value="13">Badin</option>
-                <option value="15">Bahawalpur</option>
-                <option value="18">Barbar loi</option>
-                <option value="25">Bhawal nagar</option>
-                <option value="26">Bhera</option>
-                <option value="28">Bhirya road</option>
-                <option value="30">Bhurewala</option>
-                <option value="41">Chakwal</option>
-                <option value="42">Charsada</option>
-                <option value="68">Dera ghazi khan</option>
-                <option value="76">Dina</option>
-                <option value="85">Faisalabad</option>
-                <option value="90">Feteh jhang</option>
-                <option value="103">Ghotki</option>
-                <option value="111">Gujranwala</option>
-                <option value="112">Gujrat</option>
-                <option value="118">Haroonabad</option>
-                <option value="125">Hayatabad</option>
-                <option value="129">Hyderabad</option>
-                <option value="132">Jaccobabad</option>
-                <option value="141">Jaranwala</option>
-                <option value="147">Jhang</option>
-                <option value="149">Jhelum</option>
-                <option value="174">Kasur</option>
-                <option value="176">Khair pur</option>
-                <option value="181">Khanewal</option>
-                <option value="186">Khewra</option>
-                <option value="193">Kot addu</option>
-                <option value="202">Kotli loharan</option>
-                <option value="203">Kotri</option>
-                <option value="227">Mandi bahauddin</option>
-                <option value="232">Mangla</option>
-                <option value="249">Mirpur khas</option>
-                <option value="256">Multan</option>
-                <option value="262">Muzaffarabad</option>
-                <option value="266">Narowal</option>
-                <option value="275">Nowshera</option>
-                <option value="278">Okara</option>
-                <option value="285">Patoki</option>
-                <option value="286">Peshawar</option>
-                <option value="302">Rahimyar khan</option>
-                <option value="304">Raiwand</option>
-                <option value="311">Rawalpindi</option>
-                <option value="316">Sadiqabad</option>
-                <option value="318">Sahiwal</option>
-                <option value="332">Sargodha</option>
-                <option value="341">Shaikhupura</option>
-                <option value="350">Sialkot</option>
-                <option value="358">Sohawa district jelum</option>
-                <option value="365">Talhur</option>
-                <option value="374">Taxila</option>
-                <option value="381">Topi</option>
-                <option value="391">Vehari</option>
-                <option value="392">Wah cantt</option>
-            </select>
-        </div>
-        <div id="search-btn" class="medium-20 large-3 columns">
-            <a href="#" class="button radius"><span>Search</span></a>
-        </div>
-    </div>
-</div>
+@include('search_bar')
 <!-- Center Container-->
 <div class="row center-container profile">
     @if(Session::get('message') != NULL)
-        <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
-            {{ Session::get('message') }}
-            <a href="#" class="close">&times;</a>
-        </div>
+        @if((Session::has('type')) && (Session::get('type')=='success'))
+            <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                {{ Session::get('message') }}
+                <a href="#" class="close">&times;</a>
+            </div>
+        @endif
+        @if((Session::has('type')) && (Session::get('type')=='error'))
+            <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                {{ Session::get('message') }}
+                <a href="#" class="close">&times;</a>
+            </div>
+        @endif
     @endif
-    <ul class="tabs" data-tab role="tablist">
-        <li class="tab-title active" role="presentation"><a href="#main" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-1">Main </a></li>
-        <li class="tab-title" role="presentation"><a href="#ediprofile" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-2">Edit Profile</a></li>
-        <li class="tab-title" role="presentation"><a href="#editlogin" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-3">Edit Login</a></li>
+    <ul class="tabs" data-tab role="tablist" data-options="deep_linking:true;scroll_to_content: false">
+        <li class="tab-title active" role="presentation"><a href="#bleesstatus" role="tab" tabindex="0" aria-selected="true" aria-controls="bleesstatus">Update Bleed Status </a></li>
+        <li class="tab-title" role="presentation"><a href="#editprofile" role="tab" tabindex="0" aria-selected="false" aria-controls="ediprofile">Edit Profile </a></li>
+        <li class="tab-title" role="presentation"><a href="#changepassword" role="tab" tabindex="0" aria-selected="false" aria-controls="changepassword">Change Password </a></li>
+        <li class="tab-title" role="presentation"><a href="#bleedhistory" role="tab" tabindex="0" aria-selected="false" aria-controls="bleedhistory">Bleed History </a></li>
+        <li class="tab-title" role="presentation"><a href="#unjoin" role="tab" tabindex="0" aria-selected="false" aria-controls="unjoin">Unjoin </a></li>
         @if(Auth::user()->org_id == 0)
-        <li class="tab-title" role="presentation"><a href="#org" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-3">Join Organization</a></li>
+            <li class="tab-title" role="presentation"><a href="#org" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-3">Join Organization</a></li>
         @endif
     </ul>
     <div class="tabs-content">
-        <section role="tabpanel" aria-hidden="false" class="content active" id="main">
+        <section role="tabpanel" aria-hidden="false" class="content active" id="bleesstatus">
+            {!! Form::open(array('url' => '/bleed/update','id' => 'add_member_form')) !!}
             <div class="row">
-                <div class="small-20 large-10 columns">
+                <div class="small-20 large-20 columns">
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Name : </p>
+                            {!! Form::label('receiver_name', 'Receiver Name :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->name}}</p>
+                            {!! Form::text('receiver_name', Input::old('receiver_name'), array('class' => 'inline','id' => 'receiver_name','placeholder' => 'Receiver Name')) !!}
                         </div>
                     </div>
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Username : </p>
+                            {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
                         </div>
-                        <div class="small-20 large-10 medium-10 columns left">
-                            <p>{{Auth::user()->username}}</p>
+                        <div class="small-20 medium-10 large-10 columns left">
+                            {!! Form::text('city', Input::old('city'), array('class' => 'inline','id' => 'city','placeholder' => 'City')) !!}
                         </div>
                     </div>
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Email : </p>
+                            {!! Form::label('comments', 'Comments :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->email}}</p>
+                            {!! Form::textarea('comments', Input::old('comments'), array('style' => 'margin: 0 0 1rem 0;', 'size' => '30x5', 'class' => 'inline','id' => 'comments','placeholder' => 'Comments')) !!}
                         </div>
                     </div>
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Gender : </p>
+                            {!! Form::label('date', 'Date :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->gender}}</p>
+                            <input class="inline" id="date" name="date" type="date">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Date Of Birth : </p>
-                        </div>
-                        <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->dob}}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Phone# : </p>
-                        </div>
-                        <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->phone}}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Address : </p>
-                        </div>
-                        <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->address}}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>City : </p>
-                        </div>
-                        <div class="small-20 medium-10 large-10 columns left">
-                            <p>{{Auth::user()->city_id}}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-7 large-5 columns">
-                            <p>Blood Group : </p>
-                        </div>
-                        <div class="small-20 medium-10 large-10 columns left">
-                            <p><?php
-                                switch(Auth::user()->blood_group){
-                                    case "ap": echo "A+";break;
-                                    case "an": echo "A-";break;
-                                    case "bp": echo "B+";break;
-                                    case "bn": echo "B-";break;
-                                    case "op": echo "O+";break;
-                                    case "on": echo "O-";break;
-                                    case "abp": echo "AB+";break;
-                                    case "abn": echo "AB-";break;
-                                }
-                                ?></p>
+                        <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
+                            <input type="submit" class="small button radius" name="submit" value="Save">
                         </div>
                     </div>
                 </div>
             </div>
+            {!! Form::close() !!}
         </section>
-        <section role="tabpanel" aria-hidden="true" class="content" id="ediprofile">
+        <section role="tabpanel" aria-hidden="true" class="content" id="editprofile">
             {!! Form::open(array('url' => 'profile/update','id' => 'add_member_form')) !!}
             <div class="row">
                 <div class="small-20 large-20 columns">
@@ -249,6 +125,14 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             <input class="inline" id="phone" placeholder="Phone Number" name="phone" type="text" value="{{Auth::user()->phone}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="hide-for-small-only medium-7 large-5 columns">
+                            {!! Form::label('mobile', 'Mobile# :' ,array('class' => 'inline')) !!}
+                        </div>
+                        <div class="small-20 medium-10 large-10 columns left">
+                            <input class="inline" id="mobile" placeholder="Mobile Number" name="mobile" type="text" value="{{Auth::user()->mobile}}">
                         </div>
                     </div>
                     <div class="row">
@@ -335,14 +219,14 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             <select id="bgroup" name="bgroup">
-                                <option value="ap"<?php if((Auth::user()->blood_group)== 'ap') echo 'selected="selected"'; ?>>A+</option>
-                                <option value="an"<?php if((Auth::user()->blood_group)== 'an') echo 'selected="selected"'; ?>>A-</option>
-                                <option value="bp"<?php if((Auth::user()->blood_group)== 'bp') echo 'selected="selected"'; ?>>B+</option>
-                                <option value="bn"<?php if((Auth::user()->blood_group)== 'bn') echo 'selected="selected"'; ?>>B-</option>
-                                <option value="op"<?php if((Auth::user()->blood_group)== 'op') echo 'selected="selected"'; ?>>O+</option>
-                                <option value="on"<?php if((Auth::user()->blood_group)== 'on') echo 'selected="selected"'; ?>>O-</option>
-                                <option value="abp"<?php if((Auth::user()->blood_group)== 'abp') echo 'selected="selected"'; ?>>AB+</option>
-                                <option value="abn"<?php if((Auth::user()->blood_group)== 'abn') echo 'selected="selected"'; ?>>AB-</option></select>
+                                <option value="A+"<?php if((Auth::user()->blood_group)== 'ap') echo 'selected="selected"'; ?>>A+</option>
+                                <option value="A-"<?php if((Auth::user()->blood_group)== 'an') echo 'selected="selected"'; ?>>A-</option>
+                                <option value="B+"<?php if((Auth::user()->blood_group)== 'bp') echo 'selected="selected"'; ?>>B+</option>
+                                <option value="B-"<?php if((Auth::user()->blood_group)== 'bn') echo 'selected="selected"'; ?>>B-</option>
+                                <option value="O+"<?php if((Auth::user()->blood_group)== 'op') echo 'selected="selected"'; ?>>O+</option>
+                                <option value="O-"<?php if((Auth::user()->blood_group)== 'on') echo 'selected="selected"'; ?>>O-</option>
+                                <option value="AB+"<?php if((Auth::user()->blood_group)== 'abp') echo 'selected="selected"'; ?>>AB+</option>
+                                <option value="AB-"<?php if((Auth::user()->blood_group)== 'abn') echo 'selected="selected"'; ?>>AB-</option></select>
                         </div>
                     </div>
                     <div class="row">
@@ -354,46 +238,87 @@
             </div>
             {!! Form::close() !!}
         </section>
-        <section role="tabpanel" aria-hidden="true" class="content" id="editlogin">
+        <section role="tabpanel" aria-hidden="true" class="content" id="changepassword">
             <div id="login" class="row">
-                <div>
-                    {!! Form::open(array('url' => 'rest/password','class' => 'small-20 medium-10 large-8 columns','style' => 'margin: auto 30%;')) !!}
-                    <h5>Change Password</h5>
-                    @if (count($errors) > 0)
-                        <div class="row">
-                            @foreach ($errors->all() as $error)
-                                <small class="error small-20 medium-14 large-20 columns">{{ $error }}</small>
-                            @endforeach
-                        </div>
-                    @endif
+                {!! Form::open(array('url' => 'change/password','class' => 'small-20 medium-10 large-8 columns','style' => 'margin: auto 30%;')) !!}
+                <h5>Change Password</h5>
+                @if (count($errors) > 0)
                     <div class="row">
-                        <div class="hide-for-small-only medium-6 large-6 columns">
-                            {!! Form::label('email', 'E-Mail Address :' ,array('class' => 'inline')) !!}
-                        </div>
-                        <div class="small-20 medium-14 large-14 columns left">
-                            {!! Form::email('email', Input::old('email'), array('class' => 'inline','id' => 'email','placeholder' => 'Email')) !!}
-                        </div>
+                        @foreach ($errors->all() as $error)
+                            <small class="error small-20 medium-14 large-20 columns">{{ $error }}</small>
+                        @endforeach
                     </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-6 large-6 columns">
-                            {!! Form::label('pass', 'Password :',array('class' => 'inline')) !!}
-                        </div>
-                        <div class="small-20 medium-14 large-14 columns left">
-                            {!! Form::password('password', array('class' => 'inline','id' => 'pass','placeholder' => 'Password')) !!}
-                        </div>
+                @endif
+                <div class="row">
+                    <div class="hide-for-small-only medium-6 large-6 columns">
+                        {!! Form::label('old_password', 'Old Passowrd :' ,array('class' => 'inline')) !!}
                     </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-6 large-6 columns">
-                            {!! Form::label('password_confirmation', 'Confirm Password :',array('class' => 'inline')) !!}
-                        </div>
-                        <div class="small-20 medium-14 large-14 columns left">
-                            {!! Form::password('password_confirmation', array('class' => 'inline','id' => 'pass','placeholder' => 'Confirm Password')) !!}
-                        </div>
-                    </div>
-                    <div class="login_btn small-20 medium-14 large-15 columns">
-                        <input type="submit" class="small button radius" name="submit" value="Rest Password">
+                    <div class="small-20 medium-14 large-14 columns left">
+                        {!! Form::password('old_password', array('class' => 'inline','id' => 'old_password','placeholder' => 'Old Password')) !!}
                     </div>
                 </div>
+                <div class="row">
+                    <div class="hide-for-small-only medium-6 large-6 columns">
+                        {!! Form::label('new_password', 'New Password :',array('class' => 'inline')) !!}
+                    </div>
+                    <div class="small-20 medium-14 large-14 columns left">
+                        {!! Form::password('new_password', array('class' => 'inline','id' => 'new_password','placeholder' => 'New Password')) !!}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="hide-for-small-only medium-6 large-6 columns">
+                        {!! Form::label('new_password_confirmation', 'Confirm New Password :',array('class' => 'inline')) !!}
+                    </div>
+                    <div class="small-20 medium-14 large-14 columns left">
+                        {!! Form::password('new_password_confirmation', array('class' => 'inline','id' => 'new_password_confirmation','placeholder' => 'Confirm New Password')) !!}
+                    </div>
+                </div>
+                <div style="text-align: center;" class="login_btn small-20 medium-14 large-15 columns">
+                    <input type="submit" class="small button radius" name="submit" value="Rest Password">
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </section>
+        <section role="tabpanel" aria-hidden="true" class="content" id="bleedhistory">
+            <table role="grid">
+                <tr>
+                    <th>#</th>
+                    <th>Receiver Name </th>
+                    <th>City </th>
+                    <th width="500">Comments </th>
+                    <th width="180">Date </th>
+                </tr>
+                <?php $count=1; ?>
+                @foreach($bleed as $bs)
+                    <tr>
+                        <td><?php echo $count?></td>
+                        <td>{{$bs->receiver_name}}</td>
+                        <td>{{$bs->city}}</td>
+                        <td>{{$bs->comments}}</td>
+                        <td>{{$bs->date}}</td>
+                    </tr>
+                    <?php $count+=1; ?>
+                @endforeach
+            </table>
+        </section>
+        <section role="tabpanel" aria-hidden="true" class="content" id="unjoin">
+            <div class="row">
+                {!! Form::open(array('url' => 'delete/user','id' => 'add_member_form')) !!}
+                <h5 style="text-align: center;">Unjoin Pakblood</h5>
+                <div class="row">
+                    <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
+                        <p style="text-align: center;border:none;" >
+                            Are you sure to leave Pakblood.com?</br>
+                            If you are sure, click Unjoin button given below.</br></br>
+                            Thanks for becoming a part of PAKBLOOD team.</br></br>
+                            PAKBLOOD TEAM
+                        </p>
+                    </div>
+                </div>
+                <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
+                    <input type="submit" class="small button radius" name="submit" value="Unoin">
+                </div>
+                {!! Form::close() !!}
             </div>
         </section>
         <section role="tabpanel" aria-hidden="true" class="content" id="org"></section>

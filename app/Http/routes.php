@@ -46,5 +46,10 @@ Route::post('/profile/update', ['middleware' => 'auth','uses' => 'ProfileControl
 Route::get('/create/organization', ['middleware' => 'auth','uses' => 'OrgController@index']);
 Route::post('/create/organization', ['middleware' => 'auth','uses' => 'OrgController@store']);
 Route::get('/organization/{id}', ['middleware' => 'auth','uses' => 'OrgController@getProfile']);
-Route::post('/organization/update', 'OrgController@update');
-
+Route::post('/organization/update', ['middleware' => 'auth','uses' => 'OrgController@update']);
+Route::post('/bleed/update', ['middleware' => 'auth','uses' => 'BleedController@update']);
+Route::post('/delete/user', ['middleware' => 'auth','uses' => 'ProfileController@deleteUser']);
+Route::post('/change/password', 'ProfileController@changePassword');
+Route::get('/members', 'SearchController@getAllUsers');
+//Route::get('/search', 'SearchController@getSearchData');
+Route::post('/search', 'SearchController@getSearchData');

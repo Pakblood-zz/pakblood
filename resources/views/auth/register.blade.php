@@ -190,6 +190,14 @@
                         </div>
                         <div class="row">
                             <div class="hide-for-small-only medium-7 large-5 columns">
+                                {!! Form::label('mobile', 'Mobile# :' ,array('class' => 'inline')) !!}
+                            </div>
+                            <div class="small-20 medium-10 large-10 columns left">
+                                {!! Form::text('mobile', Input::old('mobile'), array('class' => 'inline','id' => 'mobile','placeholder' => 'Mobile Number')) !!}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="hide-for-small-only medium-7 large-5 columns">
                                 {!! Form::label('address', 'Address :' ,array('class' => 'inline')) !!}
                             </div>
                             <div class="small-20 medium-10 large-10 columns left">
@@ -274,14 +282,14 @@
                             <div class="small-20 medium-10 large-10 columns left">
                                 {!! Form::select('bgroup', [
                                 '' => 'Select Your Blood Group',
-                                'ap' => 'A+',
-                                'an' => 'A-',
-                                'bp' => 'B+',
-                                'bn' => 'B-',
-                                'op' => 'O+',
-                                'on' => 'O-',
-                                'abp' => 'AB+',
-                                'abn' => 'AB-']
+                                'A+' => 'A+',
+                                'A-' => 'A-',
+                                'B+' => 'B+',
+                                'B-' => 'B-',
+                                'O+' => 'O+',
+                                'O-' => 'O-',
+                                'AB+' => 'AB+',
+                                'AB-' => 'AB-']
                                 ) !!}
                             </div>
                         </div>

@@ -14,10 +14,11 @@ class CreatBleedDetailsTable extends Migration
     {
         Schema::create('pb_bleed_details', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('donor_user_id');
-            $table->integer('receiver_user_id');
-            $table->integer('city_id');
-            $table->integer('wish_id');
+            $table->integer('user_id');
+            $table->string('receiver_name',100);
+            $table->string('city',100);
+            $table->string('comments');
+            $table->date('date');
             $table->timestamps();
         });
     }

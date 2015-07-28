@@ -102,6 +102,7 @@ class AuthController extends Controller
         $user->gender = $request->input('gender');
         $user->dob = $request->input('dob');
         $user->phone = $request->input('phone');
+        $user->mobile = $request->input('mobile');
         $user->address = $request->input('address');
         $user->city_id = $request->input('city_id');
         $user->blood_group = $request->input('bgroup');
@@ -133,7 +134,6 @@ class AuthController extends Controller
      */
     public function activateAccount($code, User $user)
     {
-
         if($user->ActivateAccount($code)) {
             return redirect('account/verified');
         }
@@ -164,7 +164,7 @@ class AuthController extends Controller
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
                     ->withErrors([
-                        "Account Not Activated please check your email and follow the activation link",
+                        "Account Not Activated, you need to activate your account before login.",
                     ]);
             }
         }
@@ -184,5 +184,24 @@ class AuthController extends Controller
             ->withErrors([
                 "Wrong Email or Password",
             ]);
+    }
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  bool  $throttles
+     * @return \Illuminate\Http\Response
+     */
+    protected function handleUserWasAuthenticated(Request $request, $throttles)
+    {
+        if ($throttles) {
+            $this->clearLoginAttempts($request);
+        }
+
+        if (method_exists($this, 'authenticated')) {
+            return $this->authenticated($request, Auth::user());
+        }
+
+        return redirect('profile/'.Auth::user()->username);
     }
 }

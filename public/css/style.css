@@ -7657,7 +7657,7 @@ th {
     height: 41px; }
   .search-bar #search-btn {
     text-align: center; }
-    .search-bar #search-btn a {
+    .search-bar #search-btn input[type=submit] {
       color: white;
       cursor: pointer;
       margin: 30px 20px;
@@ -7691,8 +7691,6 @@ th {
 /* Donation Video */
 #donation-vid div:first-child {
   border: 1px solid #cacaca;
-  margin-top: 30px;
-  margin-right: 40px;
   padding: 15px; }
 #donation-vid h5 {
   color: #d32118; }

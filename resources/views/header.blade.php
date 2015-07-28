@@ -83,17 +83,17 @@
         <section class="top-bar-section">
             <!-- Right Nav Section -->
             <ul>
-                <li class="active"><a href="#">Home </a></li>
-                <li class="has-dropdown">
+                <li class="active"><a href="/">Home </a></li>
+                {{--<li class="has-dropdown">
                     <a href="#">Dead Body Transfers </a>
                     <ul class="dropdown">
                         <li><a href="#">First link in dropdown </a></li>
                         <li class=""><a href="#">Active link in dropdown </a></li>
                     </ul>
-                </li>
+                </li>--}}
+                <li class=""><a href="#">Dead Body Transfers </a></li>
                 <li class=""><a href="#">Help Line </a></li>
                 <li class=""><a href="#">News </a></li>
-                <li class=""><a href="#">Videos </a></li>
                 <li class=""><a href="#">FAQ </a></li>
                 <li class=""><a href="#">Contact Us </a></li>
             </ul>
