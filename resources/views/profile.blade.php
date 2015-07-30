@@ -22,9 +22,6 @@
         <li class="tab-title" role="presentation"><a href="#changepassword" role="tab" tabindex="0" aria-selected="false" aria-controls="changepassword">Change Password </a></li>
         <li class="tab-title" role="presentation"><a href="#bleedhistory" role="tab" tabindex="0" aria-selected="false" aria-controls="bleedhistory">Bleed History </a></li>
         <li class="tab-title" role="presentation"><a href="#unjoin" role="tab" tabindex="0" aria-selected="false" aria-controls="unjoin">Unjoin </a></li>
-        @if(Auth::user()->org_id == 0)
-            <li class="tab-title" role="presentation"><a href="#org" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-3">Join Organization</a></li>
-        @endif
     </ul>
     <div class="tabs-content">
         <section role="tabpanel" aria-hidden="false" class="content active" id="bleesstatus">

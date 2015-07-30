@@ -26,7 +26,8 @@ class OrgController extends Controller
      */
     public function index()
     {
-        return view('add_org');
+        $data = array('orgs' => Org::where('status','=','active')->paginate(10));
+        return view('organizations',$data);
     }
 
     /**
@@ -36,7 +37,7 @@ class OrgController extends Controller
      */
     public function create()
     {
-
+        return view('add_org');
     }
 
     /**
@@ -108,7 +109,7 @@ class OrgController extends Controller
      */
     public function getProfile($id)
     {
-        $data = array('org' => Org::whereIdAndUser_id($id, Auth::user()->id)->first());
+        $data = array('org' => Org::whereIdAndStatus($id ,'active')->first());
         return view::make('org_profile',$data);
     }
 

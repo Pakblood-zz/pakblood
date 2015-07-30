@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\User;
+use App\Org;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $data = array(
+            'total_users' => User::where('status','=','active')->count(),
+            'total_org' => Org::where('status','=','active')->count()
+        );
+        view()->share($data);
     }
 
     /**

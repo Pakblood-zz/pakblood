@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Bleed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\User;
 
 class BleedController extends Controller
 {
@@ -19,6 +20,9 @@ class BleedController extends Controller
         $bleed->city = $request->input('city');
         $bleed->comments = $request->input('comments');
         $bleed->date = $request->input('date');
+        $user =  Auth::user();
+        $user->last_bleed = $request->input('date');
+        $user->save();
 
         if($bleed->save()){
             return Redirect::to('profile/'.Auth::user()->username)->with('message', 'Bleed Status Successfully Updated!!');

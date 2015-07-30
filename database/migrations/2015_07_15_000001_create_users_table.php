@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->foreign('city_id')->references('id')->on('pb_cities');
 
             $table->string('blood_group');
-            $table->string('last_bleed');
+            $table->date('last_bleed');
             $table->integer('org_id');
             $table->string('status');
             $table->string('account_status');

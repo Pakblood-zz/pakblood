@@ -15,7 +15,7 @@ Route::Controllers(array(
     'auth' =>   'Auth\AuthController',
     'password' => 'Auth\PasswordController'
 ));
-Route::get('/', function () {
+Route::get('/', function(){
     return view('index');
 });
 Route::get('/home', function () {
@@ -43,13 +43,14 @@ Route::get('/account/verify/{code}', 'Auth\AuthController@activateAccount');
 Route::get('/rest/password/{token}' , 'Auth\PasswordController@getReset');
 Route::get('/profile/{username}', ['middleware' => 'auth','uses' => 'ProfileController@getProfile']);
 Route::post('/profile/update', ['middleware' => 'auth','uses' => 'ProfileController@updateProfile']);
-Route::get('/create/organization', ['middleware' => 'auth','uses' => 'OrgController@index']);
+Route::get('/organizations', ['middleware' => 'auth','uses' => 'OrgController@index']);
+Route::get('/create/organization', ['middleware' => 'auth','uses' => 'OrgController@create']);
 Route::post('/create/organization', ['middleware' => 'auth','uses' => 'OrgController@store']);
-Route::get('/organization/{id}', ['middleware' => 'auth','uses' => 'OrgController@getProfile']);
 Route::post('/organization/update', ['middleware' => 'auth','uses' => 'OrgController@update']);
 Route::post('/bleed/update', ['middleware' => 'auth','uses' => 'BleedController@update']);
 Route::post('/delete/user', ['middleware' => 'auth','uses' => 'ProfileController@deleteUser']);
 Route::post('/change/password', 'ProfileController@changePassword');
 Route::get('/members', 'SearchController@getAllUsers');
-//Route::get('/search', 'SearchController@getSearchData');
-Route::post('/search', 'SearchController@getSearchData');
+Route::get('/search', 'SearchController@getSearchData');
+Route::get('/organization/{id}', 'OrgController@getProfile');
+Route::post('/organization/join',['middleware' => 'auth','uses' => 'OrgRequestsController@store']);

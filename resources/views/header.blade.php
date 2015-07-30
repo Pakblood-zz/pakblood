@@ -43,7 +43,7 @@
             @else
                 <ul class="breadcrumbs right">
                     @if(Auth::user()->org_id == 0)
-                        <li><a href="/create/organization">Register Organization</a></li>
+                        <li><a href="/create/organization">Register Organization</a> <span style="color: red;">Or</span> <a href="/organizations">Join An Organization</a></li>
                     @endif
                     <li>
                         <div id="user_nav" class="right">
