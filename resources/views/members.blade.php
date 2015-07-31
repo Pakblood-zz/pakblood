@@ -13,7 +13,6 @@
         </tr>
         <?php use Carbon\Carbon;$usercount=1; ?>
         @foreach($users as $user)
-            @if($user->org_id == 0)
                 <tr>
                     <td>{{$usercount}}</td>
                     <td>{{$user->name}}</td>
@@ -36,7 +35,6 @@
                     <td><a href="#">Report Donor</a></td>
                 </tr>
                 <?php $usercount+=1; ?>
-            @endif
         @endforeach
     </table>
     <?php echo $users->appends(Request::all())->render(); ?>

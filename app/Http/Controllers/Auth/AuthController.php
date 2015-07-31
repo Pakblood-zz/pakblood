@@ -79,6 +79,7 @@ class AuthController extends Controller
 
     }
      */
+
     /**
      * Create a new user and send verification email to activate account
      */

@@ -22,10 +22,15 @@
     {!! HTML::script('js/foundation.js') !!}
     {!! HTML::script('js/responsive-tables.js') !!}
     {!! HTML::script('js/vendor/webshims/polyfiller.js') !!}
+    {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
 
     <script>
         $(function(){
             $(document).foundation();
+            $(document).confirmWithReveal({
+                ok_class: 'small button radius',
+                cancel_class: 'small button radius secondary'
+            })
         });
     </script>
 </head>

@@ -23,7 +23,7 @@
         <li class="tab-title" role="presentation"><a href="#bleedhistory" role="tab" tabindex="0" aria-selected="false" aria-controls="bleedhistory">Bleed History </a></li>
         <li class="tab-title" role="presentation"><a href="#unjoin" role="tab" tabindex="0" aria-selected="false" aria-controls="unjoin">Unjoin </a></li>
     </ul>
-    <div class="tabs-content">
+    <div id="add_member" class="tabs-content">
         <section role="tabpanel" aria-hidden="false" class="content active" id="bleesstatus">
             {!! Form::open(array('url' => '/bleed/update','id' => 'add_member_form')) !!}
             <div class="row">
@@ -313,12 +313,11 @@
                     </div>
                 </div>
                 <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
-                    <input type="submit" class="small button radius" name="submit" value="Unoin">
+                    <input type="submit" data-confirm class="small button radius" name="submit" value="Unoin">
                 </div>
                 {!! Form::close() !!}
             </div>
         </section>
-        <section role="tabpanel" aria-hidden="true" class="content" id="org"></section>
     </div>
 </div>
 @include('footer')

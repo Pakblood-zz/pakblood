@@ -20,6 +20,7 @@ class ProfileController extends Controller
         $data = array('bleed' => Bleed::select('*')->where('user_id','=',Auth::user()->id)->get());
         return view('profile',$data);
     }
+
     public function updateProfile(Request $request){
         $user = User::where('id', '=', Auth::user()->id)->first();
         $user->name = $request->input('name');
@@ -37,7 +38,12 @@ class ProfileController extends Controller
         }
         return Redirect::to('profile/'.$request->input('username'))->with('message', 'There was some Problems Saving Your profile please try again.')->with('type','error');
     }
+
+    /**
+     * User delete
+     */
     public function deleteUser(Request $request){
+        dd($request);
         $org = Org::where('user_id','=',Auth::user()->id)->first();
         if($org != NULL){
             return Redirect::to('profile/'.Auth::user()->username)->with('message', 'Error!! can\'t delete your account until you\'r admin of an Organization,Please change admin of your organization to someone else and try again.')->with('type','error');
@@ -46,6 +52,7 @@ class ProfileController extends Controller
         Auth::logout();
         return Redirect::to('/');
     }
+
     public function changePassword(Request $request){
         // validate
         // read more on validation at http://laravel.com/docs/validation
@@ -68,4 +75,6 @@ class ProfileController extends Controller
             }
         }
     }
+
+
 }

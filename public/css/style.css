@@ -7651,7 +7651,7 @@ th {
     font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
-    margin: 35px 0 0 0px;
+    margin: 25px 0 10px 0px;
     width: 100%;
     min-width: 125px;
     height: 41px; }
@@ -7936,7 +7936,7 @@ th {
   #add_org h5 {
     text-align: center; } }
 
-/* User and Organization Profile */
+/* User Profile */
 .profile {
   border-bottom: 1px solid #cac0bf; }
   .profile ul {
@@ -7955,5 +7955,11 @@ th {
     font-weight: bold; }
   .profile p {
     border-bottom: 1px solid; }
+
+/* Organization Profile */
+.org_profile div, .org_profile p {
+  text-align: center; }
+.org_profile table {
+  margin: 5px auto; }
 
 /*# sourceMappingURL=style.css.map */
