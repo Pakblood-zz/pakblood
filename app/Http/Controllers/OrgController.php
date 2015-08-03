@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bleed;
 use App\OrgRequests;
 use Illuminate\Http\Request;
 
@@ -55,13 +56,15 @@ class OrgController extends Controller
             'name' => 'required|unique:pb_org',
             'org_address' => 'required',
             'org_phone' => 'required',
-            'admin_name' => 'required|unique:pb_org'
+            'admin_name' => 'required|unique:pb_org',
+            'org_logo' => 'required:mimes:png,jpg,jpeg',
+            'org_application' => 'required:mimes:png,jpg,jpeg'
         );
         $validator = Validator::make(Input::all(), $rules);
 
         // process the login
         if ($validator->fails()) {
-            return Redirect::to('org')
+            return Redirect::to('/create/organization')
                 ->withErrors($validator)
                 ->withInput(Input::all());
         } else {
@@ -74,8 +77,24 @@ class OrgController extends Controller
             $org->phone = Input::get('org_phone');
             $org->mobile = Input::get('admin_phone');
             $org->city_id = Input::get('city_id');
-            //$org->image = Input::get('org_logo');
-            //$org->application_image = Input::get('org_application');
+            if ($request->hasFile('org_logo'))
+            {
+                $logo = $org->name . '.' .
+                    $request->file('org_logo')->getClientOriginalExtension();
+                $request->file('org_logo')->move(
+                    base_path() . '/public/images/logos/', $logo
+                );
+                $org->image = $logo;
+            }
+            if ($request->hasFile('org_logo'))
+            {
+                $application = $org->name . '.' .
+                    $request->file('org_application')->getClientOriginalExtension();
+                $request->file('org_application')->move(
+                    base_path() . '/public/images/applications/', $application
+                );
+                $org->application_image = $application;
+            }
             $org->admin_name = Input::get('admin_name');
             $org->program = Input::get('admin_program');
             $org->email = Input::get('admin_email');
@@ -123,6 +142,11 @@ class OrgController extends Controller
                 ->where('pb_org.id', '=', $id)
                 ->get()
         );
+        if($data['org'] == NULL){
+            return redirect('/profile/'.Auth::user()->username)
+                ->with('message','Your organization is not active yet, please wait, until pakblood admin review your organization')
+                ->with('type','error');
+        }
         return view::make('org_profile',$data);
     }
 
@@ -142,8 +166,24 @@ class OrgController extends Controller
         $org->phone = $request->Input('org_phone');
         $org->mobile = $request->Input('admin_phone');
         $org->city_id = $request->Input('city_id');
-        //$org->image = Input::get('org_logo');
-        //$org->application_image = Input::get('org_application');
+        if ($request->hasFile('org_logo'))
+        {
+            $logo = $org->name . '.' .
+                $request->file('org_logo')->getClientOriginalExtension();
+            $request->file('org_logo')->move(
+                base_path() . '/public/images/logos/', $logo
+            );
+            $org->image = $logo;
+        }
+        if ($request->hasFile('org_logo'))
+        {
+            $application = $org->name . '.' .
+                $request->file('org_application')->getClientOriginalExtension();
+            $request->file('org_application')->move(
+                base_path() . '/public/images/applications/', $application
+            );
+            $org->application_image = $application;
+        }
         $org->admin_name = $request->Input('admin_name');
         $org->program = $request->Input('admin_program');
         $org->email = $request->Input('admin_email');
