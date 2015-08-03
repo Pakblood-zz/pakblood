@@ -36,6 +36,16 @@ Route::get('account/verify', function(){
 Route::get('account/verified', function(){
     return view('account_verified');
 });
+Route::get('about', function(){
+    return view('about_us');
+});
+Route::get('FAQ', function(){
+    return view('FAQ');
+});
+Route::get('contact', function(){
+    return view('contact_us');
+});
+Route::post('/contact', 'ContactUsController@sendMail');
 Route::get('/login', 'Auth\AuthController@getLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 Route::get('/register', 'Auth\AuthController@getRegister');
@@ -45,6 +55,8 @@ Route::post('/change/password', 'ProfileController@changePassword');
 Route::get('/members', 'SearchController@getAllUsers');
 Route::get('/search', 'SearchController@getSearchData');
 Route::get('/organization/{id}', 'OrgController@getProfile');
+Route::get('/helplines', 'HelplinesController@index');
+Route::post('/helplines', 'HelplinesController@filterData');
 Route::group(['middleware' => 'auth'], function () {
     Route::post('/organization/join', 'OrgRequestsController@store');
     Route::get('/organizations', 'OrgController@index');
@@ -60,4 +72,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/profile/update', 'ProfileController@updateProfile');
     Route::post('/bleed/update', 'BleedController@update');
     Route::post('/delete/user', 'ProfileController@deleteUser');
+    Route::get('/report/user', 'ReportsController@index');
+    Route::post('/report/user' , 'ReportsController@reportUser');
 });

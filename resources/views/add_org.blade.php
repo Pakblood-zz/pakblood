@@ -15,14 +15,11 @@
                 @if (count($errors) > 0)
                     <div class="row">
                         @foreach ($errors->all() as $error)
-                                <div data-alert class="error small-20 medium-14 large-20 columns radius" style="text-align: center;font-weight: bold;">
-                                    {{ $error }}
-                                    <a href="#" class="close">&times;</a>
-                                </div>
+                            <small class="error small-20 medium-14 large-20">{{ $error }}</small>
                         @endforeach
                     </div>
                 @endif
-                {!! Form::open(array('url' => '/create/organization')) !!}
+                {!! Form::open(array('url' => '/create/organization','enctype' => 'multipart/form-data')) !!}
                 <h5>Organization/institute information</h5>
                 <div class="small-20 large-20 columns">
                     <div class="row">
@@ -121,14 +118,6 @@
                     </div>
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
-                            <label for="org_logo" class="inline">Organization Logo : </label>
-                        </div>
-                        <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::file('org_logo', Input::old('org_logo'), array('class' => 'inline','id' => 'org_logo')) !!}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="hide-for-small-only medium-7 large-5 columns">
                             <label for="org_url" class="inline">Organization Url : </label>
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
@@ -137,10 +126,18 @@
                     </div>
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
+                            <label for="org_logo" class="inline">Organization Logo : </label>
+                        </div>
+                        <div class="small-20 medium-10 large-10 columns left">
+                            {!! Form::file('org_logo', null, array('class' => 'inline','id' => 'org_logo')) !!}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="hide-for-small-only medium-7 large-5 columns">
                             <label for="org_application" class="inline">Application* : </label>
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::url('org_application', Input::old('org_application'), array('class' => 'inline','id' => 'org_application')) !!}
+                            {!! Form::file('org_application', null, array('class' => 'inline','id' => 'org_application')) !!}
                         </div>
                     </div>
                     <p>*Upload Image of application to join Pakblood Organizations list written on your organization's letter head </p>
@@ -192,13 +189,8 @@
                             <input type="text" readonly id="admin_email" name="admin_email" placeholder="Email" value="{{Auth::user()->email}}">
                         </div>
                     </div>
-                    <div class="row">
-                        <div id="submit_btn" class="small-10 medium-10 large-10 columns">
-                            <input type="submit" class="small button radius right " name="submit" value="Submit">
-                        </div>
-                        <div id="submit_btn" class="small-10 medium-10 large-10 columns">
-                            <input style="padding: 0.875rem 2.2rem 0.9375rem 2.2rem;" type="submit" class="small button radius secondary" name="submit" value="Rest">
-                        </div>
+                    <div class="row" style="text-align:center;">
+                        <input type="submit" class="small button radius" name="submit" value="Submit">
                     </div>
                 </div>
                 {!! Form::close() !!}

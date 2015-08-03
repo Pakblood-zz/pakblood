@@ -28,7 +28,7 @@
         <div class="org_profile">
             <h4>{{$org->name}}</h4>
             <div class="row">
-                {!! HTML::image('images/'.$org->image, $org->name.' Logo')!!}
+                {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
             </div>
             <p>
                 <b>Please Allow 30-45 mints to {{$org->name}} to confirm that blood you need is available with them.</br>
@@ -71,7 +71,7 @@
         <div @if(Auth::user()->org_id == 0) class="large-10 left" @else class="org_profile" @endif >
             <h4>{{$org->name}}</h4>
             <div class="row">
-                {!! HTML::image('images/'.$org->image, $org->name.' Logo')!!}
+                {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
             </div>
             <table>
                 <tr>
@@ -137,7 +137,7 @@
                     <div class="org_profile">
                         <h4>{{$org->name}}</h4>
                         <div class="row">
-                            {!! HTML::image('images/'.$org->image, $org->name.' Logo')!!}
+                            {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
                         </div>
                         <table>
                             <tr>
@@ -285,7 +285,7 @@
                                         <label for="org_logo" class="inline">Organization Logo : </label>
                                     </div>
                                     <div class="small-20 medium-10 large-10 columns left">
-                                        <input type="file"  id="org_logo">
+                                        {!! Form::file('org_logo', null, array('class' => 'inline','id' => 'org_logo')) !!}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -293,7 +293,7 @@
                                         <label for="org_application" class="inline">Application : </label>
                                     </div>
                                     <div class="small-20 medium-10 large-10 columns left">
-                                        <input type="file"  id="org_application" name="org_application">
+                                        {!! Form::file('org_application', null, array('class' => 'inline','id' => 'org_application')) !!}
                                     </div>
                                 </div>
                             </div>

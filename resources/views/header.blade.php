@@ -97,10 +97,11 @@
                     </ul>
                 </li>--}}
                 <li class=""><a href="#">Dead Body Transfers </a></li>
-                <li class=""><a href="#">Help Line </a></li>
+                <li class=""><a href="{{url('/helplines')}}">Help Line </a></li>
                 <li class=""><a href="#">News </a></li>
-                <li class=""><a href="#">FAQ </a></li>
-                <li class=""><a href="#">Contact Us </a></li>
+                <li class=""><a href="{{url('/about')}}">About </a></li>
+                <li class=""><a href="{{url('/FAQ')}}">FAQ </a></li>
+                <li class=""><a href="{{url('/contact')}}">Contact Us </a></li>
             </ul>
         </section>
     </nav>
