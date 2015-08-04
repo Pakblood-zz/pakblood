@@ -30,11 +30,16 @@ class SearchController extends Controller
         if (substr($bg, -1, 1) == 'n') {
             $bg = substr($bg, 0, -1) . '-';
         }
-        $user = User::whereBlood_groupAndCity_idAndStatus($bg, $request->input('city'),'active')
-            ->where('id','!=',Auth::user()->id)
-            ->where(function($query){
-                $query->where('org_id','=',0)->orWhere('org_id','=',Auth::user()->org_id);
-            })->paginate(15);
+        if(Auth::guest()){
+            $user = User::whereBlood_groupAndCity_idAndStatus($bg, $request->input('city'),'active')
+                    ->where('org_id','=',0)->paginate(15);
+        }else{
+            $user = User::whereBlood_groupAndCity_idAndStatus($bg, $request->input('city'),'active')
+                ->where('id','!=',Auth::user()->id)
+                ->where(function($query){
+                    $query->where('org_id','=',0)->orWhere('org_id','=',Auth::user()->org_id);
+                })->paginate(15);
+        }
         $data = array('users' => $user,
             'bg' => $request->input('bgroup'),'city' => $request->input('city'),
             'orgs' => Org::join('pb_users','pb_users.org_id', '=','pb_org.id')
