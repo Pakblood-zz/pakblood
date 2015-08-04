@@ -6,7 +6,7 @@
             {!! Form::label('name', 'Your Name :' ,array('class' => 'inline')) !!}
         </div>
         <div class="small-20 medium-14 large-14 columns left">
-            {!! Form::text('name', Auth::user()->name, array('class' => 'inline','id' => 'name','placeholder' => 'Your Name')) !!}
+            {!! Form::text('name', Input::old('name') , array('class' => 'inline','id' => 'name','placeholder' => 'Your Name')) !!}
         </div>
     </div>
     <div class="row">
@@ -14,7 +14,7 @@
             {!! Form::label('email', 'Your Email :' ,array('class' => 'inline')) !!}
         </div>
         <div class="small-20 medium-14 large-14 columns left">
-            {!! Form::email('email', Auth::user()->email, array('class' => 'inline','id' => 'email','placeholder' => 'Your Email')) !!}
+            {!! Form::email('email', Input::old('email'), array('class' => 'inline','id' => 'email','placeholder' => 'Your Email')) !!}
         </div>
     </div>
     <div class="row">
@@ -39,6 +39,14 @@
         </div>
         <div class="small-20 medium-14 large-14 columns left">
             {!! Form::textarea('comments', null, array('size' => '20x5', 'class' => 'inline','id' => 'comments', 'placeholer' => 'Your comments about donor')) !!}
+        </div>
+    </div>
+    <div class="row">
+        <div class="hide-for-small-only medium-6 large-6 columns">
+            {!! Form::label('captcha', 'Captcha :',array('class' => 'inline')) !!}
+        </div>
+        <div style="margin-top: 10px;" class="small-20 medium-14 large-14 columns right">
+            {!! app('captcha')->display(); !!}
         </div>
     </div>
     <div class="row">

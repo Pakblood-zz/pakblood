@@ -72,6 +72,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/profile/update', 'ProfileController@updateProfile');
     Route::post('/bleed/update', 'BleedController@update');
     Route::post('/delete/user', 'ProfileController@deleteUser');
-    Route::get('/report/user', 'ReportsController@index');
-    Route::post('/report/user' , 'ReportsController@reportUser');
+});
+Route::get('/report/user', 'ReportsController@index');
+Route::post('/report/user' , 'ReportsController@reportUser');
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'before' => 'admin'] ,function (){
+    Route::get('/','MainController@index');
+    Route::post('/login','MainController@login');
 });

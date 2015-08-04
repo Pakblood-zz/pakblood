@@ -7962,4 +7962,76 @@ th {
 .org_profile table {
   margin: 5px auto; }
 
+/* Foundation-icons font sizes*/
+.size-12 {
+  font-size: 12px; }
+
+.size-14 {
+  font-size: 14px; }
+
+.size-16 {
+  font-size: 16px; }
+
+.size-18 {
+  font-size: 18px; }
+
+.size-21 {
+  font-size: 21px; }
+
+.size-25 {
+  font-size: 25px; }
+
+.size-36 {
+  font-size: 36px; }
+
+.size-48 {
+  font-size: 48px; }
+
+.size-60 {
+  font-size: 60px; }
+
+.size-72 {
+  font-size: 72px; }
+
+/* Admin Panel */
+/* Admin Login Page */
+.wrapper {
+  background-color: #2f323a; }
+
+.admin_login {
+  margin: 5% 0 0 35%; }
+  .admin_login img {
+    width: 55px;
+    height: 55px;
+    float: left;
+    opacity: 0.9;
+    position: relative;
+    top: 10px;
+    margin-left: 13px;
+    background: #92cd18;
+    border-radius: 50%;
+    padding: 7px; }
+  .admin_login h5 {
+    float: left;
+    color: white;
+    opacity: 0.9;
+    position: relative;
+    top: 25px;
+    letter-spacing: 5px;
+    left: 20px; }
+  .admin_login li {
+    list-style: none;
+    font-size: 25px;
+    background-color: #65910a;
+    padding-left: 10px; }
+
+.admin_login_top {
+  background: #111;
+  border-radius: 4px 4px 0 0;
+  height: 90px; }
+
+.admin_login_form {
+  border: 1px solid green;
+  overflow: hidden; }
+
 /*# sourceMappingURL=style.css.map */
