@@ -99,12 +99,11 @@ class OrgController extends Controller
             $org->program = Input::get('admin_program');
             $org->email = Input::get('admin_email');
             $org->url = Input::get('org_url');
-            $org->save();
-            DB::table('pb_users')
-                ->where('id', Auth::user()->id)
-                ->update(['org_id' => $org->id]);
 
             if ($org->save()) {
+                DB::table('pb_users')
+                    ->where('id', Auth::user()->id)
+                    ->update(['org_id' => $org->id]);
                 $data = array(
                     'username' => Auth::user()->username,
                     'email' => Auth::user()->email,
@@ -210,7 +209,8 @@ class OrgController extends Controller
     /**
      * Register user without email verification when added by an organization
      */
-    public function addMember(Request $request){
+    public function addMember(Request $request)
+    {
 
         $rules = array(
             'name' => 'required',
@@ -220,36 +220,36 @@ class OrgController extends Controller
         );
         $validator = Validator::make(Input::all(), $rules);
 
-        // process the login
+
         if ($validator->fails()) {
-            return Redirect('organization/'.$request->input('org_id').'#fndtn-addmember')
+            return Redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')
                 ->withErrors($validator)
                 ->withInput(Input::all());
-        } else {}
-
-        $user = new User;
-        $user->name = $request->input('name');
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-        $user->gender = $request->input('gender');
-        $user->dob = $request->input('dob');
-        $user->phone = $request->input('phone');
-        $user->mobile = $request->input('mobile');
-        $user->address = $request->input('address');
-        $user->city_id = $request->input('city_id');
-        $user->blood_group = $request->input('bgroup');
-        $user->status = 'active';
-        $user->org_id = $request->input('org_id');
-        if($user->save()){
-            return redirect('organization/'.$request->input('org_id').'#fndtn-addmember')->with('message','Member registered successfully')->with('type','success');
+        } else {
+            $user = new User;
+            $user->name = $request->input('name');
+            $user->username = $request->input('username');
+            $user->email = $request->input('email');
+            $user->password = bcrypt($request->input('password'));
+            $user->gender = $request->input('gender');
+            $user->dob = $request->input('dob');
+            $user->phone = $request->input('phone');
+            $user->mobile = $request->input('mobile');
+            $user->address = $request->input('address');
+            $user->city_id = $request->input('city_id');
+            $user->blood_group = $request->input('bgroup');
+            $user->status = 'active';
+            $user->org_id = $request->input('org_id');
+            if ($user->save()) {
+                return redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')->with('message', 'Member registered successfully')->with('type', 'success');
+            }
+            return redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')->with('message', 'There was some problem registering member')->with('type', 'error');
         }
-        return redirect('organization/'.$request->input('org_id').'#fndtn-addmember')->with('message','There was some problem registering member')->with('type','error');
     }
 
     /**
      * Change Organization Admin
-    */
+     */
     public function changeAdmin(Request $request){
         $user = User::where('id','=', $request->input('new_owner'))->first();
         $org = Org::where('id','=', $request->input('org_id'))->first();
@@ -275,7 +275,7 @@ class OrgController extends Controller
 
     /**
      * Accept request to join organization
-    */
+     */
     public function acceptRequest($id){
         $req = OrgRequests::where('id','=',$id)->first();
         $user = User::where('id','=',$req->user_id)->first();
@@ -302,7 +302,7 @@ class OrgController extends Controller
 
     /**
      * Reject request to join organization
-    */
+     */
     public function rejectRequest($id){
         $req = OrgRequests::where('id','=',$id)->first();
         $user = User::where('id','=',$req->user_id)->first();
@@ -320,8 +320,27 @@ class OrgController extends Controller
                     ->to($user->email, $user->name)
                     ->subject('Request To Join Organization');
             });
+            $req->delete();
             return redirect('organization/'.$req->org_id.'#fndtn-viewrequests')->with('message','Member join request rejected')->with('type','success');
         }
         return redirect('organization/'.$req->org_id.'#fndtn-viewrequests')->with('message','There was some problems rejecting request,please try again')->with('type','error');
     }
+
+    public function delete(Request $request){
+        $org = Org::where('id','=',$request->input('org_id'));
+        $users = User::where('org_id','=',$request->input('org_id'))->get();
+        foreach($users as $user){
+            $user->org_id = 0;
+            $user->save();
+        }
+        if($org->delete()){
+            return redirect('/profile/'.Auth::user()->id)
+                ->with('message','Organization successfully deleted.')
+                ->with('type','success');
+        }
+        return redirect()->back()
+            ->with('message','there was some problem deleting Organization.')
+            ->with('type','error');
+    }
+
 }

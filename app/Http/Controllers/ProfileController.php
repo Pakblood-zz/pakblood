@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -43,12 +44,20 @@ class ProfileController extends Controller
      * User delete
      */
     public function deleteUser(Request $request){
-        dd($request);
         $org = Org::where('user_id','=',Auth::user()->id)->first();
         if($org != NULL){
             return Redirect::to('profile/'.Auth::user()->username)->with('message', 'Error!! can\'t delete your account until you\'r admin of an Organization,Please change admin of your organization to someone else and try again.')->with('type','error');
         }
-        $user = User::where('id','=',Auth::user()->id)->update(['status' => 'inactive']);
+        $user = User::where('id','=',Auth::user()->id)->first();
+        $user->is_deleted = '1';
+        $user->save();
+        $data = array('username' => $user->username);
+        Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
+            $message
+                ->from('noreply@pakblood.com', 'Pakblood')
+                ->to($user->email, $user->name)
+                ->subject('Account Deactivation');
+        });
         Auth::logout();
         return Redirect::to('/');
     }
@@ -76,5 +85,38 @@ class ProfileController extends Controller
         }
     }
 
+    /*
+     * activate delted users account
+     * */
+
+    public function activateAccount(Request $request){
+
+        $rules = array(
+            'email' => 'required'
+        );
+        $validator = Validator::make(Input::all(), $rules);
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->with(Input::all());
+        }
+        $pass = str_random(15);
+        $user = User::where('email','=',$request->input('email'))->first();
+        if(count($user) > 0){
+            $user->is_deleted = '0';
+            $user->password = bcrypt($pass);
+            $data = array('name' => $user->name,'email' => $user->email,'password' => $pass);
+            if($user->save()){
+                Mail::queue('emails/account_activation', $data, function ($message) use ($user){
+                    $message
+                        ->from('noreply@pakblood.com','Pakblood')
+                        ->to($user->email, $user->name)
+                        ->subject('Accoutn Activated');
+                });
+                return redirect()->back()->with('message','Your account information has been sent to your email, please follow the instruction in email to activate your account.')
+                    ->with('type','success');
+            }
+        }
+        return redirect()->back()->with(Input::all())->with('message','We could not find your email in our records.')
+            ->with('type','error');
+    }
 
 }

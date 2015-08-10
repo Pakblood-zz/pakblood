@@ -168,6 +168,12 @@ class AuthController extends Controller
                         "Account Not Activated, you need to activate your account before login.",
                     ]);
             }
+            elseif($user->isDeleted($request->input('email'))){
+                return redirect($this->loginPath())
+                    ->withInput($request->only($this->loginUsername(), 'remember'))
+                    ->with("message","Account deactivation message")
+                    ->with('type','deactivated');
+            }
         }
         if (Auth::attempt($credentials, $request->has('remember'))) {
             return $this->handleUserWasAuthenticated($request, $throttles);
