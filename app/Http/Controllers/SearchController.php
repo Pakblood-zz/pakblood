@@ -2,23 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Report;
 use App\User;
 use App\Org;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
-use Illuminate\Pagination\Paginator;
 
 class SearchController extends Controller
 {
 
-    public function getAllUsers(){
-        $data = array('users' =>  User::whereStatusAndOrg_id('active', 0)->paginate(15));
+    public function getAllUsers(Request $request){
+
+        if($request->input('page') != null){
+            $page = $request->input('page');
+            $page--;
+        }else{
+            $page = 0;
+        }
+
+        $currPage = $page;
+        $perPage = 15;
+
+        $start = $currPage * $perPage;
+
+        $totalrec = User::leftjoin('pb_user_reports','pb_users.id','=','pb_user_reports.reported_user_id')
+            ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndOrg_idAndIs_deleted('active',0,0)
+            ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'),'<',2)
+            ->first();
+
+        $users = User::leftjoin('pb_user_reports','pb_users.id','=','pb_user_reports.reported_user_id')
+            ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
+            ->addselect('pb_users.*')
+            ->whereStatusAndOrg_idAndIs_deleted('active',0,0)
+            ->having('report_count','<',2)->groupby('pb_users.id')->skip($start)->take(15)->get();
+
+        $users = new LengthAwarePaginator(
+            $users,
+            $totalrec['tottalrec'],
+            15,
+            Paginator::resolveCurrentPage(),
+            ['path' => Paginator::resolveCurrentPath()]
+        );
+        $data = array('users' =>  $users);
         return view::make('members',$data);
     }
 
@@ -31,16 +65,77 @@ class SearchController extends Controller
             $bg = substr($bg, 0, -1) . '-';
         }
         if(Auth::guest()){
-            $user = User::whereBlood_groupAndCity_idAndStatus($bg, $request->input('city'),'active')
-                    ->where('org_id','=',0)->paginate(15);
+            if($request->input('page') != null){
+                $page = $request->input('page');
+                $page--;
+            }else{
+                $page = 0;
+            }
+
+            $currPage = $page;
+            $perPage = 15;
+
+            $start = $currPage * $perPage;
+
+            $totalrec = User::leftjoin('pb_user_reports','pb_users.id','=','pb_user_reports.reported_user_id')
+                ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndOrg_idAndIs_deleted('active',0,0)
+                ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'),'<',2)
+                ->first();
+
+            $users = User::leftjoin('pb_user_reports','pb_users.id','=','pb_user_reports.reported_user_id')
+                ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
+                ->addselect('pb_users.*')
+                ->whereOrg_idAndIs_deleted(0,0)->where('status','!=','inactive')
+                ->having('report_count','<',2)->groupby('pb_users.id')->skip($start)->take(15)->get();
+
+            $users = new LengthAwarePaginator(
+                $users,
+                $totalrec['tottalrec'],
+                15,
+                Paginator::resolveCurrentPage(),
+                ['path' => Paginator::resolveCurrentPath()]
+            );
         }else{
-            $user = User::whereBlood_groupAndCity_idAndStatus($bg, $request->input('city'),'active')
-                ->where('id','!=',Auth::user()->id)
+            if($request->input('page') != null){
+                $page = $request->input('page');
+                $page--;
+            }else{
+                $page = 0;
+            }
+
+            $currPage = $page;
+            $perPage = 15;
+
+            $start = $currPage * $perPage;
+
+            $totalrec = User::leftjoin('pb_user_reports','pb_users.id','=','pb_user_reports.reported_user_id')
+                ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndIs_deleted('active',0)
+                ->where('pb_users.id','!=',Auth::user()->id)
                 ->where(function($query){
                     $query->where('org_id','=',0)->orWhere('org_id','=',Auth::user()->org_id);
-                })->paginate(15);
+                })
+                ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'),'<',2)
+                ->first();
+
+            $users = User::leftjoin('pb_user_reports','pb_users.id','=','pb_user_reports.reported_user_id')
+                ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
+                ->addselect('pb_users.*')
+                ->whereStatusAndIs_deleted('active',0)
+                ->where('pb_users.id','!=',Auth::user()->id)
+                ->where(function($query){
+                    $query->where('org_id','=',0)->orWhere('org_id','=',Auth::user()->org_id);
+                })
+                ->having('report_count','<',2)->groupby('pb_users.id')->skip($start)->take(15)->get();
+
+            $users = new LengthAwarePaginator(
+                $users,
+                $totalrec['tottalrec'],
+                15,
+                Paginator::resolveCurrentPage(),
+                ['path' => Paginator::resolveCurrentPath()]
+            );
         }
-        $data = array('users' => $user,
+        $data = array('users' => $users,
             'bg' => $request->input('bgroup'),'city' => $request->input('city'),
             'orgs' => Org::join('pb_users','pb_users.org_id', '=','pb_org.id')
                 ->select(DB::raw('Count(pb_users.id) as total_users,pb_org.id,pb_org.name'))

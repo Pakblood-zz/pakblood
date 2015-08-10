@@ -59,4 +59,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
         return 0;
     }
+    public function isDeleted($email){
+        $user = User::where('email','=',$email)->first();
+        if($user->is_deleted == '1'){
+            return true;
+        }
+        return 0;
+    }
 }
