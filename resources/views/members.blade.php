@@ -25,7 +25,7 @@
             <th width="100">Last Bleed </th>
             <th width="100">Report </th>
         </tr>
-        <?php use Carbon\Carbon;$usercount=1; ?>
+        <?php use Carbon\Carbon;$usercount = $users->firstitem(); ?>
         @foreach($users as $user)
             <tr>
                 <td>{{$usercount}}</td>

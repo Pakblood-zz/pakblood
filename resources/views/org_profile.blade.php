@@ -131,6 +131,7 @@
                 <li class="tab-title" role="presentation"><a href="#viewmember" role="tab" tabindex="0" aria-selected="false" aria-controls="viewmember">View Member </a></li>
                 <li class="tab-title" role="presentation"><a href="#viewrequests" role="tab" tabindex="0" aria-selected="false" aria-controls="viewrequests">View Requests  </a></li>
                 <li class="tab-title" role="presentation"><a href="#adminsettings" role="tab" tabindex="0" aria-selected="false" aria-controls="adminsettings">Admin Settings </a></li>
+                <li class="tab-title" role="presentation"><a href="#deleteorganization" role="tab" tabindex="0" aria-selected="false" aria-controls="deleteorganization">Delete Organization </a></li>
             </ul>
             <div id="add_member" class="tabs-content">
                 <section role="tabpanel" aria-hidden="false" class="content active" id="main">
@@ -416,7 +417,7 @@
                                     {!! Form::label('dob', 'Date Of Birth :' ,array('class' => 'inline')) !!}
                                 </div>
                                 <div class="small-20 medium-10 large-10 columns left">
-                                    <input style="vertical-align: baseline;" type="date" id="dob" name="dob">
+                                    <input type="text" id="datetimepicker" name="dob">
                                 </div>
                             </div>
                             <div class="row">
@@ -519,17 +520,19 @@
                                     {!! Form::label('bgroup', 'Blood Group :' ,array('class' => 'inline')) !!}
                                 </div>
                                 <div class="small-20 medium-10 large-10 columns left">
-                                    {!! Form::select('bgroup', [
-                                    '' => 'Select Your Blood Group',
-                                    'A+' => 'A+',
-                                    'A-' => 'A-',
-                                    'B+' => 'B+',
-                                    'B-' => 'B-',
-                                    'O+' => 'O+',
-                                    'O-' => 'O-',
-                                    'AB+' => 'AB+',
-                                    'AB-' => 'AB-']
-                                    ) !!}
+                                    <label>
+                                        {!! Form::select('bgroup', [
+                                        '' => 'Select Your Blood Group',
+                                        'A+' => 'A+',
+                                        'A-' => 'A-',
+                                        'B+' => 'B+',
+                                        'B-' => 'B-',
+                                        'O+' => 'O+',
+                                        'O-' => 'O-',
+                                        'AB+' => 'AB+',
+                                        'AB-' => 'AB-']
+                                        ) !!}
+                                    </label>
                                 </div>
                             </div>
                             <div class="row">
@@ -559,7 +562,11 @@
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->phone}} {{$user->mobile}}</td>
                                 <td>{{$user->address}}</td>
-                                <td><a href="{{url('/profile/'.$user->username)}}">View</a> | <a href="{{url('/profile/'.$user->username.'#fndtn-editprofile')}}">Edit</a> | <a data-confirm href="{{url('/delete/user/'.$user->id)}}">Delete</a></td>
+                                <td>
+                                    <a href="{{url('/profile/'.$user->username)}}">View |</a>
+                                    <a href="{{url('/profile/'.$user->username.'#fndtn-editprofile')}}"> Edit |</a>
+                                    <a data-confirm href="{{url('/delete/user/'.$user->id)}}"> Delete</a>
+                                </td>
                             </tr>
                             <?php $ucount += 1; ?>
                         @endforeach
@@ -587,7 +594,7 @@
                                 <td>{{$req->blood_group}}</td>
                                 <td>{{$req->reason}}</td>
                                 <td>
-                                {{--<a href="{{url('/profile/'.$user->username)}}">View</a> | --}}
+                                    {{--<a href="{{url('/profile/'.$user->username)}}">View</a> | --}}
                                     <a href="{{url('/organization/request/accept/'.$req->req_id)}}">Approve</a> |
                                     <a href="{{url('/organization/request/reject/'.$req->req_id)}}">Disapprove</a>
                                 </td>
@@ -619,6 +626,28 @@
                         </div>
                         {!! Form::close() !!}
                     </div>
+                </section>
+                <section role="tabpanel" aria-hidden="true" class="content" id="deleteorganization">
+                    <div class="row">
+                        <div class="row">
+                            {!! Form::open(array('url' => 'delete/organization','id' => 'add_member_form' ,'data-confirm' => ''))!!}
+                            {!! Form::hidden('org_id', Auth::user()->org_id) !!}
+                            <h5 style="text-align: center;">Delete Organization</h5>
+                            <div class="row">
+                                <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
+                                    <p style="text-align: center;border:none;" >
+                                        Are you sure you want to delete your organization?</br>
+                                        If you are sure, click Delete button given below.</br></br>
+                                        Thanks for becoming a part of PAKBLOOD.</br></br>
+                                        PAKBLOOD TEAM
+                                    </p>
+                                </div>
+                            </div>
+                            <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
+                                <input type="submit" class="small button radius" value="Delete">
+                            </div>
+                            {!! Form::close() !!}
+                        </div>
                 </section>
             </div>
         @endif

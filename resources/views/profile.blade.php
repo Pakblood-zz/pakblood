@@ -57,7 +57,7 @@
                             {!! Form::label('date', 'Date :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <input class="inline" id="date" name="date" type="date">
+                            <input id="date" class="inline datetimepicker" name="date" type="text">
                         </div>
                     </div>
                     <div class="row">
@@ -113,7 +113,7 @@
                             {!! Form::label('dob', 'Date Of Birth :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <input style="vertical-align: baseline;" type="date" id="dob" name="dob" value="{{Auth::user()->dob}}">
+                            <input  type="text" id="dob" class="datetimepicker" name="dob" value="{{date('d-M-y',strtotime(Auth::user()->dob))}}">
                         </div>
                     </div>
                     <div class="row">
@@ -300,7 +300,7 @@
         </section>
         <section role="tabpanel" aria-hidden="true" class="content" id="unjoin">
             <div class="row">
-                {!! Form::open(array('url' => 'delete/user','id' => 'add_member_form')) !!}
+                {!! Form::open(array('url' => 'delete/user','id' => 'add_member_form' ,'data-confirm' => ''))!!}
                 <h5 style="text-align: center;">Unjoin Pakblood</h5>
                 <div class="row">
                     <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
@@ -313,7 +313,7 @@
                     </div>
                 </div>
                 <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
-                    <input type="submit" data-confirm class="small button radius" name="submit" value="Unoin">
+                    <input type="submit" class="small button radius" value="Unoin">
                 </div>
                 {!! Form::close() !!}
             </div>

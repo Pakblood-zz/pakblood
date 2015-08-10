@@ -13,6 +13,7 @@
 
     {!! HTML::style('css/style.css') !!}
     {!! HTML::style('css/responsive-tables.css') !!}
+    {!! HTML::style('css/jquery.datetimepicker.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
     {!! HTML::script('js/vendor/fastclick.js') !!}
@@ -21,15 +22,23 @@
     {!! HTML::script('js/vendor/placeholder.js') !!}
     {!! HTML::script('js/foundation.js') !!}
     {!! HTML::script('js/responsive-tables.js') !!}
-    {!! HTML::script('js/vendor/webshims/polyfiller.js') !!}
+    {!! HTML::script('js/vendor/jquery.datetimepicker.js') !!}
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
 
     <script>
         $(function(){
+            jQuery('.datetimepicker').datetimepicker({
+                timepicker:false,
+                format:'d-M-y'
+            });
             $(document).foundation();
             $(document).confirmWithReveal({
                 ok_class: 'small button radius',
-                cancel_class: 'small button radius secondary'
+                cancel_class: 'small button radius secondary',
+                title: 'Are you sure?',
+                body: 'Are you sure you want to delete your account from Pakblood?',
+                password: 'DELETE',
+                ok: 'Confirm!'
             })
         });
     </script>
