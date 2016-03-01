@@ -57,8 +57,9 @@
                                 @endforeach
                             </table>
                         </td>
-                        <td class="options_btn" style="text-align: center;">
-                            <a data-tooltip aria-haspopup="true" class="tip-left" title="Delete User" href="{{url('/admin/delete/reported/user/'.$user->id)}}"> <li class="fi-trash size-25"></li> </a>
+                        <td class="options_btn">
+                            <a data-tooltip aria-haspopup="true" class="tip-left" title="View" href="{{url('/admin/user/'.$user->id)}}"> <li class="fi-eye size-25"></li> </a>
+                            <a data-tooltip aria-haspopup="true" class="tip-left" title="Delete" href="{{url('/admin/delete/reported/user/'.$user->id)}}"> <li class="fi-trash size-25"></li> </a>
                         </td>
                     </tr>
                 @endforeach

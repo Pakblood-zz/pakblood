@@ -1,5 +1,6 @@
 <!doctype html>
-<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
 <html class="no-js" lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
@@ -14,6 +15,8 @@
     {!! HTML::style('css/style.css') !!}
     {!! HTML::style('css/responsive-tables.css') !!}
     {!! HTML::style('css/jquery.datetimepicker.css') !!}
+    {!! HTML::style('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css') !!}
+    {!! HTML::style('css/chosen.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
     {!! HTML::script('js/vendor/fastclick.js') !!}
@@ -24,12 +27,13 @@
     {!! HTML::script('js/responsive-tables.js') !!}
     {!! HTML::script('js/vendor/jquery.datetimepicker.js') !!}
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
+    {!! HTML::script('js/vendor/chosen.jquery.js') !!}
 
     <script>
-        $(function(){
+        $(function () {
             jQuery('.datetimepicker').datetimepicker({
-                timepicker:false,
-                format:'d-M-y'
+                timepicker: false,
+                format: 'd-M-y'
             });
             $(document).foundation();
             $(document).confirmWithReveal({
@@ -57,13 +61,21 @@
             @else
                 <ul class="breadcrumbs right">
                     @if(Auth::user()->org_id == 0)
-                        <li><a href="/create/organization">Register Organization</a> <span style="color: red;">Or</span> <a href="/organizations">Join An Organization</a></li>
+                        <li><a href="/create/organization">Register Organization</a> <span style="color: red;">Or</span>
+                            <a href="/organizations">Join An Organization</a></li>
                     @endif
                     <li>
                         <div id="user_nav" class="right">
-                            <a data-dropdown="drop1" aria-controls="drop1" aria-expanded="false">{{ Auth::user()->username}}</a>
+                            <a data-dropdown="drop1" aria-controls="drop1"
+                               aria-expanded="false">{{ Auth::user()->username}}</a>
                             <ul id="drop1" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
-                                <li><a href="{{url('profile/'.Auth::user()->username)}}">My Profile</a></li>
+                                <li>
+                                    <?php
+                                    $url = 'profile/';
+                                    $url .= (\Auth::user()->username != '') ? \Auth::user()->username : \Auth::user()->id;
+                                    ?>
+                                    <a href="{{url($url)}}">My
+                                        Profile</a></li>
                                 @if(Auth::user()->org_id != 0)
                                     <li><a href="{{url('organization/'.Auth::user()->org_id)}}">My Organization</a></li>
                                 @endif
@@ -105,9 +117,9 @@
                         <li class=""><a href="#">Active link in dropdown </a></li>
                     </ul>
                 </li>--}}
-                <li class=""><a href="#">Dead Body Transfers </a></li>
+                {{--<li class=""><a href="#">Dead Body Transfers </a></li>--}}
                 <li class=""><a href="{{url('/helplines')}}">Help Line </a></li>
-                <li class=""><a href="#">News </a></li>
+                {{--<li class=""><a href="#">News </a></li>--}}
                 <li class=""><a href="{{url('/about')}}">About </a></li>
                 <li class=""><a href="{{url('/FAQ')}}">FAQ </a></li>
                 <li class=""><a href="{{url('/contact')}}">Contact Us </a></li>

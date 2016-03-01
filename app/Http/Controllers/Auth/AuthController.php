@@ -13,8 +13,7 @@ use Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     /*
     |--------------------------------------------------------------------------
     | Registration & Login Controller
@@ -35,23 +34,21 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
-    {
+    protected function validator(array $data) {
         return Validator::make($data, [
-            'name' => 'required|max:255',
+            'name'     => 'required|max:255',
             'username' => 'required|max:255|unique:pb_users',
-            'email' => 'required|email|max:255|unique:pb_users',
+            'email'    => 'required|email|max:255|unique:pb_users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -59,36 +56,33 @@ class AuthController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return User
+     */
 
-    protected function create(array $data)
-    {
-    return User::create([
-    'name' => $data['name'],
-    'username' => $data['username'],
-    'email' => $data['email'],
-    'password' => bcrypt($data['password']),
-    'gender' => $data['gender'],
-    'dob' => $data['dob'],
-    'phone' => $data['phone'],
-    'address' => $data['address'],
-    'city_id' => $data['city_id'],
-    'status' => 'inactive'
-    ]);
+    protected function create(array $data) {
+        return User::create([
+            'name'     => $data['name'],
+            'username' => $data['username'],
+            'email'    => $data['email'],
+            'password' => bcrypt($data['password']),
+            'gender'   => $data['gender'],
+            'dob'      => $data['dob'],
+            'phone'    => $data['phone'],
+            'address'  => $data['address'],
+            'city_id'  => $data['city_id'],
+            'status'   => 'inactive'
+        ]);
 
     }
-     */
 
     /**
      * Create a new user and send verification email to activate account
      */
-    public function postRegister(Request $request)
-    {
+    public function postRegister(Request $request) {
         $validator = $this->validator($request->all());
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             $this->throwValidationException(
                 $request, $validator
             );
@@ -115,7 +109,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'code' => $confirmation_code,
             );
-            Mail::queue('emails/email_verify', $data, function($message) use ($user) {
+            Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
                 $message
                     ->from('noreply@pakblood.com', 'Pakblood')
                     ->to(Input::get('email'), Input::get('username'))/*->cc('info@pakblood.com')*/
@@ -133,19 +127,18 @@ class AuthController extends Controller
     /**
      * Activate user account after reciving confirmation code
      */
-    public function activateAccount($code, User $user)
-    {
-        if($user->ActivateAccount($code)) {
+    public function activateAccount($code, User $user) {
+        if ($user->ActivateAccount($code)) {
             return redirect('account/verified');
         }
         Session::flash('message', 'Your account couldn\'t be activated, please try again');
         return redirect('/');
     }
+
     /**
      * check if user is active and registered
      */
-    public function postLogin(Request $request)
-    {
+    public function postLogin(Request $request) {
         $this->validate($request, [
             $this->loginUsername() => 'required', 'password' => 'required',
         ]);
@@ -160,19 +153,19 @@ class AuthController extends Controller
         }
         $credentials = $this->getCredentials($request);
         $user = new User;
-        if($user->hasUser($request->input('email'))){
-            if($user->accountIsActive($credentials['email'])==0){
+        if ($user->hasUser($request->input('email'))) {
+            if ($user->accountIsActive($credentials['email']) == 0) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
                     ->withErrors([
                         "Account Not Activated, you need to activate your account before login.",
                     ]);
             }
-            elseif($user->isDeleted($request->input('email'))){
+            elseif ($user->isDeleted($request->input('email'))) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
-                    ->with("message","Account deactivation message")
-                    ->with('type','deactivated');
+                    ->with("message", "Account deactivation message")
+                    ->with('type', 'deactivated');
             }
         }
         if (Auth::attempt($credentials, $request->has('remember'))) {
@@ -192,15 +185,15 @@ class AuthController extends Controller
                 "Wrong Email or Password",
             ]);
     }
+
     /**
      * Send the response after the user was authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  bool  $throttles
+     * @param  \Illuminate\Http\Request $request
+     * @param  bool $throttles
      * @return \Illuminate\Http\Response
      */
-    protected function handleUserWasAuthenticated(Request $request, $throttles)
-    {
+    protected function handleUserWasAuthenticated(Request $request, $throttles) {
         if ($throttles) {
             $this->clearLoginAttempts($request);
         }
@@ -209,6 +202,90 @@ class AuthController extends Controller
             return $this->authenticated($request, Auth::user());
         }
 
-        return redirect('profile/'.Auth::user()->username);
+        return redirect('profile/' . Auth::user()->username);
+    }
+
+    /**
+     * Callback function for facebook login
+     * @return bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function fbLoginCallback() {
+        $user = \Socialite::with('facebook')->user();
+        if (count(User::where('email', $user->email)->get()) > 0) {
+            return redirect('forgotpassword')->with('message', 'Email already exists, If you have forgotten you password you can reset it here.')->with('type', 'error');
+        }
+        $userCheck = User::where('fb_id', $user->id)->first();
+        if (!$userCheck) {
+            return view('index', compact('fbuser'));
+        }
+        else {
+            Auth::loginUsingId($userCheck->id);
+            return redirect('profile/' . Auth::user()->id);
+        }
+    }
+
+    /**
+     * Facebook login register
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function postFbLogin(Request $request) {
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->profile_image = $request->input('profile_image');
+        $user->social_id = $request->input('fb_id');
+        $user->blood_group = $request->input('blood_group');
+        $user->gender = $request->input('gender');
+        $user->mobile = $request->input('mobile');
+        $user->city_id = $request->input('city_id');
+        if ($user->save()) {
+            if (Auth::loginUsingId($user->id)) {
+                return redirect('profile/' . Auth::user()->id);
+            }
+        }
+        return redirect('login');
+    }
+
+    /**
+     * Callback function for google+ login
+     * @return bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function gpLoginCallback() {
+        $user = \Socialite::with('google')->user();
+        if (count(User::where('email', $user->email)->get()) > 0) {
+            return redirect('forgotpassword')->with('message', 'Email already exists, If you have forgotten you password you can reset it here.')->with('type', 'error');
+        }
+        $userCheck = User::where('gp_id', $user->id)->first();
+        if (!$userCheck) {
+            return view('index', compact('gpuser'));
+        }
+        else {
+            Auth::loginUsingId($userCheck->id);
+            return redirect('profile/' . Auth::user()->id);
+        }
+    }
+
+    /**
+     * google+ login register
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function postGpLogin(Request $request) {
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->profile_image = $request->input('profile_image');
+        $user->social_id = $request->input('gp_id');
+        $user->blood_group = $request->input('blood_group');
+        $user->gender = $request->input('gender');
+        $user->mobile = $request->input('mobile');
+        $user->city_id = $request->input('city_id');
+        if ($user->save()) {
+            if (Auth::loginUsingId($user->id)) {
+                return redirect('profile/' . Auth::user()->id);
+            }
+        }
+        return redirect('login');
     }
 }

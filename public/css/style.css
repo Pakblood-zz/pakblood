@@ -7506,6 +7506,12 @@ td,
 th {
   padding: 0; }
 
+/* Font */
+@font-face {
+  font-family: 'Abel';
+  src: url("../fonts/Abel.ttf.woff") format("woff"), url("../fonts/Abel.ttf.svg#Abel") format("svg"), url("../fonts/Abel.ttf.eot"), url("../fonts/Abel.ttf.eot?#iefix") format("embedded-opentype");
+  font-weight: normal;
+  font-style: normal; }
 /* Logo & Top user nav bar*/
 .logo {
   width: 100%;
@@ -7880,10 +7886,18 @@ th {
   font-size: 20px;
   color: #d32118;
   padding-bottom: 15px; }
+#login .fb_btn {
+  padding: 10px;
+  margin: 0 5px;
+  background-color: #3b5998;
+  color: white; }
+#login .gp_btn {
+  padding: 10px;
+  margin: 5px;
+  background-color: #d34836;
+  color: white; }
 #login .login_btn {
   text-align: right; }
-#login form {
-  margin: auto 30%; }
 @media only screen and (max-width: 40em) {
   #login h5 {
     text-align: center; }
@@ -8075,6 +8089,19 @@ th {
     font-size: 17px;
     transition: all ease 250ms; }
 
+.user_info:hover a {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #363636; }
+.user_info:hover a span {
+  display: block;
+  background-color: #191b28;
+  color: #fff;
+  padding: 5px;
+  border-radius: 251px;
+  box-shadow: 0px 3px 1px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid #000000;
+  text-shadow: 1px 0px 1px #000; }
+
 .visit_site {
   display: block;
   text-align: center;
@@ -8086,6 +8113,10 @@ th {
   transition: all ease-out 250ms;
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none; }
+
+.visit_site:hover {
+  background-color: white;
+  color: black; }
 
 .side_nav .active {
   background-color: #202c46;

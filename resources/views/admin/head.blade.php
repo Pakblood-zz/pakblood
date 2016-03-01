@@ -1,5 +1,6 @@
 <!doctype html>
-<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
 <html class="no-js" lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
@@ -27,29 +28,29 @@
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
 
     <script>
-        $(function(){
+        $(function () {
             jQuery('.datetimepicker').datetimepicker({
-                timepicker:false,
-                format:'d-M-y'
+                timepicker: false,
+                format: 'd-M-y'
             });
             $(document).foundation({
-                offcanvas : {
+                offcanvas: {
                     // Sets method in which offcanvas opens.
                     // [ move | overlap_single | overlap ]
                     open_method: 'overlap',
                     // Should the menu close when a menu link is clicked?
                     // [ true | false ]
-                    close_on_click : false
+                    close_on_click: false
                 }
             });
             $(document).on('open.fndtn.offcanvas', '[data-offcanvas]', function () {
-                $('#menu_icon').css('left','18%');
-                $('.main-section').css({left: '20%',width: '80%'});
+                $('#menu_icon').css('left', '18%');
+                $('.main-section').css({left: '20%', width: '80%'});
                 $('.panel_div').removeClass('small-5').addClass('small-7');
             });
             $(document).on('close.fndtn.offcanvas', '[data-offcanvas]', function () {
-                $('#menu_icon').css('left','0');
-                $('.main-section').css({left: '1%',width: '98%'});
+                $('#menu_icon').css('left', '0');
+                $('.main-section').css({left: '1%', width: '98%'});
                 $('.panel_div').removeClass('small-7').addClass('small-5');
             });
             $(document).confirmWithReveal({

@@ -7,7 +7,7 @@
             </section>
             <section class="right">
                 <div id="admin_nav" class="right">
-                    <a data-dropdown="drop" aria-controls="drop" aria-expanded="false">Username</a>
+                    <a data-dropdown="drop" aria-controls="drop" aria-expanded="false">Username </a>
                     <ul id="drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
                         <li><a href="#">My Profile</a></li>
                         <li><a href="#">Logout</a></li>
@@ -18,11 +18,16 @@
         <div class="left-off-canvas-menu sidebar" style="position: fixed;">
             <ul class="off-canvas-list">
                 <div class="sidebar_wrapper" id="">
-                    <div class="user_info"><img src="http://www.gravatar.com/avatar/5fa9da59a9fdbfc3a08c75d8acc7d698?d=mm&s=128" ><a href="https://www.gravatar.com"><span> change</span></a></div>
+                    <div class="user_info">
+                        <img src="http://www.gravatar.com/avatar/5fa9da59a9fdbfc3a08c75d8acc7d698?d=mm&s=128" >
+                        <a href="https://www.gravatar.com">
+                            <span> change</span>
+                        </a>
+                    </div>
                     <a class="visit_site" href="#">Visit Site  </a>
                     <ul class="side_nav">
                         <li class="active">
-                            <a  href="{{url('/admin/dashboard')}}" ><i class="fi-dashboard"></i> Dashboard </a>
+                            <a  href="{{url('/admin/dashboard')}}" ><i class="fi-graph-trend"></i> Dashboard </a>
                         </li>
                         <li class="">
                             <a  href="{{url('/admin/users')}}" class=""><i class="fa fa-edit fa-fw"></i> Users  </a>
