@@ -31,7 +31,7 @@ class ContactUsController extends Controller {
             $mail = Mail::send('emails/contact_us', $data, function ($message) use ($data) {
                 $message
 //                    ->from($data['email'],$data['name'])
-                    ->to('asad.zaheer@aalasolutions.com','Asad Zaheer')
+                    ->to('info@pakblood.com', 'Pakblood Team')
                     ->subject($data['subject']);
             });
             if ($mail) {

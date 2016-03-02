@@ -202,9 +202,9 @@
     min-width: 125px;
     height: 41px;
   }
-  #search-btn {
+  div#search-btn {
     text-align: center;
-    input[type=submit] {
+    a.button {
       color: white;
       cursor: pointer;
       margin: 30px 20px;

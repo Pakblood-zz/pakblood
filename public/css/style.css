@@ -7661,9 +7661,9 @@ th {
     width: 100%;
     min-width: 125px;
     height: 41px; }
-  .search-bar #search-btn {
+  .search-bar div#search-btn {
     text-align: center; }
-    .search-bar #search-btn input[type=submit] {
+    .search-bar div#search-btn a.button {
       color: white;
       cursor: pointer;
       margin: 30px 20px;
