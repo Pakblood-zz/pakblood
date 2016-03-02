@@ -67,6 +67,13 @@
             </div>
         </div>
         {!! Form::close() !!}
+        <div class="large-20 columns">
+            <h5>Organization Login</h5>
+            <div data-alert class="alert-box info radius">
+                We have updated our internal system, If you have an organization registered with us please contact us
+                <a href="mailto:info@pakblood.com">info@pakblood.com</a>, with your organization details.
+            </div>
+        </div>
     </div>
 </div>
 @include('footer')

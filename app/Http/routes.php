@@ -12,6 +12,7 @@
 */
 
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));
+//Route::get('test', 'ProfileController@hashPassword');
 Route::get('/', function () {
     return view('index');
 });
