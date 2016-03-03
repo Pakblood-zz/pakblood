@@ -1,7 +1,12 @@
 @include('header')
-<!-- Search area -->
+        <!-- Search area -->
 @include('search_bar')
-<!-- Center Container-->
+        <!-- Center Container-->
+<style>
+    #countriesRegForm_chosen, #citiesRegForm_chosen {
+        margin: 0;
+    }
+</style>
 <div class="row center-container">
     <!-- left container -->
     <div id="left-container" class="small-20 medium-14 large-14 columns">
@@ -29,6 +34,7 @@
             </div>
             <div>
                 {!! Form::open(array('url' => 'auth/register','id' => 'add_member_form')) !!}
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="row">
                     <div class="small-20 large-20 columns">
                         <div class="row">
@@ -78,8 +84,8 @@
                             <div class="small-20 medium-10 large-10 columns left">
                                 {!! Form::select('gender', [
                                 '' => 'Select Your Gender',
-                                'Male' => 'Male',
-                                'Female' => 'Female']
+                                'm' => 'Male',
+                                'f' => 'Female']
                                 ) !!}
                             </div>
                         </div>
@@ -117,73 +123,32 @@
                         </div>
                         <div class="row">
                             <div class="hide-for-small-only medium-7 large-5 columns">
+                                {!! Form::label('country', 'Country :' ,array('class' => 'inline')) !!}
+                            </div>
+                            <div class="small-20 medium-10 large-10 columns left">
+                                <select name="country" id="countriesRegForm" data-placeholder="Choose a country..."
+                                        class="chosen-select">
+                                    <option value=""></option>
+                                    @foreach($countries as $row)
+                                        <option value="{{ $row->id }}" {{ (isset($country) && $country== $row->id)?"selected":"" }}>{{ $row->short_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="hide-for-small-only medium-7 large-5 columns">
                                 {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
                             </div>
                             <div class="small-20 medium-10 large-10 columns left">
-                                {!! Form::select('city_id', [
-                                '' => 'Location/City',
-                                '208' => 'Lahore',
-                                '169' => 'Karachi',
-                                '130' => 'Islamabad',
-                                '1' => 'Abbotabad',
-                                '4' => 'Adda shaiwala',
-                                '9' => 'Arif wala',
-                                '10' => 'Arifwala',
-                                '13' => 'Badin',
-                                '15' => 'Bahawalpur',
-                                '18' => 'Barbar loi',
-                                '25' => 'Bhawal nagar',
-                                '26' => 'Bhera',
-                                '28' => 'Bhirya road',
-                                '30' => 'Bhurewala',
-                                '41' => 'Chakwal',
-                                '42' => 'Charsada',
-                                '68' => 'Dera ghazi khan',
-                                '76' => 'Dina',
-                                '85' => 'Faisalabad',
-                                '90' => 'Feteh jhang',
-                                '103' => 'Ghotki',
-                                '111' => 'Gujranwala',
-                                '112' => 'Gujrat',
-                                '118' => 'Haroonabad',
-                                '125' => 'Hayatabad',
-                                '129' => 'Hyderabad',
-                                '132' => 'Jaccobabad',
-                                '141' => 'Jaranwala',
-                                '147' => 'Jhang',
-                                '149' => 'Jhelum',
-                                '174' => 'Kasur',
-                                '176' => 'Khair pur',
-                                '181' => 'Khanewal',
-                                '186' => 'Khewra',
-                                '193' => 'Kot addu',
-                                '202' => 'Kotli loharan',
-                                '203' => 'Kotri',
-                                '227' => 'Mandi bahauddin',
-                                '232' => 'Mangla',
-                                '249' => 'Mirpur khas',
-                                '256' => 'Multan',
-                                '262' => 'Muzaffarabad',
-                                '266' => 'Narowal',
-                                '275' => 'Nowshera',
-                                '278' => 'Okara',
-                                '285' => 'Patoki',
-                                '286' => 'Peshawar',
-                                '302' => 'Rahimyar khan',
-                                '304' => 'Raiwand',
-                                '311' => 'Rawalpindi',
-                                '316' => 'Sadiqabad',
-                                '318' => 'Sahiwal',
-                                '332' => 'Sargodha',
-                                '341' => 'Shaikhupura',
-                                '350' => 'Sialkot',
-                                '358' => 'Sohawa district jelum',
-                                '365' => 'Talhur',
-                                '374' => 'Taxila',
-                                '381' => 'Topi',
-                                '391' => 'Vehari',
-                                '392' => 'Wah cantt']
-                                ) !!}
+                                <select name="city" id="citiesRegForm" data-placeholder="Choose a city..."
+                                        class="chosen-select" {{ (isset($city))?"":"disabled" }}>
+                                    <option value=""></option>
+                                    @if(isset($cities))
+                                        @foreach($cities as $row)
+                                            <option value="{{ $row->id }}" {{ (isset($city) && $city== $row->id)?"selected":"" }}>{{ $row->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         <div class="row">
@@ -193,14 +158,14 @@
                             <div class="small-20 medium-10 large-10 columns left">
                                 {!! Form::select('bgroup', [
                                 '' => 'Select Your Blood Group',
-                                'A+' => 'A+',
-                                'A-' => 'A-',
-                                'B+' => 'B+',
-                                'B-' => 'B-',
-                                'O+' => 'O+',
-                                'O-' => 'O-',
-                                'AB+' => 'AB+',
-                                'AB-' => 'AB-']
+                                'Ap' => 'A+',
+                                'An' => 'A-',
+                                'Bp' => 'B+',
+                                'Bn' => 'B-',
+                                'Op' => 'O+',
+                                'On' => 'O-',
+                                'ABp' => 'AB+',
+                                'ABn' => 'AB-']
                                 ) !!}
                             </div>
                         </div>
@@ -220,20 +185,37 @@
         <div id="promote-pakblood" class="row">
             <h5>Promote Pakblood</h5>
 
-            <p>Use the images below on your Skype, MSN, Yahoo and Facebook etc. to promote a nobel cause and to display what
+            <p>Use the images below on your Skype, MSN, Yahoo and Facebook etc. to promote a nobel cause and to display
+                what
                 type of blood you have. </p>
             <div class="promotion-imges">
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
-                <div class="small-10 large-10 left columns"><a href="#">{!! HTML::image('images/a-.jpg') !!}</a></div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/ap.jpg') }}" target="_blank">{!! HTML::image('images/ap.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/an.jpg') }}" target="_blank">{!! HTML::image('images/an.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/bp.jpg') }}" target="_blank">{!! HTML::image('images/bp.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/bn.jpg') }}" target="_blank">{!! HTML::image('images/bn.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/abp.jpg') }}" target="_blank">{!! HTML::image('images/abp.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/abn.jpg') }}" target="_blank">{!! HTML::image('images/abn.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/op.jpg') }}" target="_blank">{!! HTML::image('images/op.jpg') !!}</a>
+                </div>
+                <div class="small-10 large-10 left columns">
+                    <a href="{{ url('images/on.jpg') }}" target="_blank">{!! HTML::image('images/on.jpg') !!}</a>
+                </div>
             </div>
         </div>
-        <div id="latest-updates" class="row">
+        {{--<div id="latest-updates" class="row">
             <h5 id="heading">Latest Updates</h5>
             <p>
                 We are proude to inform all of our users that we are
@@ -257,7 +239,36 @@
             <div class="btn">
                 <a href="#" class="button radius"><span>View All</span></a>
             </div>
-        </div>
+        </div>--}}
     </div>
 </div>
+<script>
+    //ID of select containing countries and ID of select containing cities.
+    countryAndCitySelect('countriesRegForm', 'citiesRegForm');
+    function validateForm() {
+        var form = $('#searchForm');
+        var bgroupSelect = $('select[name=bgroup]');
+        var countrySelect = $('div#countries_chosen');
+        var citySelect = $('div#cities_chosen');
+        if (bgroupSelect.val() == null) {
+            bgroupSelect.parent().find('div.error').css('display', 'block');
+            return false;
+        } else {
+            bgroupSelect.parent().find('div.error').css('display', 'none');
+        }
+        if (countrySelect.find('a').hasClass('chosen-default')) {
+            countrySelect.parent().find('div.error').css('display', 'block');
+            return false;
+        } else {
+            countrySelect.parent().find('div.error').css('display', 'none');
+        }
+        if (citySelect.find('a').hasClass('chosen-default')) {
+            citySelect.parent().find('div.error').css('display', 'block');
+            return false;
+        } else {
+            citySelect.parent().find('div.error').css('display', 'none');
+        }
+        form.submit();
+    }
+</script>
 @include('footer')

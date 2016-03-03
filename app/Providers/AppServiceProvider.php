@@ -19,7 +19,6 @@ class AppServiceProvider extends ServiceProvider {
             'total_users' => User::where('status', '=', 'active')->count(),
             'total_org'   => Org::where('status', '=', 'active')->count(),
             'countries'   => Country::get(),
-            'cities'      => City::get()
         );
         view()->share($data);
     }

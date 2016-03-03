@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Bleed;
+use App\City;
 use App\Org;
 use Illuminate\Http\Request;
 
@@ -17,41 +18,78 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller {
 
+    public $bloodGroupArray = [
+        'Ap'  => 'A+',
+        'An'  => 'A-',
+        'Bp'  => 'B+',
+        'Bn'  => 'B-',
+        'Op'  => 'O+',
+        'On'  => 'O-',
+        'ABp' => 'AB+',
+        'ABn' => 'AB-'
+    ];
+
     public function hashPassword() {
         /*$user = User::where('id', 1)->first();
         $user->password = bcrypt($user->password);
         $user->save();*/
-        /*$users = User::where('id', '!=', 1)->skip(918)->take(450)->get();
+        /*$bloodGroupArray = [
+            'A+'  => 'Ap',
+            'A-'  => 'An',
+            'B+'  => 'Bp',
+            'B-'  => 'Bn',
+            'O+'  => 'Op',
+            'O-'  => 'On',
+            'AB+' => 'ABp',
+            'AB-' => 'ABn'
+        ];*/
+        /*$users = User::where('id', '!=', 1)->skip(900)->take(450)->get();
         foreach ($users as $user) {
 //            dd($user->id);
-            dump($user->password);
-            $user->password = bcrypt($user->password);
+//            dump($user->password);
+//            $user->blood_group = (array_key_exists($user->blood_group, $bloodGroupArray)) ? $bloodGroupArray[$user->blood_group] : '';
+//            $user->password = bcrypt($user->password);
             $user->save();
-            dump($user->password);
+//            dump($user->password);
         }*/
     }
 
     public function getProfile() {
-        $data = array('bleed' => Bleed::select('*')->where('user_id', '=', Auth::user()->id)->get());
+        $user = User::find(Auth::user()->id);
+        $user['gender'] = ($user->gender == 'm') ? "Male" : "Female";
+        $user['country_id'] = City::where('id', $user->city_id)->pluck('country_id');
+        $user['city'] = City::where('id', $user->city_id)->pluck('name');
+        $user['org'] = Org::where('id', $user->org_id)->pluck('name');
+        $user['bg'] = (array_key_exists($user->blood_group, $this->bloodGroupArray)) ? $this->bloodGroupArray[$user->blood_group] : '';
+        $data = [
+            'bleed'  => Bleed::select('*')->where('user_id', '=', Auth::user()->id)->get(),
+            'user'   => $user,
+            'cities' => City::where('country_id', $user->country_id)->get()
+        ];
         return view('profile', $data);
     }
 
     public function updateProfile(Request $request) {
+//        dd(1);
+        $redirectId = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
         $user = User::where('id', '=', Auth::user()->id)->first();
         $user->name = $request->input('name');
+        if (($request->input('username') != '') && count(User::where('username', $request->input('username'))->get()) > 0) {
+            return Redirect::to('profile/' . $redirectId)->with('message', 'Username already exists.')->with('type', 'error');
+        }
         $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->gender = $request->input('gender');
-        $user->dob = $request->input('dob');
+        $user->dob = date('Y-m-d', strtotime($request->input('dob')));
         $user->phone = $request->input('phone');
         $user->mobile = $request->input('mobile');
         $user->address = $request->input('address');
-        $user->city_id = $request->input('city_id');
+        $user->city_id = $request->input('city');
         $user->blood_group = $request->input('bgroup');
         if ($user->save()) {
-            return Redirect::to('profile/' . $request->input('username'))->with('message', 'Profile Successfully Updated!!')->with('type', 'success');
+            return Redirect::to('profile/' . $redirectId)->with('message', 'Profile Successfully Updated!!')->with('type', 'success');
         }
-        return Redirect::to('profile/' . $request->input('username'))->with('message', 'There was some Problems Saving Your profile please try again.')->with('type', 'error');
+        return Redirect::to('profile/' . $redirectId)->with('message', 'There was some Problems Saving Your profile please try again.')->with('type', 'error');
     }
 
     /**
@@ -134,4 +172,41 @@ class ProfileController extends Controller {
             ->with('type', 'error');
     }
 
+    /**
+     * Link social accounts.
+     * @param $type
+     */
+    function linkAccount($type) {
+        if ($type == 'fb') {
+            \Session::set('redirect', '/fblogin');
+            return redirect('/logout');
+        }
+        else if ($type == 'gp') {
+            \Session::set('redirect', '/gplogin');
+            return redirect('/logout');
+        }
+        \Session::set('redirect', '/login');
+        return redirect('/logout');
+    }
+
+    /**
+     * Unlink social accounts.
+     * @param $type
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    function unlinkAccount($type) {
+//        dd($type);
+        $user = User::find(\Auth::user()->id);
+        if ($type == 'fb') {
+            $user->fb_id = null;
+            $user->save();
+            return redirect('/profile/' . $user->id)->with('message', 'Facebook Account Successfully Linked.')->with('type', 'success');
+        }
+        else if ($type == 'gp') {
+            $user->gp_id = null;
+            $user->save();
+            return redirect('/profile/' . $user->id)->with('message', 'Google+ Account Successfully Linked.')->with('type', 'success');
+        }
+        return redirect()->back();
+    }
 }

@@ -7,6 +7,11 @@
 </div>
 @include('search_bar')
         <!-- Center Container-->
+<style>
+    #countriesRegForm_chosen, #citiesRegForm_chosen {
+        margin: 0;
+    }
+</style>
 <div class="row center-container">
     <!-- left container -->
     <div class="small-20 medium-13 large-13 columns">
@@ -140,8 +145,8 @@
         </div>--}}
     </div>
 </div>
-<div id="fbFormModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    {!! Form::open(array('url' => 'fbAuth')) !!}
+<div id="formModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+    {!! Form::open(array('url' => (isset($fb) && $fb)?'fbAuth':'gpAuth')) !!}
     <input type="hidden" name="name" value="{{ (isset($user) && $user->name)?$user->name:'' }}">
     <input type="hidden" name="email" value="{{ (isset($user) && $user->email)?$user->email:'' }}">
     <input type="hidden" name="profile_image" value="{{ (isset($user) && $user->avatar)?$user->avatar:'' }}">
@@ -170,69 +175,23 @@
         <input type="text" name="mobile" required placeholder="Phone Number">
     </p>
     <p>
-        <select name="city_id" required>
-            <option value="" selected disabled>Location/City</option>
-            <option value="208">Lahore</option>
-            <option value="169">Karachi</option>
-            <option value="130">Islamabad</option>
-            <option value="1">Abbotabad</option>
-            <option value="4">Adda shaiwala</option>
-            <option value="9">Arif wala</option>
-            <option value="10">Arifwala</option>
-            <option value="13">Badin</option>
-            <option value="15">Bahawalpur</option>
-            <option value="18">Barbar loi</option>
-            <option value="25">Bhawal nagar</option>
-            <option value="26">Bhera</option>
-            <option value="28">Bhirya road</option>
-            <option value="30">Bhurewala</option>
-            <option value="41">Chakwal</option>
-            <option value="42">Charsada</option>
-            <option value="68">Dera ghazi khan</option>
-            <option value="76">Dina</option>
-            <option value="85">Faisalabad</option>
-            <option value="90">Feteh jhang</option>
-            <option value="103">Ghotki</option>
-            <option value="111">Gujranwala</option>
-            <option value="112">Gujrat</option>
-            <option value="118">Haroonabad</option>
-            <option value="125">Hayatabad</option>
-            <option value="129">Hyderabad</option>
-            <option value="132">Jaccobabad</option>
-            <option value="141">Jaranwala</option>
-            <option value="147">Jhang</option>
-            <option value="149">Jhelum</option>
-            <option value="174">Kasur</option>
-            <option value="176">Khair pur</option>
-            <option value="181">Khanewal</option>
-            <option value="186">Khewra</option>
-            <option value="193">Kot addu</option>
-            <option value="202">Kotli loharan</option>
-            <option value="203">Kotri</option>
-            <option value="227">Mandi bahauddin</option>
-            <option value="232">Mangla</option>
-            <option value="249">Mirpur khas</option>
-            <option value="256">Multan</option>
-            <option value="262">Muzaffarabad</option>
-            <option value="266">Narowal</option>
-            <option value="275">Nowshera</option>
-            <option value="278">Okara</option>
-            <option value="285">Patoki</option>
-            <option value="286">Peshawar</option>
-            <option value="302">Rahimyar khan</option>
-            <option value="304">Raiwand</option>
-            <option value="311">Rawalpindi</option>
-            <option value="316">Sadiqabad</option>
-            <option value="318">Sahiwal</option>
-            <option value="332">Sargodha</option>
-            <option value="341">Shaikhupura</option>
-            <option value="350">Sialkot</option>
-            <option value="358">Sohawa district jelum</option>
-            <option value="365">Talhur</option>
-            <option value="374">Taxila</option>
-            <option value="381">Topi</option>
-            <option value="391">Vehari</option>
-            <option value="392">Wah cantt</option>
+        <select required name="country" id="countriesRegForm" data-placeholder="Choose a country..."
+                class="chosen-select">
+            <option value=""></option>
+            @foreach($countries as $row)
+                <option value="{{ $row->id }}" {{ (isset($country) && $country== $row->id)?"selected":"" }}>{{ $row->short_name }}</option>
+            @endforeach
+        </select>
+    </p>
+    <p>
+        <select required name="city" id="citiesRegForm" data-placeholder="Choose a city..."
+                class="chosen-select" {{ (isset($city))?"":"disabled" }}>
+            <option value=""></option>
+            @if(isset($cities))
+                @foreach($cities as $row)
+                    <option value="{{ $row->id }}" {{ (isset($city) && $city== $row->id)?"selected":"" }}>{{ $row->name }}</option>
+                @endforeach
+            @endif
         </select>
     </p>
     <p>
@@ -242,7 +201,8 @@
 </div>
 @if(isset($user))
     <script>
-        $('#fbFormModal').foundation('reveal', 'open', {
+        countryAndCitySelect('countriesRegForm', 'citiesRegForm');
+        $('#formModal').foundation('reveal', 'open', {
             close_on_background_click: false
         });
     </script>

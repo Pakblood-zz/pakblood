@@ -5,6 +5,7 @@
 <div class="row center-container">
     <div id="login" class="row">
         {!! Form::open(array('url' => 'auth/login','class' => 'small-20 medium-20 large-20 columns')) !!}
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="large-10 columns">
             <h5>Donor Login</h5>
             @if (count($errors) > 0)

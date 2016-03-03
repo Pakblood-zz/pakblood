@@ -32,7 +32,7 @@
                 <div class="error">Please Select Blood Group.</div>
             </div>
             <div class="medium-10 large-5 columns">
-                <select name="country" id="countries" data-placeholder="Choose a country..."
+                <select name="country" id="countries" data-placeholder="Choose a Country..."
                         class="chosen-select">
                     <option value=""></option>
                     @foreach($countries as $row)
@@ -42,7 +42,7 @@
                 <div class="error">Please Select Country.</div>
             </div>
             <div class="medium-10 large-5 columns">
-                <select name="city" id="cities" data-placeholder="Choose a city..."
+                <select name="city" id="cities" data-placeholder="Choose a City..."
                         class="chosen-select" {{ (isset($city))?"":"disabled" }}>
                     <option value=""></option>
                     @if(isset($cities))
@@ -60,47 +60,8 @@
     </div>
 </div>
 <script>
-    var country_id, select;
-    function updateCities() {
-        country_id = country_id || $('input[name=country_id]');
-        select = select || $('#cities');
-        select.find('option:not(option[value=""])').each(function () {
-            $(this).remove();
-        });
-        $("#cities").trigger("chosen:updated");
-        $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            url: '/getCities/' + country_id,
-            success: function (result) {
-                if (result.status == 1) {
-//                    console.log();
-                    $.each(result.cities, function (i) {
-//                        console.log(result.cities[i]);
-                        select.append('<option value="' + result.cities[i]["id"] + '">' + result.cities[i]["name"] + '</option>');
-                    });
-                    $("#cities").prop("disabled", false);
-                    $("#cities").trigger("chosen:updated");
-                }
-            }
-        });
-    }
-    $("#countries").chosen({
-        disable_search_threshold: 10,
-        no_results_text: 'Oops, nothing found!',
-        width: "100%"
-    });
-    $("#cities").chosen({
-        disable_search_threshold: 10,
-        no_results_text: 'Oops, nothing found!',
-        width: "100%"
-    });
-    $("#countries ").chosen().change(function () {
-//        console.log();
-        country_id = $(this).val();
-        select = $('#cities');
-        updateCities();
-    });
+    //ID of select containing countries and ID of select containing cities.
+    countryAndCitySelect('countries','cities');
     function validateForm() {
         var form = $('#searchForm');
         var bgroupSelect = $('select[name=bgroup]');

@@ -28,6 +28,7 @@
     {!! HTML::script('js/vendor/jquery.datetimepicker.js') !!}
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
     {!! HTML::script('js/vendor/chosen.jquery.js') !!}
+    {!! HTML::script('js/myFunctions.js') !!}
 
     <script>
         $(function () {
@@ -60,14 +61,14 @@
                 </ul>
             @else
                 <ul class="breadcrumbs right">
-                    @if(Auth::user()->org_id == 0)
+                   {{-- @if(Auth::user()->org_id == 0)
                         <li><a href="/create/organization">Register Organization</a> <span style="color: red;">Or</span>
                             <a href="/organizations">Join An Organization</a></li>
-                    @endif
+                    @endif--}}
                     <li>
                         <div id="user_nav" class="right">
                             <a data-dropdown="drop1" aria-controls="drop1"
-                               aria-expanded="false">{{ Auth::user()->username}}</a>
+                               aria-expanded="false">{{ Auth::user()->name}}</a>
                             <ul id="drop1" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
                                 <li>
                                     <?php

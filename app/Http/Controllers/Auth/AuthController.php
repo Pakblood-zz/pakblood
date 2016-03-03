@@ -28,6 +28,7 @@ class AuthController extends Controller {
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     protected $redirectPath = '/';
+    protected $redirectAfterLogout = '/login';
 
     /**
      * Create a new authentication controller instance.
@@ -99,7 +100,7 @@ class AuthController extends Controller {
         $user->phone = $request->input('phone');
         $user->mobile = $request->input('mobile');
         $user->address = $request->input('address');
-        $user->city_id = $request->input('city_id');
+        $user->city_id = $request->input('city');
         $user->blood_group = $request->input('bgroup');
         $user->status = 'inactive';
         $user->confirmation_code = $confirmation_code;
@@ -111,7 +112,6 @@ class AuthController extends Controller {
             );
             Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
                 $message
-                    ->from('noreply@pakblood.com', 'Pakblood')
                     ->to(Input::get('email'), Input::get('username'))/*->cc('info@pakblood.com')*/
                     ->subject('Verification Email');
             });
@@ -201,8 +201,8 @@ class AuthController extends Controller {
         if (method_exists($this, 'authenticated')) {
             return $this->authenticated($request, Auth::user());
         }
-
-        return redirect('profile/' . Auth::user()->username);
+        $redirectId = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
+        return redirect('profile/' . $redirectId);
     }
 
     /**
@@ -211,16 +211,21 @@ class AuthController extends Controller {
      */
     public function fbLoginCallback() {
         $user = \Socialite::with('facebook')->user();
-        if (count(User::where('email', $user->email)->get()) > 0) {
+        $fb = true;
+        if (count(User::where('email', $user->email)->whereNull('fb_id')->whereNull('gp_id')->get()) > 0) {
             return redirect('forgotpassword')->with('message', 'Email already exists, If you have forgotten you password you can reset it here.')->with('type', 'error');
         }
-        $userCheck = User::where('fb_id', $user->id)->first();
+        $userCheck = User::where('email', $user->email)->orWhere('fb_id', $user->id)->first();
         if (!$userCheck) {
-            return view('index', compact('fbuser'));
+            return view('index', compact('user', 'fb'));
         }
         else {
-            Auth::loginUsingId($userCheck->id);
-            return redirect('profile/' . Auth::user()->id);
+            if (Auth::loginUsingId($userCheck->id)) {
+                if ($userCheck->fb_id == '') {
+                    $userCheck->fb_id = $user->id;
+                }
+                return redirect('profile/' . Auth::user()->id);
+            }
         }
     }
 
@@ -234,11 +239,12 @@ class AuthController extends Controller {
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->profile_image = $request->input('profile_image');
-        $user->social_id = $request->input('fb_id');
+        $user->fb_id = $request->input('social_id');
         $user->blood_group = $request->input('blood_group');
         $user->gender = $request->input('gender');
         $user->mobile = $request->input('mobile');
-        $user->city_id = $request->input('city_id');
+        $user->city_id = $request->input('city');
+        $user->status = "active";
         if ($user->save()) {
             if (Auth::loginUsingId($user->id)) {
                 return redirect('profile/' . Auth::user()->id);
@@ -253,16 +259,22 @@ class AuthController extends Controller {
      */
     public function gpLoginCallback() {
         $user = \Socialite::with('google')->user();
-        if (count(User::where('email', $user->email)->get()) > 0) {
+//        dd($user);
+        if (count(User::where('email', $user->email)->whereNull('gp_id')->whereNull('fb_id')->get()) > 0) {
             return redirect('forgotpassword')->with('message', 'Email already exists, If you have forgotten you password you can reset it here.')->with('type', 'error');
         }
-        $userCheck = User::where('gp_id', $user->id)->first();
+        $userCheck = User::where('email', $user->email)->orWhere('gp_id', $user->id)->first();
         if (!$userCheck) {
-            return view('index', compact('gpuser'));
+            return view('index', compact('user'));
         }
         else {
-            Auth::loginUsingId($userCheck->id);
-            return redirect('profile/' . Auth::user()->id);
+            if (Auth::loginUsingId($userCheck->id)) {
+                if ($userCheck->gp_id == null) {
+                    $userCheck->gp_id = $user->id;
+                    $userCheck->save();
+                }
+                return redirect('profile/' . Auth::user()->id);
+            }
         }
     }
 
@@ -276,16 +288,28 @@ class AuthController extends Controller {
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->profile_image = $request->input('profile_image');
-        $user->social_id = $request->input('gp_id');
+        $user->gp_id = $request->input('social_id');
         $user->blood_group = $request->input('blood_group');
         $user->gender = $request->input('gender');
         $user->mobile = $request->input('mobile');
-        $user->city_id = $request->input('city_id');
+        $user->city_id = $request->input('city');
+        $user->status = "active";
         if ($user->save()) {
             if (Auth::loginUsingId($user->id)) {
                 return redirect('profile/' . Auth::user()->id);
             }
         }
         return redirect('login');
+    }
+
+    public function getLogout() {
+        Auth::logout();
+
+        if (\Session::get('redirect')) {
+            $this->redirectAfterLogout = \Session::get('redirect');
+            \Session::set('redirect', '/login');
+        }
+
+        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
     }
 }
