@@ -4,7 +4,6 @@
     <meta charset="utf-8">
 </head>
 <body>
-<h2>Password Reset Request</h2>
 
 <div>
     Dear {{$user->name}},<br><br>

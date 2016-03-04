@@ -6,11 +6,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pakblood</title>
+    <title>PakBlood.com Online Blood Donors Database O+, O-, B+, B-, AB+, AB-, A+, A-</title>
+    <meta name="description"
+          content="The largest blood donors database. A+, B+, AB+, B-, A-, AB-, O+, O-. Our aim is to create world wide database of donors from educational institutes. Registration is free"/>
+    <meta name="keywords"
+          content="blood, blood donor, blood sugar, blood work, cord blood, pakblood, Worldbank, Blood lahore, redcross, club25, fatmid foundation, sundas foundation"/>
+    <meta name="robots" content="index,follow"/>
+    <meta name="copyright" content="Copyright {{ date('Y') }}. PAKBLOOD. All Rights Reserved."/>
+    <meta name="author" content=“http://aalasolutions.com“/>
+    <meta name="language" content="English"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <meta name="description" content="Pakblood...">
-    <meta name="author" content="Pakblood website">
-    <meta name="copyright" content="Pakblood inc">
+    <meta property="og:title" content="Pakblood.com Online blood donors database"/>
+    <meta property="og:type" content="cause"/>
+    <meta property="og:url" content="http://www.pakblood.com"/>
+    <meta property="og:image" content="http://www.pakblood.com/images/logo_fb.jpg"/>
+    <meta property="og:site_name" content="Pakblood.com Online blood donors database"/>
 
     {!! HTML::style('css/style.css') !!}
     {!! HTML::style('css/responsive-tables.css') !!}
@@ -51,7 +62,8 @@
 <body>
 <!-- HEADER -->
 <header>
-    <div class="row myCenter">
+    <div class=" row myCenter
+    ">
         <div class="medium-20 large-9 columns right">
             @if (Auth::guest())
                 <ul class="breadcrumbs right">
@@ -61,10 +73,10 @@
                 </ul>
             @else
                 <ul class="breadcrumbs right">
-                   {{-- @if(Auth::user()->org_id == 0)
-                        <li><a href="/create/organization">Register Organization</a> <span style="color: red;">Or</span>
-                            <a href="/organizations">Join An Organization</a></li>
-                    @endif--}}
+                    {{-- @if(Auth::user()->org_id == 0)
+                         <li><a href="/create/organization">Register Organization</a> <span style="color: red;">Or</span>
+                             <a href="/organizations">Join An Organization</a></li>
+                     @endif--}}
                     <li>
                         <div id="user_nav" class="right">
                             <a data-dropdown="drop1" aria-controls="drop1"
@@ -110,7 +122,7 @@
         <section class="top-bar-section">
             <!-- Right Nav Section -->
             <ul>
-                <li class="active"><a href="/">Home </a></li>
+                <li class="{{ (\Request::is('home') ||  \Request::is('/'))?"active":""}}"><a href="/">Home </a></li>
                 {{--<li class="has-dropdown">
                     <a href="#">Dead Body Transfers </a>
                     <ul class="dropdown">
@@ -119,11 +131,13 @@
                     </ul>
                 </li>--}}
                 {{--<li class=""><a href="#">Dead Body Transfers </a></li>--}}
-                <li class=""><a href="{{url('/helplines')}}">Help Line </a></li>
+                <li class="{{ (\Request::is('helplines'))?"active":"" }}"><a href="{{url('/helplines')}}">Help
+                        Line </a></li>
                 {{--<li class=""><a href="#">News </a></li>--}}
-                <li class=""><a href="{{url('/about')}}">About </a></li>
-                <li class=""><a href="{{url('/FAQ')}}">FAQ </a></li>
-                <li class=""><a href="{{url('/contact')}}">Contact Us </a></li>
+                <li class="{{ (\Request::is('about'))?"active":"" }}"><a href="{{url('/about')}}">About </a></li>
+                <li class="{{ (\Request::is('FAQ'))?"active":"" }}"><a href="{{url('/FAQ')}}">FAQ </a></li>
+                <li class="{{ (\Request::is('contact'))?"active":"" }}"><a href="{{url('/contact')}}">Contact Us </a>
+                </li>
             </ul>
         </section>
     </nav>

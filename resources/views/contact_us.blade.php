@@ -64,7 +64,7 @@
                     {!! Form::label('captcha', 'Captcha :',array('class' => 'inline')) !!}
                 </div>
                 <div style="margin-top: 10px;" class="small-20 medium-14 large-14 columns right">
-                    {!! app('captcha')->display(); !!}
+                    {!! app('captcha')->display() !!}
                 </div>
             </div>
             <div style="text-align: center;margin-top: 10px;" class="login_btn small-20 medium-20 large-20 columns">

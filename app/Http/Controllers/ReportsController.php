@@ -18,6 +18,19 @@ class ReportsController extends Controller {
     }
 
     public function reportUser(Request $request) {
+        /*$data = \Input::all();
+        $rules = array(
+            'name'                 => 'required',
+            'email'                => 'required|email',
+            'report_type'          => 'required',
+            'comments'             => 'required',
+            'g-recaptcha-response' => 'required|captcha',
+        );
+        $validator = \Validator::make($data, $rules);
+        if ($validator->fails()) {
+            return \Redirect::back()->withInput()->withErrors($validator);
+        }
+        dd(1);*/
         if (Auth::user()) {
             $report = Report::whereReported_user_idAndReporter_user_id($request->input('id'), Auth::user()->id)->first();
             if (count($report) > 0) {
@@ -32,7 +45,9 @@ class ReportsController extends Controller {
         }
         $report = new Report;
         $report->reported_user_id = $request->input('id');
-        if (Auth::user()) $report->reporter_user_id = Auth::user()->id;
+        if (Auth::user()) {
+            $report->reporter_user_id = Auth::user()->id;
+        }
         else $report->reporter_user_ip = \Request::ip();
         $report->reporter_name = $request->input('name');
         $report->reporter_email = $request->input('email');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\City;
 use App\User;
 use Illuminate\Support\Facades\Session;
 use Validator;
@@ -96,7 +97,7 @@ class AuthController extends Controller {
         $user->email = $request->input('email');
         $user->password = bcrypt($request->input('password'));
         $user->gender = $request->input('gender');
-        $user->dob = $request->input('dob');
+        $user->dob = date('Y-m-d', strtotime($request->input('dob')));
         $user->phone = $request->input('phone');
         $user->mobile = $request->input('mobile');
         $user->address = $request->input('address');
@@ -107,13 +108,28 @@ class AuthController extends Controller {
 
         if ($user->save()) {
             $data = array(
-                'name' => $user->name,
-                'code' => $confirmation_code,
+                'name'        => $user->name,
+                'username'    => $user->username,
+                'email'       => $user->email,
+                'gender'      => $user->gender,
+                'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
+                'phone'       => $user->phone,
+                'mobile'      => $user->mobile,
+                'address'     => $user->address,
+                'city'        => City::where('id', $user->city_id)->pluck('name'),
+                'blood_group' => $user->blood_group,
+                'status'      => $user->status,
+                'code'        => $confirmation_code,
             );
             Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
                 $message
                     ->to(Input::get('email'), Input::get('username'))/*->cc('info@pakblood.com')*/
                     ->subject('Verification Email');
+            });
+            Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
+                $message
+                    ->to('info@pakblood.com')
+                    ->subject('New User Registered');
             });
             return redirect('account/verify');
         }
@@ -279,6 +295,24 @@ class AuthController extends Controller {
         $user->status = "active";
         if ($user->save()) {
             if (Auth::loginUsingId($user->id)) {
+                $data = array(
+                    'name'        => $user->name,
+                    'username'    => $user->username,
+                    'email'       => $user->email,
+                    'gender'      => $user->gender,
+                    'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
+                    'phone'       => $user->phone,
+                    'mobile'      => $user->mobile,
+                    'address'     => $user->address,
+                    'city'        => City::where('id', $user->city_id)->pluck('name'),
+                    'blood_group' => $user->blood_group,
+                    'status'      => $user->status,
+                );
+                Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
+                    $message
+                        ->to('info@pakblood.com')
+                        ->subject('New User Registered');
+                });
                 return redirect('profile/' . Auth::user()->id);
             }
         }
@@ -352,6 +386,24 @@ class AuthController extends Controller {
         $user->status = "active";
         if ($user->save()) {
             if (Auth::loginUsingId($user->id)) {
+                $data = array(
+                    'name'        => $user->name,
+                    'username'    => $user->username,
+                    'email'       => $user->email,
+                    'gender'      => $user->gender,
+                    'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
+                    'phone'       => $user->phone,
+                    'mobile'      => $user->mobile,
+                    'address'     => $user->address,
+                    'city'        => City::where('id', $user->city_id)->pluck('name'),
+                    'blood_group' => $user->blood_group,
+                    'status'      => $user->status,
+                );
+                Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
+                    $message
+                        ->to('info@pakblood.com')
+                        ->subject('New User Registered');
+                });
                 return redirect('profile/' . Auth::user()->id);
             }
         }

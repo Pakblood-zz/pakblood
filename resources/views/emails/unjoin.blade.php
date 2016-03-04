@@ -4,7 +4,6 @@
     <meta charset="utf-8">
 </head>
 <body>
-<h2>Account Deactivation </h2>
 
 <div>
     Dear {{$username}}<br><br>

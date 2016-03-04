@@ -17,7 +17,8 @@
     <div class="small-20 medium-13 large-13 columns">
         <div id="donation-vid" class="">
             <div class="small-20 large-20">
-                {!! HTML::image('images/video.jpg') !!}
+                <iframe width="100%" height="315" src="https://www.youtube.com/embed/ezafVzfJw60" frameborder="0"
+                        allowfullscreen></iframe>
                 <h5 class="heading"> Your blood donation may be even more special than you realize</h5>
 
                 <p><br/>A single donation from you can help one or more patients. This is possible because whole blood

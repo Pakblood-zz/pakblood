@@ -1,16 +1,18 @@
 @include('header')
 @include('search_bar')
-<!-- Center Container-->
+        <!-- Center Container-->
 <div class="row center-container">
     @if(Session::get('message') != NULL)
         @if((Session::has('type')) && (Session::get('type')=='success'))
-            <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+            <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
+                 style="text-align: center;font-weight: bold;">
                 {{ Session::get('message') }}
                 <a href="#" class="close">&times;</a>
             </div>
         @endif
         @if((Session::has('type')) && (Session::get('type')=='error'))
-            <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+            <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                 style="text-align: center;font-weight: bold;">
                 {{ Session::get('message') }}
                 <a href="#" class="close">&times;</a>
             </div>
@@ -19,11 +21,11 @@
     <table role="grid" style="width: 100%;">
         <tr>
             <th>#</th>
-            <th>Name </th>
+            <th>Name</th>
             <th width="160">Contact Infomation</th>
-            <th>Address </th>
-            <th width="100">Last Bleed </th>
-            <th width="100">Report </th>
+            <th>Address</th>
+            <th width="100">Last Bleed</th>
+            <th width="100">Report</th>
         </tr>
         <?php use Carbon\Carbon;$usercount = $users->firstitem(); ?>
         @foreach($users as $user)
@@ -48,11 +50,14 @@
                 <td>{{$difference}}</td>
                 <td>
                     {{--<a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="myModal" data-reveal-ajax="true">Report Donor</a>--}}
-                    <a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="myModal" data-reveal-ajax="true">Report Donor</a>
-                    <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
+                    <a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="reportUserModal_{{$user->id}}"
+                       data-reveal-ajax="true">Report Donor</a>
+                    <div id="reportUserModal_{{$user->id}}" class="reveal-modal" data-reveal
+                         aria-labelledby="modalTitle"
+                         aria-hidden="true" role="dialog"></div>
                 </td>
             </tr>
-            <?php $usercount+=1; ?>
+            <?php $usercount += 1; ?>
         @endforeach
     </table>
     <?php echo $users->appends(Request::all())->render(); ?>
@@ -61,7 +66,7 @@
             <th>#</th>
             <th>Organization Name</th>
             <th>Blood Group</th>
-            <th>Members </th>
+            <th>Members</th>
         </tr>
         <?php
         $orgcount = 1;

@@ -4,7 +4,6 @@
     <meta charset="utf-8">
 </head>
 <body>
-<h2>Account Activated </h2>
 
 <div>
     Dear Pakblood User,<br><br>
