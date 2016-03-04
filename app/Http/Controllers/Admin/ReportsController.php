@@ -45,8 +45,7 @@ class ReportsController extends Controller
         );
         Mail::queue('emails/org_admin_deleted', $data, function ($message) use ($emails) {
             $message
-                ->from('noreply@pakblood.com', 'Pakblood')
-                ->to($emails)
+                ->to($emails)->cc('info@pakblood.com')
                 ->subject('Organization Admin');
         });
 

@@ -18,30 +18,25 @@ class ReportsController extends Controller {
     }
 
     public function reportUser(Request $request) {
-        /*$data = \Input::all();
-        $rules = array(
-            'name'                 => 'required',
-            'email'                => 'required|email',
-            'report_type'          => 'required',
-            'comments'             => 'required',
-            'g-recaptcha-response' => 'required|captcha',
-        );
-        $validator = \Validator::make($data, $rules);
-        if ($validator->fails()) {
-            return \Redirect::back()->withInput()->withErrors($validator);
-        }
-        dd(1);*/
         if (Auth::user()) {
             $report = Report::whereReported_user_idAndReporter_user_id($request->input('id'), Auth::user()->id)->first();
             if (count($report) > 0) {
                 return redirect()->back()->with('message', 'You have already reported that user, please wait for our admin team to review your report')->with('type', 'error');
             }
+            $reporter = [
+                'email' => Auth::user()->email,
+                'name'  => Auth::user()->name
+            ];
         }
         else {
             $report = Report::whereReported_user_idAndReporter_user_ip($request->input('id'), \Request::ip())->first();
             if (count($report) > 0) {
                 return redirect()->back()->with('message', 'You have already reported that user, please wait for our admin team to review your report')->with('type', 'error');
             }
+            $reporter = [
+                'email' => $request->input('email'),
+                'name'  => $request->input('name')
+            ];
         }
         $report = new Report;
         $report->reported_user_id = $request->input('id');
@@ -68,6 +63,11 @@ class ReportsController extends Controller {
                 $message
                     ->to($data['email'], $data['name'])->cc('info@pakblood.com')
                     ->subject('Account Reported.');
+            });
+            Mail::send(['html' => 'emails/thank_you_for_reporting'], $reporter, function ($message) use ($reporter) {
+                $message
+                    ->to($reporter['email'], $reporter['name'])->cc('info@pakblood.com')
+                    ->subject('Thank you for reporting user on Pakblood.');
             });
             return redirect()->back()->with('message', 'User successfully reported')->with('type', 'success');
         }

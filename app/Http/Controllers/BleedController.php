@@ -37,7 +37,7 @@ class BleedController extends Controller {
             ];
             Mail::send(['html' => 'emails/bleed_status_updated'], $data, function ($message) use ($data) {
                 $message
-                    ->to($data['email'], $data['name'])
+                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
                     ->subject('Bleed Status Updated');
             });
             return Redirect::to('profile/' . Auth::user()->username)->with('message', 'Bleed Status Successfully Updated!!');

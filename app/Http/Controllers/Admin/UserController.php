@@ -173,8 +173,7 @@ class UserController extends Controller
             );
             Mail::queue('emails/re_join', $data, function ($message) use ($user) {
                 $message
-                    ->from('noreply@pakblood.com', 'Pakblood')
-                    ->to($user->email, $user->name)
+                    ->to($user->email, $user->name)->cc('info@pakblood.com')
                     ->subject('Account Activated');
             });
             return redirect('/admin/users')->with('message','User account undone deleted. ')->with('type','success');

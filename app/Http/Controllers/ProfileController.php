@@ -74,7 +74,7 @@ class ProfileController extends Controller {
         $redirectId = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
         $user = User::where('id', '=', Auth::user()->id)->first();
         $user->name = $request->input('name');
-        if (($request->input('username') != '') && count(User::where('username', $request->input('username'))->get()) > 0) {
+        if (($request->input('username') != '') && count(User::where('username', $request->input('username'))->where('id', '!=', Auth::user()->id)->get()) > 0) {
             return Redirect::to('profile/' . $redirectId)->with('message', 'Username already exists.')->with('type', 'error');
         }
         $user->username = $request->input('username');
@@ -87,6 +87,15 @@ class ProfileController extends Controller {
         $user->city_id = $request->input('city');
         $user->blood_group = $request->input('bgroup');
         if ($user->save()) {
+            $data = [
+                'email' => $user->email,
+                'name'  => $user->name
+            ];
+            Mail::send(['html' => 'emails/profile_updated'], $data, function ($message) use ($data) {
+                $message
+                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                    ->subject('Pakblood Profile Updated');
+            });
             return Redirect::to('profile/' . $redirectId)->with('message', 'Profile Successfully Updated!!')->with('type', 'success');
         }
         return Redirect::to('profile/' . $redirectId)->with('message', 'There was some Problems Saving Your profile please try again.')->with('type', 'error');
@@ -106,8 +115,7 @@ class ProfileController extends Controller {
         $data = array('username' => $user->username);
         Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
             $message
-                ->from('noreply@pakblood.com', 'Pakblood')
-                ->to($user->email, $user->name)
+                ->to($user->email, $user->name)->cc('info@pakblood.com')
                 ->subject('Account Deactivation');
         });
         Auth::logout();
@@ -141,7 +149,7 @@ class ProfileController extends Controller {
                     ];
                     Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
                         $message
-                            ->to($data['email'], $data['name'])
+                            ->to($data['email'], $data['name'])->cc('info@pakblood.com')
                             ->subject('Password Changed');
                     });
                     Auth::logout();
@@ -174,11 +182,10 @@ class ProfileController extends Controller {
             $user->password = bcrypt($pass);
             $data = array('name' => $user->name, 'email' => $user->email, 'password' => $pass);
             if ($user->save()) {
-                Mail::queue('emails/account_activation', $data, function ($message) use ($user) {
+                Mail::queue('emails/rejoin', $data, function ($message) use ($user) {
                     $message
-                        ->from('noreply@pakblood.com', 'Pakblood')
-                        ->to($user->email, $user->name)
-                        ->subject('Accoutn Activated');
+                        ->to($user->email, $user->name)->cc('info@pakblood.com')
+                        ->subject('Account Activated');
                 });
                 return redirect()->back()->with('message', 'Your account information has been sent to your email, please follow the instruction in email to activate your account.')
                     ->with('type', 'success');

@@ -30,7 +30,6 @@ class ContactUsController extends Controller {
             , 'msg'              => $request->message,);
             $mail = Mail::send(['html' => 'emails/contact_us'], $data, function ($message) use ($data) {
                 $message
-//                    ->from($data['email'],$data['name'])
                     ->to('info@pakblood.com', 'Pakblood Team')
                     ->subject($data['subject']);
             });

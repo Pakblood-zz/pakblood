@@ -6,6 +6,30 @@
     <div id="login" class="row">
         {!! Form::open(array('url' => 'auth/login','class' => 'small-20 medium-20 large-20 columns')) !!}
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        @if(Session::has('message'))
+            @if((Session::has('type')) && (Session::get('type')=='success'))
+                <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
+                     style="text-align: center;font-weight: bold;">
+                    {{ Session::get('message') }}
+                    <a href="#" class="close">&times;</a>
+                </div>
+            @endif
+            @if((Session::has('type')) && (Session::get('type')=='error'))
+                <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                     style="text-align: center;font-weight: bold;">
+                    {{ Session::get('message') }}
+                    <a href="#" class="close">&times;</a>
+                </div>
+            @endif
+            @if((Session::has('type')) && (Session::get('type')=='deactivated'))
+                <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                     style="text-align: center;font-weight: bold;">
+                    {{ Session::get('message') }} Click<a href="{{ url('/account/activation') }}"> Here</a> to
+                    activate your account.
+                    <a href="#" class="close">&times;</a>
+                </div>
+            @endif
+        @endif
         <div class="large-10 columns">
             <h5>Donor Login</h5>
             @if (count($errors) > 0)
@@ -14,22 +38,6 @@
                         <small class="error small-20 medium-14 large-20 columns">{{ $error }}</small>
                     @endforeach
                 </div>
-            @endif
-            @if(Session::has('message'))
-                @if((Session::has('type')) && (Session::get('type')=='success'))
-                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
-                         style="text-align: center;font-weight: bold;">
-                        {{ Session::get('message') }}
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                @endif
-                @if((Session::has('type')) && (Session::get('type')=='error'))
-                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
-                         style="text-align: center;font-weight: bold;">
-                        {{ Session::get('message') }}
-                        <a href="#" class="close">&times;</a>
-                    </div>
-                @endif
             @endif
             <div class="row">
                 <div class="hide-for-small-only medium-6 large-6 columns">

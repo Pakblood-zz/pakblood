@@ -199,7 +199,6 @@ class OrgController extends Controller
             );
             Mail::queue('emails/org_create_request', $data, function ($message) use ($org) {
                 $message
-                    ->from('noreply@pakblood.com', 'Pakblood')
                     ->to($org->email , $org->admin_name)
                     ->subject('Organization Create Request');
             });

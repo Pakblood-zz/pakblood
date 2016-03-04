@@ -123,7 +123,7 @@ class AuthController extends Controller {
             );
             Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
                 $message
-                    ->to(Input::get('email'), Input::get('username'))/*->cc('info@pakblood.com')*/
+                    ->to(Input::get('email'), Input::get('username'))->cc('info@pakblood.com')
                     ->subject('Verification Email');
             });
             Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
@@ -145,6 +145,15 @@ class AuthController extends Controller {
      */
     public function activateAccount($code, User $user) {
         if ($user->ActivateAccount($code)) {
+            $data = array(
+                'name'  => \Auth::user()->name,
+                'email' => \Auth::user()->email
+            );
+            Mail::queue('emails/welcome', $data, function ($message) use ($data) {
+                $message
+                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                    ->subject('Welcome To Pakblood');
+            });
             return redirect('account/verified');
         }
         Session::flash('message', 'Your account couldn\'t be activated, please try again');
@@ -188,7 +197,7 @@ class AuthController extends Controller {
             elseif ($user->isDeleted($request->input('email'))) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
-                    ->with("message", "Account deactivation message")
+                    ->with("message", "This is account is deactivated.")
                     ->with('type', 'deactivated');
             }
         }
@@ -243,6 +252,16 @@ class AuthController extends Controller {
                 $userAccount->fb_id = $user->id;
                 $userAccount->save();
                 if (Auth::loginUsingId($userAccount->id)) {
+                    $data = array(
+                        'name'  => \Auth::user()->name,
+                        'email' => \Auth::user()->email,
+                        'fb_id' => $user->id
+                    );
+                    Mail::queue('emails/social_account_linked', $data, function ($message) use ($data) {
+                        $message
+                            ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                            ->subject('Facebook Account Linked');
+                    });
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect);
                 }
@@ -260,7 +279,7 @@ class AuthController extends Controller {
                 }
             }
             else {
-                return redirect('login')->with('message', 'Email already exists, If you have forgotten you password you can reset it.')->with('type', 'error');
+                return redirect('login')->with('message', 'Email already exists.')->with('type', 'error');
             }
         }
         // If user social email does not exists in pakblood db.
@@ -333,6 +352,16 @@ class AuthController extends Controller {
                 $userAccount->gp_id = $user->id;
                 $userAccount->save();
                 if (Auth::loginUsingId($userAccount->id)) {
+                    $data = array(
+                        'name'  => \Auth::user()->name,
+                        'email' => \Auth::user()->email,
+                        'gp_id' => \Auth::user()->gp_id
+                    );
+                    Mail::queue('emails/social_account_linked', $data, function ($message) use ($data) {
+                        $message
+                            ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                            ->subject('Google+ Account Linked');
+                    });
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect)->with('message', 'Google+ Account Successfully Connected')
                         ->with('type', 'success');
