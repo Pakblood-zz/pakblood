@@ -55,7 +55,7 @@ return [
     */
 
 //    'from' => ['address' => 'info@pakblood.com', 'name' => 'Pakblood Team'],
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'info@pakblood.com', 'name' => 'Pakblood Team'],
 
     /*
     |--------------------------------------------------------------------------

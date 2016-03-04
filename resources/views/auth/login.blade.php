@@ -15,26 +15,19 @@
                     @endforeach
                 </div>
             @endif
-            @if(Session::get('message') != NULL)
+            @if(Session::has('message'))
                 @if((Session::has('type')) && (Session::get('type')=='success'))
-                    <div data-alert class="alert-box success radius   small-20 medium-14 large-20 columns"
+                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
                          style="text-align: center;font-weight: bold;">
                         {{ Session::get('message') }}
                         <a href="#" class="close">&times;</a>
                     </div>
                 @endif
                 @if((Session::has('type')) && (Session::get('type')=='error'))
-                    <div data-alert class="alert-box alert radius  error small-20 medium-14 large-20 columns"
+                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
                          style="text-align: center;font-weight: bold;">
                         {{ Session::get('message') }}
                         <a href="#" class="close">&times;</a>
-                    </div>
-                @endif
-                @if((Session::has('type')) && (Session::get('type')=='deactivated'))
-                    <div data-alert class="alert-box alert radius  error small-20 medium-14 large-20 columns"
-                         style="text-align: center;font-weight: bold;">
-                            <span>Your Account has been deactivated. Follow this <a
-                                        href="{{url('/account/activation')}}">Link</a> to activate your account</span>
                     </div>
                 @endif
             @endif

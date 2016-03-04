@@ -139,6 +139,14 @@ class AuthController extends Controller {
      * check if user is active and registered
      */
     public function postLogin(Request $request) {
+//        $credentials = $this->getCredentials($request);
+//        $user = User::where('email', $request->input('email'))->first();
+//        dump($user);
+//        dump($request->input('email'));
+//        dump($request->input('password'));
+//        dump(\Hash::check($request->input('password'), $user->password));
+//        dump(Auth::attempt($credentials, $request->has('remember')));
+//        dd();
         $this->validate($request, [
             $this->loginUsername() => 'required', 'password' => 'required',
         ]);
@@ -212,21 +220,45 @@ class AuthController extends Controller {
     public function fbLoginCallback() {
         $user = \Socialite::with('facebook')->user();
         $fb = true;
-        if (count(User::where('email', $user->email)->whereNull('fb_id')->whereNull('gp_id')->get()) > 0) {
-            return redirect('forgotpassword')->with('message', 'Email already exists, If you have forgotten you password you can reset it here.')->with('type', 'error');
-        }
-        $userCheck = User::where('email', $user->email)->orWhere('fb_id', $user->id)->first();
-        if (!$userCheck) {
-            return view('index', compact('user', 'fb'));
-        }
-        else {
-            if (Auth::loginUsingId($userCheck->id)) {
-                if ($userCheck->fb_id == '') {
-                    $userCheck->fb_id = $user->id;
+        // Condition when user is linking his/her social account to pakblood account.
+        if (\Session::get('userAccountId') && \Session::get('userAccountId') != 0) {
+            $userAccount = User::find(\Session::get('userAccountId'));
+            if ($userAccount && $userAccount->fb_id == null) {
+                $userAccount->fb_id = $user->id;
+                $userAccount->save();
+                if (Auth::loginUsingId($userAccount->id)) {
+                    $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
+                    return redirect('profile/' . $redirect);
                 }
-                return redirect('profile/' . Auth::user()->id);
+            }
+            \Session::set('userAccountId', 0);
+        }
+        // If user social email exists in pakblood db.
+        $userEmailFound = User::where('email', $user->email)->first();
+        if ($userEmailFound) {
+            //If user Facebook id matches with Socialite result id
+            if ($userEmailFound->fb_id == $user->id) {
+                if (Auth::loginUsingId($userEmailFound->id)) {
+                    $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
+                    return redirect('profile/' . $redirect);
+                }
+            }
+            else {
+                return redirect('login')->with('message', 'Email already exists, If you have forgotten you password you can reset it.')->with('type', 'error');
             }
         }
+        // If user social email does not exists in pakblood db.
+        else {
+            $socialIdFound = User::where('fb_id', $user->id)->first();
+            //If Socialite id found in pakblood user accounts
+            if ($socialIdFound) {
+                return redirect('login')->with('message', 'This Account is already attached to a Pakblood account.')->with('type', 'error');
+            }
+            else {
+                return view('index', compact('user', 'fb'));
+            }
+        }
+        return redirect('login')->with('message', 'Something went wrong please try again.')->with('type', 'error');
     }
 
     /**
@@ -260,22 +292,46 @@ class AuthController extends Controller {
     public function gpLoginCallback() {
         $user = \Socialite::with('google')->user();
 //        dd($user);
-        if (count(User::where('email', $user->email)->whereNull('gp_id')->whereNull('fb_id')->get()) > 0) {
-            return redirect('forgotpassword')->with('message', 'Email already exists, If you have forgotten you password you can reset it here.')->with('type', 'error');
-        }
-        $userCheck = User::where('email', $user->email)->orWhere('gp_id', $user->id)->first();
-        if (!$userCheck) {
-            return view('index', compact('user'));
-        }
-        else {
-            if (Auth::loginUsingId($userCheck->id)) {
-                if ($userCheck->gp_id == null) {
-                    $userCheck->gp_id = $user->id;
-                    $userCheck->save();
+        // Condition when user link his/her social account.
+        if (\Session::get('userAccountId') && \Session::get('userAccountId') != 0) {
+            $userAccount = User::find(\Session::get('userAccountId'));
+            if ($userAccount && $userAccount->gp_id == null) {
+                $userAccount->gp_id = $user->id;
+                $userAccount->save();
+                if (Auth::loginUsingId($userAccount->id)) {
+                    $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
+                    return redirect('profile/' . $redirect)->with('message', 'Google+ Account Successfully Connected')
+                        ->with('type', 'success');
                 }
-                return redirect('profile/' . Auth::user()->id);
+            }
+            \Session::set('userAccountId', 0);
+        }
+        // If user social email exists in pakblood db.
+        $userEmailFound = User::where('email', $user->email)->first();
+        if ($userEmailFound) {
+            //If user Facebook id matches with Socialite result id
+            if ($userEmailFound->gp_id == $user->id) {
+                if (Auth::loginUsingId($userEmailFound->id)) {
+                    $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
+                    return redirect('profile/' . $redirect);
+                }
+            }
+            else {
+                return redirect('login')->with('message', 'Email already exists, If you have forgotten you password you can reset it.')->with('type', 'error');
             }
         }
+        // If user social email does not exists in pakblood db.
+        else {
+            $socialIdFound = User::where('gp_id', $user->id)->first();
+            //If Socialite id found in pakblood user accounts
+            if ($socialIdFound) {
+                return redirect('login')->with('message', 'This Account is already attached to a Pakblood account.')->with('type', 'error');
+            }
+            else {
+                return view('index', compact('user'));
+            }
+        }
+        return redirect('login')->with('message', 'Something went wrong please try again.')->with('type', 'error');
     }
 
     /**

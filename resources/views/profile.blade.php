@@ -125,8 +125,9 @@
                     @else
                         <a href="{{ url('https://www.facebook.com/'.$user->fb_id) }}" target="_blank">Connected With
                             Facebook</a>
-                        @if($user->gp_id != null && $user->password == '')
-                            <a href="{{ url('unlinkAccount/gp') }}" data-account="fb" style="margin-left: 20px;color: red;">Unlink</a>
+                        @if(!($user->gp_id == null && $user->password == ''))
+                            <a href="{{ url('unlinkAccount/fb') }}" data-account="fb"
+                               style="margin-left: 20px;color: red;">Unlink</a>
                         @endif
                     @endif
                 </div>
@@ -136,8 +137,9 @@
                     @else
                         <a href="{{ url('https://plus.google.com/'.$user->gp_id) }}" target="_blank">Connected With
                             Google+</a>
-                        @if($user->fb_id != null && $user->password == '')
-                            <a href="{{ url('unlinkAccount/gp') }}" data-account="gp" style="margin-left: 20px;color: red;">Unlink</a>
+                        @if(!($user->fb_id == null && $user->password == ''))
+                            <a href="{{ url('unlinkAccount/gp') }}" data-account="gp"
+                               style="margin-left: 20px;color: red;">Unlink</a>
                         @endif
                     @endif
                 </div>
@@ -152,7 +154,7 @@
                             {!! Form::label('receiver_name', 'Receiver Name :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::text('receiver_name', Input::old('receiver_name'), array('class' => 'inline','id' => 'receiver_name','placeholder' => 'Receiver Name')) !!}
+                            {!! Form::text('receiver_name', Input::old('receiver_name'), array('class' => 'inline','required','id' => 'receiver_name','placeholder' => 'Receiver Name')) !!}
                         </div>
                     </div>
                     <div class="row">
@@ -160,7 +162,7 @@
                             {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::text('city', Input::old('city'), array('class' => 'inline','id' => 'city','placeholder' => 'City')) !!}
+                            {!! Form::text('city', Input::old('city'), array('class' => 'inline','id' => 'city','required','placeholder' => 'City')) !!}
                         </div>
                     </div>
                     <div class="row">
@@ -176,7 +178,7 @@
                             {!! Form::label('date', 'Date :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <input id="date" class="inline datetimepicker" name="date" type="text">
+                            <input required id="date" class="inline datetimepicker" name="date" type="text">
                         </div>
                     </div>
                     <div class="row">

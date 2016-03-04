@@ -49,7 +49,7 @@ Route::get('contact', function () {
 });
 Route::post('/contact', 'ContactUsController@sendMail');
 Route::get('/login', 'Auth\AuthController@getLogin');
-Route::get('/logout', 'Auth\AuthController@getLogoput');
+Route::get('/logout', 'Auth\AuthController@getLogout');
 Route::get('/register', 'Auth\AuthController@getRegister');
 Route::get('/account/verify/{code}', 'Auth\AuthController@activateAccount');
 Route::get('/rest/password/{token}', 'Auth\PasswordController@getReset');

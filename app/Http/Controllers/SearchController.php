@@ -60,12 +60,12 @@ class SearchController extends Controller {
     public function getSearchData(Request $request) {
 //        dd($request->input());
         $bg = $request->input('bgroup');
-        if (substr($bg, -1, 1) == 'p') {
+        /*if (substr($bg, -1, 1) == 'p') {
             $bg = substr($bg, 0, -1) . '+';
         }
         if (substr($bg, -1, 1) == 'n') {
             $bg = substr($bg, 0, -1) . '-';
-        }
+        }*/
         if (Auth::guest()) {
             if ($request->input('page') != null) {
                 $page = $request->input('page');
@@ -80,21 +80,31 @@ class SearchController extends Controller {
 
             $start = $currPage * $perPage;
 
+            /* $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
+                 ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndOrg_idAndIs_deleted('active', 0, 0)
+                 ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'), '<', 2)
+                 ->first();*/
             $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
-                ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndOrg_idAndIs_deleted('active', 0, 0)
-                ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'), '<', 2)
-                ->first();
+                ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
+                ->addselect('pb_users.*')
+                ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
+                ->where('pb_users.city_id', $request->input('city'))
+                ->where('pb_users.blood_group', $bg)
+                ->having('report_count', '<', 2)->groupby('pb_users.id')->get();
 
             $users = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
                 ->addselect('pb_users.*')
-                ->whereOrg_idAndIs_deleted(0, 0)->where('status', '!=', 'inactive')
+                ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
                 ->where('pb_users.city_id', $request->input('city'))
+                ->where('pb_users.blood_group', $bg)
                 ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
-
+//            dump($users);
+//            dump($totalrec);
+//            dd();
             $users = new LengthAwarePaginator(
                 $users,
-                count($users),
+                count($totalrec),
                 15,
                 Paginator::resolveCurrentPage(),
                 ['path' => Paginator::resolveCurrentPath()]
@@ -114,14 +124,26 @@ class SearchController extends Controller {
 
             $start = $currPage * $perPage;
 
-            $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
+            /*$totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndIs_deleted('active', 0)
                 ->where('pb_users.id', '!=', Auth::user()->id)
                 ->where(function ($query) {
                     $query->where('org_id', '=', 0)->orWhere('org_id', '=', Auth::user()->org_id);
                 })
                 ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'), '<', 2)
-                ->first();
+                ->first();*/
+
+            $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
+                ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
+                ->addselect('pb_users.*')
+                ->whereStatusAndIs_deleted('active', 0)
+                ->where('pb_users.id', '!=', Auth::user()->id)
+                ->where(function ($query) {
+                    $query->where('org_id', '=', 0)->orWhere('org_id', '=', Auth::user()->org_id);
+                })
+                ->where('pb_users.city_id', $request->input('city'))
+                ->where('pb_users.blood_group', $bg)
+                ->having('report_count', '<', 2)->groupby('pb_users.id')->get();
 
             $users = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
@@ -131,11 +153,15 @@ class SearchController extends Controller {
                 ->where(function ($query) {
                     $query->where('org_id', '=', 0)->orWhere('org_id', '=', Auth::user()->org_id);
                 })
+                ->where('pb_users.city_id', $request->input('city'))
+                ->where('pb_users.blood_group', $bg)
                 ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
-
+//            dump($totalrec);
+//            dump($users);
+//            dd();
             $users = new LengthAwarePaginator(
                 $users,
-                count($users),
+                count($totalrec),
                 15,
                 Paginator::resolveCurrentPage(),
                 ['path' => Paginator::resolveCurrentPath()]

@@ -62,7 +62,7 @@ class ProfileController extends Controller {
         $user['org'] = Org::where('id', $user->org_id)->pluck('name');
         $user['bg'] = (array_key_exists($user->blood_group, $this->bloodGroupArray)) ? $this->bloodGroupArray[$user->blood_group] : '';
         $data = [
-            'bleed'  => Bleed::select('*')->where('user_id', '=', Auth::user()->id)->get(),
+            'bleed'  => Bleed::select('*')->where('user_id', '=', Auth::user()->id)->orderBy('date', 'DESC')->get(),
             'user'   => $user,
             'cities' => City::where('country_id', $user->country_id)->get()
         ];
@@ -115,6 +115,7 @@ class ProfileController extends Controller {
     }
 
     public function changePassword(Request $request) {
+//        dd($request->input());
         // validate
         // read more on validation at http://laravel.com/docs/validation
         $rules = array(
@@ -130,11 +131,26 @@ class ProfileController extends Controller {
                 ->withInput(Input::all());
         }
         else {
-            if (User::where('id', '=', Auth::user()->id)->update(['password' => bcrypt($request->input('new_password'))])) {
-                Auth::logout();
-                return Redirect::to('/login')
-                    ->with('message', 'Password Successfully Change.Please login again with your new password.')->with('type', 'success');
+            $user = User::find(Auth::user()->id);
+            if (\Hash::check($request->input('old_password'), $user->password)) {
+                $user->password = bcrypt($request->input('new_password'));
+                if ($user->save()) {
+                    $data = [
+                        'email' => $user->email,
+                        'name'  => $user->name
+                    ];
+                    Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
+                        $message
+                            ->to($data['email'], $data['name'])
+                            ->subject('Password Changed');
+                    });
+                    Auth::logout();
+                    return Redirect::to('/login')
+                        ->with('message', 'Password Successfully Change.Please login again with your new password.')->with('type', 'success');
+                }
             }
+            return Redirect::to('profile/' . Auth::user()->username . '#fndtn-changepassword')
+                ->with('message', 'Old Password does not match.')->with('type', 'error');
         }
     }
 
@@ -173,19 +189,22 @@ class ProfileController extends Controller {
     }
 
     /**
-     * Link social accounts.
      * @param $type
+     * @return Redirect
      */
     function linkAccount($type) {
         if ($type == 'fb') {
             \Session::set('redirect', '/fblogin');
+            \Session::set('userAccountId', \Auth::user()->id);
             return redirect('/logout');
         }
         else if ($type == 'gp') {
             \Session::set('redirect', '/gplogin');
+            \Session::set('userAccountId', \Auth::user()->id);
             return redirect('/logout');
         }
         \Session::set('redirect', '/login');
+        \Session::set('userAccountId', 0);
         return redirect('/logout');
     }
 
@@ -197,15 +216,16 @@ class ProfileController extends Controller {
     function unlinkAccount($type) {
 //        dd($type);
         $user = User::find(\Auth::user()->id);
+        $redirect = ($user->username) ? $user->username : $user->id;
         if ($type == 'fb') {
             $user->fb_id = null;
             $user->save();
-            return redirect('/profile/' . $user->id)->with('message', 'Facebook Account Successfully Linked.')->with('type', 'success');
+            return redirect('/profile/' . $redirect)->with('message', 'Facebook Account Successfully Unlinked.')->with('type', 'success');
         }
         else if ($type == 'gp') {
             $user->gp_id = null;
             $user->save();
-            return redirect('/profile/' . $user->id)->with('message', 'Google+ Account Successfully Linked.')->with('type', 'success');
+            return redirect('/profile/' . $redirect)->with('message', 'Google+ Account Successfully Unlinked.')->with('type', 'success');
         }
         return redirect()->back();
     }

@@ -28,7 +28,7 @@ class ContactUsController extends Controller {
         else {
             $data = array('name' => $request->name, 'email' => $request->email, 'subject' => $request->subject
             , 'msg'              => $request->message,);
-            $mail = Mail::send('emails/contact_us', $data, function ($message) use ($data) {
+            $mail = Mail::send(['html' => 'emails/contact_us'], $data, function ($message) use ($data) {
                 $message
 //                    ->from($data['email'],$data['name'])
                     ->to('info@pakblood.com', 'Pakblood Team')

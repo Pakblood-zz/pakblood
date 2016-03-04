@@ -16,8 +16,8 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $data = array(
-            'total_users' => User::where('status', '=', 'active')->count(),
-            'total_org'   => Org::where('status', '=', 'active')->count(),
+            'total_users' => User::/*where('status', '=', 'active')->*/count(),
+            'total_org'   => Org::/*where('status', '=', 'active')->*/count(),
             'countries'   => Country::get(),
         );
         view()->share($data);
