@@ -14,13 +14,8 @@ class CreateOrgJoinRequestsTable extends Migration
     {
         Schema::create('pb_org_join_requests', function (Blueprint $table) {
             $table->increments('id');
-
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('pb_users');
-
-            $table->integer('org_id')->unsigned();
-            $table->foreign('org_id')->references('id')->on('pb_org');
-
+            $table->integer('user_id');
+            $table->integer('org_id');
             $table->string('reason');
             $table->timestamps();
         });

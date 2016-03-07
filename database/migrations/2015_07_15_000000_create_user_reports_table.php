@@ -16,6 +16,7 @@ class CreateUserReportsTable extends Migration
             $table->increments('id');
             $table->integer('reported_user_id');
             $table->integer('reporter_user_id');
+            $table->string('reporter_user_ip');
             $table->string('reporter_name');
             $table->string('reporter_email');
             $table->string('reporter_message');

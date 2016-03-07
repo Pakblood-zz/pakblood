@@ -17,10 +17,7 @@ class CreateDirTable extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('phone');
-
-            $table->integer('city_id')->unsigned();
-            $table->foreign('city_id')->references('id')->on('pb_cities');
-
+            $table->integer('city_id');
             $table->timestamps();
         });
     }

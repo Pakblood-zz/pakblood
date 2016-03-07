@@ -3,21 +3,22 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCitiesTable extends Migration
-{
+class CreateCitiesTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('pb_cities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('sef');
             $table->integer('status');
-            $table->timestamps();
+            $table->decimal('latitude');
+            $table->decimal('longitude');
+            $table->string('province');
+            $table->integer('country_id');
         });
     }
 
@@ -26,8 +27,7 @@ class CreateCitiesTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::drop('pb_cities');
     }
 }

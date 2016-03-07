@@ -14,20 +14,21 @@ class CreateOrgTable extends Migration
     {
         Schema::create('pb_org', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id');
             $table->string('username');
             $table->string('password');
             $table->string('name');
             $table->string('address');
+            $table->string('url');
             $table->string('phone');
             $table->string('mobile');
-
-            $table->integer('city_id')->unsigned();
-            $table->foreign('city_id')->references('id')->on('pb_cities');
-
+            $table->integer('city_id');
             $table->string('image');
             $table->string('admin_name');
-            $table->string('program');
+            $table->string('designation');
             $table->string('email');
+            $table->string('application_image');
+            $table->string('status');
             $table->timestamps();
         });
     }

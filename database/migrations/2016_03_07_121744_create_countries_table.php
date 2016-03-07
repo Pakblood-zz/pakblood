@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAdminTable extends Migration
+class CreateCountriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class CreateAdminTable extends Migration
      */
     public function up()
     {
-        Schema::create('pb_admin', function (Blueprint $table) {
+        Schema::create('pb_countries', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('login');
-            $table->string('password');
-            $table->integer('role');
-            $table->timestamps();
+            $table->string('iso2');
+            $table->string('short_name');
+            $table->string('long_name');
+            $table->string('calling_code');
         });
     }
 
@@ -28,6 +28,6 @@ class CreateAdminTable extends Migration
      */
     public function down()
     {
-        Schema::drop('pb_admin');
+        Schema::drop('pb_countries');
     }
 }

@@ -3,35 +3,34 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
-{
+class CreateUsersTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('pb_users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
             $table->string('username');
             $table->string('email');
             $table->string('password', 60);
-            $table->string('name');
             $table->string('gender');
+            $table->string('profile_image');
             $table->date('dob');
             $table->string('phone');
+            $table->string('mobile');
             $table->string('address');
-
-            $table->integer('city_id')->unsigned();
-            $table->foreign('city_id')->references('id')->on('pb_cities');
-
+            $table->integer('city_id');
             $table->string('blood_group');
             $table->date('last_bleed');
             $table->integer('org_id');
             $table->string('status');
-            $table->string('account_status');
-            $table->integer('fb_id');
+            $table->integer('is_deleted');
+            $table->string('gp_id');
+            $table->string('fb_id');
+            $table->string('confirmation_code');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -42,8 +41,7 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::drop('pb_users');
     }
 }
