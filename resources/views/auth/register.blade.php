@@ -170,6 +170,14 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="hide-for-small-only medium-6 large-6 columns">
+                                {!! Form::label('captcha', 'Captcha :',array('class' => 'inline')) !!}
+                            </div>
+                            <div style="margin-top: 10px;" class="small-20 medium-14 large-14 columns right">
+                                {!! app('captcha')->display() !!}
+                            </div>
+                        </div>
+                        <div class="row">
                             <div id="submit_btn" class="small-20 medium-20 large-20 columns">
                                 <input type="submit" class="small button radius" name="submit" value="Register!">
                             </div>

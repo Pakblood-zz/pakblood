@@ -79,6 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('/report/user', 'ReportsController@index');
 Route::post('/report/user', 'ReportsController@reportUser');
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'before' => 'admin'], function () {
+    Route::get('/login', 'MainController@login');
     Route::post('/login', 'MainController@login');
     Route::get('/', 'MainController@index');
     Route::get('/dashboard', 'MainController@index');
