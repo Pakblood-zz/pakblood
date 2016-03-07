@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-    <meta charset="utf-8">
-</head>
-<body>
 
 <div>
-    Dear {{$name}}, <br>
-    This email is to inform you that your password have been changed, for pakblood account : {{$email}}. <br>
+    Dear {{$name}}, <br><br>
+    This email is to inform you that your password is updated for pakblood account : {{$email}}. <br><br>
+
+
+    If you are not sure why this happend. Please immediatly contact with us, we will resolve this issue.
+
+    @include ('emails.__footer')
+
 </div>
 
-</body>
-</html>

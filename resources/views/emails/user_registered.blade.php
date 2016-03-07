@@ -1,24 +1,48 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-    <meta charset="utf-8">
-</head>
-<body>
-
 <div>
-    New User Registered.<br>
-    Name : {{ $name }} <br>
-    Username : {{ $username }} <br>
-    Email : {{ $email }} <br>
-    Gender : {{ ($gender == 'm')?"Male":"Female" }} <br>
-    Date Of Birth : {{ $dob }} <br>
-    Phone : {{ $phone }} <br>
-    Mobile : {{ $mobile }} <br>
-    Address : {{ $address }} <br>
-    City : {{ $city }} <br>
-    Blood Group : {{ $blood_group }} <br>
-    Status : {{ $status }} <br>
-</div>
 
-</body>
-</html>
+    Dear Admin <br><br><br>
+
+
+    A New User Registered.<br><br>
+
+
+    <table>
+        <tr>
+            <td>Name :</td>
+            <td>{{ $name }}</td>
+        </tr>
+        <tr>
+            <td>Username :</td>
+            <td> {{ $username }} </td>
+        <tr>
+            <td>Email :</td>
+            <td> {{ $email }} </td>
+        <tr>
+            <td>Gender :</td>
+            <td> {{ ($gender == 'm')?"Male":"Female" }} </td>
+        <tr>
+            <td>Date Of Birth :</td>
+            <td>{{ $dob }} </td>
+        <tr>
+            <td>Phone :</td>
+            <td> {{ $phone }} </td>
+        <tr>
+            <td>Mobile :</td>
+            <td> {{ $mobile }} </td>
+        <tr>
+            <td>Address :</td>
+            <td> {{ $address }} </td>
+        <tr>
+            <td>City :</td>
+            <td>> {{ $city }} </td>
+        <tr>
+            <td>Blood Group :</td>
+            <td>{{ $blood_group }} </td>
+        <tr>
+            <td>Status :</td>
+            <td> {{ $status }} </td>
+    </table>
+
+    @include ('emails.__footer')
+
+</div>

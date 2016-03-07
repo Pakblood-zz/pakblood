@@ -1,5 +1,5 @@
 <div>
-    Dear {{$name}}, <br>
+    Dear {{$name}}, <br><br>
     <br>
     Your profile at Pakblood has been updated.<br>
     <br>
@@ -7,6 +7,6 @@
     more details.
 
 
-    @include ('__footer')
+    @include ('emails.__footer')
 </div>
 
