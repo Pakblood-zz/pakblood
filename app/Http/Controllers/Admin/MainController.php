@@ -12,15 +12,23 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class MainController extends Controller
-{
-    public function index(){
-        $data = array('total_org' => Org::where('status','=','active')->count(),
-            'total_user' => User::where('status','=','active')->count());
-        return view('admin.dashboard',$data);
+class MainController extends Controller {
+
+    function __construct() {
+        if (Auth::user()) {
+//            dump(1);
+        }
+//        dump(2);
+        return redirect('/home');
     }
 
-    public function login(Request $request){
+    public function index() {
+        $data = array('total_org'  => Org::where('status', '=', 'active')->count(),
+                      'total_user' => User::where('status', '=', 'active')->count());
+        return view('admin.dashboard', $data);
+    }
+
+    public function login(Request $request) {
         $this->validate($request, [
             'username' => 'required', 'password' => 'required',
         ]);
@@ -29,6 +37,6 @@ class MainController extends Controller
         if (Auth::attempt($credentials)) {
             return redirect('/admin');
         }
-        return redirect('/admin')->with('message' , 'Wrong Username or Password')->with('type' ,'error');
+        return redirect('/admin')->with('message', 'Wrong Username or Password')->with('type', 'error');
     }
 }
