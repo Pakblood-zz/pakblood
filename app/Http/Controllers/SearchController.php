@@ -98,6 +98,7 @@ class SearchController extends Controller {
                 ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
                 ->where('pb_users.city_id', $request->input('city'))
                 ->where('pb_users.blood_group', $bg)
+                ->whereRaw('pb_users.last_bleed < DATE_SUB(NOW(),INTERVAL 3 month)')
                 ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
 //            dump($users);
 //            dump($totalrec);

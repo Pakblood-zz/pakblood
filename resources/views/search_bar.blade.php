@@ -10,12 +10,15 @@
 </style>
 <div class="row search-bar">
     <div class="myCenter" style="width: 100%;">
-        <div class="small-20 medium-20 large-7 colums left donors">
-            <h3>{{$total_users}} Donors</h3>
-            <span>{{$total_org}} Organizations Registered</span>
-        </div>
-        <form id="searchForm" method="GET" action="{{url('/search')}}" accept-charset="UTF-8" class="large-13 columns">
-            <div class="medium-10 large-5 columns">
+        @if(\Request::is('/') || \Request::is('home'))
+            <div class="small-20 medium-20 large-7 colums left donors">
+                <h3>{{$total_users}} Donors</h3>
+                <span>{{$total_org}} Organizations Registered</span>
+            </div>
+        @endif
+        <form id="searchForm" method="GET" action="{{url('/search')}}" accept-charset="UTF-8"
+              class="{{ (\Request::is('/') || \Request::is('home'))?"large-13":"large-20" }} columns">
+            <div class="small-20 medium-5 large-5 columns">
                 <select name="bgroup">
                     <option value="" selected disabled>Blood Group</option>
                     <option value="Ap"<?php if (isset($bg) && ($bg == 'Ap')) echo 'selected="selected"'; ?>>A+</option>
@@ -31,7 +34,7 @@
                 </select>
                 <div class="error">Please Select Blood Group.</div>
             </div>
-            <div class="medium-10 large-5 columns">
+            <div class="small-20 medium-5 large-5 columns">
                 <select name="country" id="countries" data-placeholder="Choose a Country..."
                         class="chosen-select">
                     <option value=""></option>
@@ -41,7 +44,7 @@
                 </select>
                 <div class="error">Please Select Country.</div>
             </div>
-            <div class="medium-10 large-5 columns">
+            <div class="small-20 medium-5 large-5 columns">
                 <select name="city" id="cities" data-placeholder="Choose a City..."
                         class="chosen-select" {{ (isset($city))?"":"disabled" }}>
                     <option value=""></option>
@@ -53,7 +56,7 @@
                 </select>
                 <div class="error">Please Select City.</div>
             </div>
-            <div id="search-btn" class="medium-20 large-5 columns">
+            <div id="search-btn" class="small-20 medium-5 large-5 columns">
                 <a href="javascript:;" class="small button radius" value="Search" onclick="validateForm()">Search</a>
             </div>
         </form>
@@ -61,7 +64,7 @@
 </div>
 <script>
     //ID of select containing countries and ID of select containing cities.
-    countryAndCitySelect('countries','cities');
+    countryAndCitySelect('countries', 'cities');
     function validateForm() {
         var form = $('#searchForm');
         var bgroupSelect = $('select[name=bgroup]');

@@ -7548,6 +7548,8 @@ th {
     margin: 0px !important; } }
 #user_nav a {
   color: #000000; }
+#user_nav ul.f-dropdown {
+  outline: none; }
 
 #user_nav > a:after {
   position: relative;
@@ -7634,10 +7636,16 @@ th {
     width: 90%; }
 
   .myCenter {
-    width: 100% !important; }
-
-  .center-container {
     width: 100% !important; } }
+@media only screen and (max-width: 640px) {
+  .center-container {
+    margin: 10px auto !important; }
+
+  .search-bar select {
+    margin: 10px 0 10px 0 !important; }
+
+  .search-bar div#search-btn a.button {
+    margin: 0 0 20px 0 !important; } }
 @media only screen and (max-width: 1025px) {
   .top-bar {
     width: 100%; } }
@@ -7657,7 +7665,7 @@ th {
     font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
-    margin: 32px 0 10px 0px;
+    margin: 32px 0 10px 0;
     width: 100%;
     min-width: 125px;
     height: 41px; }
@@ -7871,8 +7879,6 @@ th {
   color: #353940;
   font-size: 14px;
   margin: 20px auto; }
-#add_member #add_member_form label {
-  margin-left: 40px; }
 #add_member #add_member_form select {
   cursor: pointer;
   font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -7915,8 +7921,7 @@ th {
   color: #d32118;
   margin-bottom: 25px; }
 #add_org span {
-  font-size: 14px;
-  color: #d32118; }
+  font-size: 14px; }
 #add_org p {
   font-size: 14px;
   color: #639300; }

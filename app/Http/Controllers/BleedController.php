@@ -25,7 +25,7 @@ class BleedController extends Controller {
         $date1 = new Carbon($user->last_bleed);
         $date2 = new Carbon($request->input('date'));
         $diff = $date1->diff($date2);
-
+        $redirect = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
         if ($bleed->save()) {
             if ($diff->invert == 0) {
                 $user->last_bleed = date('Y-m-d', strtotime($request->input('date')));
@@ -40,8 +40,8 @@ class BleedController extends Controller {
                     ->to($data['email'], $data['name'])->cc('info@pakblood.com')
                     ->subject('Bleed Status Updated');
             });
-            return Redirect::to('profile/' . Auth::user()->username)->with('message', 'Bleed Status Successfully Updated!!');
+            return Redirect::to('profile/' . $redirect)->with('message', 'Bleed Status Successfully Updated!!');
         }
-        return Redirect::to('profile/' . Auth::user()->username)->with('message', 'There was some problems updating bleed status');
+        return Redirect::to('profile/' . $redirect)->with('message', 'There was some problems updating bleed status');
     }
 }

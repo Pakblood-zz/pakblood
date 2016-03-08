@@ -28,6 +28,7 @@
     {!! HTML::style('css/jquery.datetimepicker.css') !!}
     {!! HTML::style('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css') !!}
     {!! HTML::style('css/chosen.css') !!}
+    {!! HTML::style('css/foundation-icons/foundation-icons.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
     {!! HTML::script('js/vendor/fastclick.js') !!}

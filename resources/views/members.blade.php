@@ -20,17 +20,22 @@
     @endif
     <table role="grid" style="width: 100%;">
         <tr>
-            <th>#</th>
+            <th class="hide-for-small-down">#</th>
             <th>Name</th>
             <th width="160">Contact Infomation</th>
-            <th>Address</th>
+            <th class="hide-for-small-down">Address</th>
             <th width="100">Last Bleed</th>
-            <th width="100">Report</th>
+            <th width="">
+                <span class="hide-for-small-down">Report</span>
+                <span class="hide-for-medium-up" title="Report Donor">
+                    <i style="color:red" class="fi-x size-25"></i>
+                </span>
+            </th>
         </tr>
         <?php use Carbon\Carbon;$usercount = $users->firstitem(); ?>
         @foreach($users as $user)
             <tr>
-                <td>{{$usercount}}</td>
+                <td class="hide-for-small-down">{{$usercount}}</td>
                 <td>{{$user->name}}</td>
                 <td>@if($user->phone != NULL)
                         {!! HTML::image('includes/txt2img.php?txt='.base64_encode($user->phone))!!}
@@ -39,19 +44,37 @@
                         {!! HTML::image('includes/txt2img.php?txt='.base64_encode($user->mobile))!!}
                     @endif
                 </td>
-                <td>{{$user->address}}</td>
+                <td class="hide-for-small-down">{{$user->address}}</td>
                 <?php
                 $created = new Carbon($user->last_bleed);
                 $now = Carbon::now();
                 $difference = ($created->diff($now)->days < 1)
                         ? 'today'
-                        : $created->diffForHumans($now);
+                        : $created->diff($now);
+                //                dump($difference)
                 ?>
-                <td>{{$difference}}</td>
+                <td>
+                    @if($difference->y > 0 || $difference->m > 3)
+                        {{ "More Then 3 Months Ago" }}
+                    @elseif($difference->m > 1 && $difference->m < 3)
+                        {{ $difference->m . " Months Ago" }}
+                    @elseif($difference->m == 1)
+                        {{ $difference->m . " Month Ago" }}
+                    @elseif($difference->m < 1 && $difference->m < 3)
+                        {{ $difference->d . " days Ago" }}
+                    @endif
+                </td>
                 <td>
                     {{--<a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="myModal" data-reveal-ajax="true">Report Donor</a>--}}
-                    <a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="reportUserModal_{{$user->id}}"
-                       data-reveal-ajax="true">Report Donor</a>
+                    <span class="hide-for-small-down">
+                        <a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="reportUserModal_{{$user->id}}"
+                           data-reveal-ajax="true">Report Donor</a>
+                    </span>
+                    <span class="hide-for-medium-up" title="Report Donor">
+                        <a href="{{url('report/user?id='.$user->id)}}" data-reveal-id="reportUserModal_{{$user->id}}"
+                           data-reveal-ajax="true"><i style="color:red" class="fi-x size-25"></i></a>
+                    </span>
+
                     <div id="reportUserModal_{{$user->id}}" class="reveal-modal" data-reveal
                          aria-labelledby="modalTitle"
                          aria-hidden="true" role="dialog"></div>

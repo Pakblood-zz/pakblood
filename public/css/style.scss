@@ -55,21 +55,30 @@
   }
 }
 
-#user_nav a {
-  //text-transform: uppercase;
-  color: #000000;
+#user_nav {
+  a {
+    //text-transform: uppercase;
+    color: #000000;
+  }
+  ul {
+    &.f-dropdown {
+      outline: none;
+    }
+  }
 }
 
-#user_nav > a:after {
-  position: relative;
-  left: 5px;
-  border: inset 5px;
-  content: "";
-  height: 0;
-  width: 0;
-  border-color: rgba(0, 0, 0, 0.4) transparent transparent transparent;
-  border-top-style: solid;
-  top: 0.7rem;
+#user_nav {
+  & > a:after {
+    position: relative;
+    left: 5px;
+    border: inset 5px;
+    content: "";
+    height: 0;
+    width: 0;
+    border-color: rgba(0, 0, 0, 0.4) transparent transparent transparent;
+    border-top-style: solid;
+    top: 0.7rem;
+  }
 }
 
 /* Top Bar Menu*/
@@ -164,7 +173,19 @@
     width: 100% !important;
   }
   .center-container {
-    width: 100% !important;
+    //width: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .center-container {
+    margin: 10px auto !important;
+  }
+  .search-bar select {
+    margin: 10px 0 10px 0 !important;
+  }
+  .search-bar div#search-btn a.button {
+    margin: 0 0 20px 0 !important;
   }
 }
 
@@ -197,7 +218,7 @@
     font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
-    margin: 32px 0 10px 0px;
+    margin: 32px 0 10px 0;
     width: 100%;
     min-width: 125px;
     height: 41px;
@@ -494,7 +515,7 @@
   }
   #add_member_form {
     label {
-      margin-left: 40px;
+      //margin-left: 40px;
     }
     select {
       cursor: pointer;
@@ -560,7 +581,7 @@
   }
   span {
     font-size: 14px;
-    color: #d32118;
+    //color: #d32118;
   }
   p {
     font-size: 14px;

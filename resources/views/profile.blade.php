@@ -23,10 +23,11 @@
             </div>
         @endif
     @endif
-    <ul class="tabs" data-tab role="tablist" data-options="deep_linking:true;scroll_to_content: false">
+    <ul class="tabs hide-for-small-down" data-tab role="tablist"
+        data-options="deep_linking:true;scroll_to_content: false">
         <li class="tab-title active" role="presentation"><a href="#profile" role="tab" tabindex="0" aria-selected="true"
                                                             aria-controls="profile">Profile </a></li>
-        <li class="tab-title" role="presentation"><a href="#bleesstatus" role="tab" tabindex="0" aria-selected="true"
+        <li class="tab-title" role="presentation"><a href="#bleedstatus" role="tab" tabindex="0" aria-selected="true"
                                                      aria-controls="bleesstatus">Update Bleed Status </a></li>
         <li class="tab-title" role="presentation"><a href="#editprofile" role="tab" tabindex="0" aria-selected="false"
                                                      aria-controls="ediprofile">Edit Profile </a></li>
@@ -41,70 +42,90 @@
         <li class="tab-title" role="presentation"><a href="#unjoin" role="tab" tabindex="0" aria-selected="false"
                                                      aria-controls="unjoin">Unjoin </a></li>
     </ul>
+    <div class="hide-for-medium-up">
+        <label>
+            <select id="tabSelect">
+                <option value="#profile">Profile</option>
+                <option value="#bleedstatus">Update Bleed Status</option>
+                <option value="#editprofile">Edit Profile</option>
+                @if($user->password != '')
+                    <option value="#changepassword">Change Password</option>
+                @endif
+                <option value="#bleedhistory">Bleed History</option>
+                <option value="#unjoin">Unjoin</option>
+            </select>
+        </label>
+    </div>
     <div id="add_member" class="tabs-content">
         <section role="tabpanel" aria-hidden="true" class="content active" id="profile">
             <div class="row collapse">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Name</span>
-                    <span class="large-15 columns no-padding">{{ $user->name }}</span>
+                    <span class="large-5 columns no-padding">Name:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->name != '')?$user->name:"N/A" }}</span>
                 </div>
+                <hr class="hide-for-medium-up">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Username</span>
-                    <span class="large-15 columns no-padding">{{ $user->username }}</span>
-                </div>
-                <hr>
-            </div>
-            <div class="row collapse">
-                <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Email</span>
-                    <span class="large-15 columns no-padding">{{ $user->email }}</span>
-                </div>
-                <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Gender</span>
-                    <span class="large-15 columns no-padding">{{ $user->gender }}</span>
+                    <span class="large-5 columns no-padding">Username:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->username != '')?$user->username:"N/A" }}</span>
                 </div>
                 <hr>
             </div>
             <div class="row collapse">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Date Of Birth</span>
+                    <span class="large-5 columns no-padding">Email:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->email != '')?$user->email:"N/A" }}</span>
+                </div>
+                <hr class="hide-for-medium-up">
+                <div class="large-10 columns">
+                    <span class="large-5 columns no-padding">Gender:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->gender != '')?$user->gender:"N/A" }}</span>
+                </div>
+                <hr>
+            </div>
+            <div class="row collapse">
+                <div class="large-10 columns">
+                    <span class="large-5 columns no-padding">Date Of Birth:</span>
                     <span class="large-15 columns no-padding">{{ $user->dob }}</span>
                 </div>
+                <hr class="hide-for-medium-up">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Phone#</span>
-                    <span class="large-15 columns no-padding">{{ $user->phone }}</span>
+                    <span class="large-5 columns no-padding">Phone#:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->phone != '')?$user->phone:"N/A" }}</span>
                 </div>
                 <hr>
             </div>
             <div class="row collapse">
                 <div class="large-10 columns">
                     <span class="large-5 columns no-padding">Mobile#</span>
-                    <span class="large-15 columns no-padding">{{ $user->mobile }}</span>
+                    <span class="large-15 columns no-padding">{{ ($user->mobile != '')?$user->mobile:"N/A" }}</span>
                 </div>
+                <hr class="hide-for-medium-up">
                 <div class="large-10 columns">
                     <span class="large-5 columns no-padding">Address</span>
-                    <span class="large-15 columns no-padding">{{ $user->address }}</span>
+                    <span class="large-15 columns no-padding">{{ ($user->address != '')?$user->address:"N/A" }}</span>
                 </div>
                 <hr>
             </div>
             <div class="row collapse">
                 <div class="large-10 columns">
                     <span class="large-5 columns no-padding">City</span>
-                    <span class="large-15 columns no-padding">{{ $user->city }}</span>
+                    <span class="large-15 columns no-padding">{{ ($user->city != '')?$user->city:"N/A" }}</span>
                 </div>
+                <hr class="hide-for-medium-up">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Blood Group</span>
-                    <span class="large-15 columns no-padding">{{ $user->bg }}</span>
+                    <span class="large-5 columns no-padding">Blood Group:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->bg != '')?$user->bg:"N/A" }}</span>
                 </div>
                 <hr>
             </div>
             <div class="row collapse">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Last Bleed</span>
-                    <span class="large-15 columns no-padding">{{ $user->last_bleed }}</span>
+                    <span class="large-5 columns no-padding">Last Bleed:</span>
+                    <span class="large-15 columns no-padding">{{ ($user->last_bleed == '0000-00-00')?"Never": $user->last_bleed }}</span>
                 </div>
+                <hr class="hide-for-medium-up">
                 <div class="large-10 columns">
-                    <span class="large-5 columns no-padding">Organization</span>
+                    <span class="large-5 columns no-padding">Organization:</span>
                     <span class="large-15 columns no-padding">
                      @if($user->org_id != 0)
                             {{ $user->org }}
@@ -145,7 +166,7 @@
                 </div>
             </div>
         </section>
-        <section role="tabpanel" aria-hidden="false" class="content" id="bleesstatus">
+        <section role="tabpanel" aria-hidden="false" class="content" id="bleedstatus">
             {!! Form::open(array('url' => '/bleed/update','id' => 'add_member_form')) !!}
             <div class="row">
                 <div class="small-20 large-20 columns">
@@ -277,7 +298,7 @@
                         <div class="hide-for-small-only medium-7 large-5 columns">
                             {!! Form::label('country', 'Country :' ,array('class' => 'inline')) !!}
                         </div>
-                        <div class="small-20 medium-10 large-10 columns left">
+                        <div style="margin-bottom: 0.9rem;" class="small-20 medium-10 large-10 columns left">
                             <select name="country" id="countriesRegForm" data-placeholder="Choose a country..."
                                     class="chosen-select">
                                 <option value=""></option>
@@ -291,7 +312,7 @@
                         <div class="hide-for-small-only medium-7 large-5 columns">
                             {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
                         </div>
-                        <div class="small-20 medium-10 large-10 columns left">
+                        <div style="margin-bottom: 0.9rem;" class="small-20 medium-10 large-10 columns left">
                             <select name="city" id="citiesRegForm" data-placeholder="Choose a city..."
                                     class="chosen-select" {{ (isset($user->city_id))?"":"disabled" }}>
                                 <option value=""></option>
@@ -390,19 +411,19 @@
         <section role="tabpanel" aria-hidden="true" class="content" id="bleedhistory">
             <table role="grid">
                 <tr>
-                    <th>#</th>
+                    <th class="hide-for-small-down">#</th>
                     <th>Receiver Name</th>
                     <th>City</th>
-                    <th width="500">Comments</th>
+                    <th width="500" class="hide-for-small-down">Comments</th>
                     <th width="180">Date</th>
                 </tr>
                 <?php $count = 1; ?>
                 @foreach($bleed as $bs)
                     <tr>
-                        <td><?php echo $count?></td>
+                        <td class="hide-for-small-down"><?php echo $count?></td>
                         <td>{{$bs->receiver_name}}</td>
                         <td>{{$bs->city}}</td>
-                        <td>{{$bs->comments}}</td>
+                        <td class="hide-for-small-down">{{$bs->comments}}</td>
                         <td>{{$bs->date}}</td>
                     </tr>
                     <?php $count += 1; ?>
@@ -434,5 +455,11 @@
 <script>
     //ID of select containing countries and ID of select containing cities.
     countryAndCitySelect('countriesRegForm', 'citiesRegForm');
+    $(document).on('change', '#tabSelect', function () {
+//        console.log($(this));
+//        console.log($(this).val());
+        $('.tabs-content#add_member').find('section.active').removeClass('active');
+        $('.tabs-content#add_member').find('section' + $(this).val()).addClass('active');
+    });
 </script>
 @include('footer')

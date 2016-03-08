@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Bleed;
+use App\City;
 use App\OrgRequests;
 use Illuminate\Http\Request;
 
@@ -57,6 +58,7 @@ class OrgController extends Controller {
             'org_application' => 'required:mimes:png,jpg,jpeg'
         );
         $validator = Validator::make(Input::all(), $rules);
+        $redirect = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
 
         // process the login
         if ($validator->fails()) {
@@ -73,7 +75,7 @@ class OrgController extends Controller {
             $org->address = Input::get('org_address');
             $org->phone = Input::get('org_phone');
             $org->mobile = Input::get('admin_phone');
-            $org->city_id = Input::get('city_id');
+            $org->city_id = Input::get('city');
             if ($request->hasFile('org_logo')) {
                 $logo = $org->name . '.' .
                     $request->file('org_logo')->getClientOriginalExtension();
@@ -109,9 +111,10 @@ class OrgController extends Controller {
                         ->to(Auth::user()->email, Auth::user()->name)->cc('info@pakblood.com')
                         ->subject('Organization Registration');
                 });
-                return Redirect::to('profile/' . Auth::user()->username)->with('message', 'Organization registration successful, Your organization will be active after Pakblood admin review!!');
+                return Redirect::to('profile/' . $redirect)->with('message', 'Organization registration successful, Your organization will be active after Pakblood admin review!!');
             }
         }
+        return Redirect::to('profile/' . $redirect)->with('message', 'Organization registration error, please try again!!')->with('type', 'error');
     }
 
     /**
@@ -125,17 +128,23 @@ class OrgController extends Controller {
             $data = array('org' => Org::whereIdAndStatus($id, 'active')->first());
             return view::make('org_profile', $data);
         }
+        $org = Org::whereIdAndStatus($id, 'active')->first();
+        $countryId = City::where('id', $org->city_id)->pluck('country_id');
         $data = array(
-            'org'   => Org::whereIdAndStatus($id, 'active')->first(),
-            'users' => User::where('org_id', '=', $id)->where('id', '!=', Auth::user()->id)->paginate(10),
-            'reqs'  => OrgRequests::join('pb_users', 'pb_org_join_requests.user_id', '=', 'pb_users.id')
+            'org'        => $org,
+            'users'      => User::where('org_id', '=', $id)->where('id', '!=', Auth::user()->id)->paginate(10),
+            'reqs'       => OrgRequests::join('pb_users', 'pb_org_join_requests.user_id', '=', 'pb_users.id')
                 ->join('pb_org', 'pb_org_join_requests.org_id', '=', 'pb_org.id')
                 ->select(DB::raw('pb_users.*,pb_org_join_requests.id as req_id,pb_org_join_requests.reason'))
                 ->where('pb_org.id', '=', $id)
-                ->get()
+                ->get(),
+            'orgCountry' => $countryId,
+            'orgCity'    => $org->city_id,
+            'orgCities'  => City::where('country_id', $countryId)->get(),
         );
+        $redirect = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
         if ($data['org'] == NULL) {
-            return redirect('/profile/' . Auth::user()->username)
+            return redirect('/profile/' . $redirect)
                 ->with('message', 'Your organization is not active yet, please wait, until pakblood admin review your organization')
                 ->with('type', 'error');
         }
@@ -156,7 +165,7 @@ class OrgController extends Controller {
         $org->address = $request->Input('org_address');
         $org->phone = $request->Input('org_phone');
         $org->mobile = $request->Input('admin_phone');
-        $org->city_id = $request->Input('city_id');
+        $org->city_id = $request->Input('city');
         if ($request->hasFile('org_logo')) {
             $logo = $org->name . '.' .
                 $request->file('org_logo')->getClientOriginalExtension();
@@ -226,7 +235,7 @@ class OrgController extends Controller {
             $user->phone = $request->input('phone');
             $user->mobile = $request->input('mobile');
             $user->address = $request->input('address');
-            $user->city_id = $request->input('city_id');
+            $user->city_id = $request->input('city');
             $user->blood_group = $request->input('bgroup');
             $user->status = 'active';
             $user->org_id = $request->input('org_id');
