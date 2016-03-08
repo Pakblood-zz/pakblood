@@ -1,0 +1,9 @@
+/vendor
+/node_modules
+Homestead.yaml
+.env
+/tmp_resource
+/.idea
+.htaccess (pakblood-old)
+liveSite.zip
+pakblood(old 03-03-16).zip

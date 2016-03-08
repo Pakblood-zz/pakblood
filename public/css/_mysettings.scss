@@ -1,0 +1,74 @@
+$primary-color : #65910a;
+$secondary-color : #d32118;
+
+$total-columns: 20 ;
+$row-width: 100%;
+
+$crumb-slash-color: black;
+$crumb-slash: "|";
+$crumb-bg: scale-color(white, $lightness: 55%);
+$crumb-font-color: black;
+$crumb-font-transform: none;
+$crumb-link-decor: none;
+$crumb-border-size: 0px;
+$crumb-font-size: 14px;
+
+// Style the top bar dropdown elements
+
+$topbar-dropdown-bg: white;
+$topbar-dropdown-link-color: black;
+$topbar-dropdown-link-bg: white;
+$topbar-dropdown-link-bg-hover: white;
+$topbar-dropdown-link-weight: normal;
+$topbar-dropdown-toggle-size: 5px;
+$topbar-dropdown-toggle-color: black;
+$topbar-dropdown-toggle-alpha: 0.4;
+$topbar-bg-color: white;
+$topbar-bg: $topbar-bg-color;
+// Set the link colors and styles for top-level nav
+$topbar-link-color: black;
+$topbar-link-color-hover: $secondary-color;
+$topbar-link-color-active: $secondary-color;
+$topbar-link-color-active-hover: $secondary-color;
+$topbar-link-weight: normal;
+$topbar-link-font-size:  rem-calc(13);
+$topbar-link-bg: $topbar-bg;
+$topbar-link-bg-hover: white;
+$topbar-link-bg-color-hover: white;
+$topbar-link-bg-active: white;
+$topbar-link-bg-active-hover: scale-color(white, $lightness: 0%);
+$topbar-link-text-transform: none;
+
+$topbar-dropdown-label-color: $secondary-color;
+$topbar-dropdown-label-text-transform: uppercase;
+$topbar-dropdown-label-font-weight: bold;
+$topbar-dropdown-label-font-size: rem-calc(10);
+$topbar-dropdown-label-bg: white;
+// Using rem-calc for the below breakpoint causes issues with top bar
+$topbar-breakpoint: #{1025px}; // Change to 9999px for always mobile layout
+// Top menu icon styles
+$topbar-menu-link-transform: none;
+$topbar-menu-link-font-size: rem-calc(13);
+$topbar-menu-link-weight: bold;
+$topbar-menu-link-color: $secondary-color;
+$topbar-menu-icon-color: $secondary-color;
+$topbar-menu-link-color-toggled: $secondary-color;
+$topbar-menu-icon-color-toggled: $secondary-color;
+
+//Tabs settings
+$tabs-navigation-font-color: $secondary-color;
+$tabs-navigation-active-font-color: #333333;
+$tabs-navigation-bg-color: white;
+$tabs-navigation-active-bg-color: white;
+$tabs-navigation-hover-bg-color: white;
+
+//Admin Panel
+//Side Bar Nav
+$off-canvas-bg: #191B28 !default;
+$tabbar-bg: #191B28 !default;
+
+
+@import "zurb/foundation/functions";
+@import "zurb/foundation/settings";
+@import "zurb/foundation";
+@import "zurb/normalize";
