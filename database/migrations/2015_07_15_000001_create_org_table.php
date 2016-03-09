@@ -3,15 +3,13 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrgTable extends Migration
-{
+class CreateOrgTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::create('pb_org', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
@@ -23,10 +21,10 @@ class CreateOrgTable extends Migration
             $table->string('phone');
             $table->string('mobile');
             $table->integer('city_id');
-            $table->string('image');
             $table->string('admin_name');
             $table->string('designation');
             $table->string('email');
+            $table->string('image');
             $table->string('application_image');
             $table->string('status');
             $table->timestamps();
@@ -38,8 +36,7 @@ class CreateOrgTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::drop('pb_org');
     }
 }

@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration {
             $table->string('username');
             $table->string('email');
             $table->string('password', 60);
+            $table->string('role')->default('user');
             $table->string('gender');
             $table->string('profile_image');
             $table->date('dob');
@@ -31,6 +32,7 @@ class CreateUsersTable extends Migration {
             $table->string('gp_id');
             $table->string('fb_id');
             $table->string('confirmation_code');
+            $table->timestamp('last_login');
             $table->rememberToken();
             $table->timestamps();
         });

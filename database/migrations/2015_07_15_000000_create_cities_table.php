@@ -14,7 +14,6 @@ class CreateCitiesTable extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->string('sef');
-            $table->integer('status');
             $table->decimal('latitude');
             $table->decimal('longitude');
             $table->string('province');
