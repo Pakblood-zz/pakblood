@@ -3,18 +3,15 @@
     <footer>
         <div class="row">
             <nav>
-                <a href="#">Home </a>
-                <a href="#">Help Line </a>
-                <a href="#">News </a>
-                <a href="#">Articles </a>
-                <a href="#">About </a>
-                <a href="#">FAQ </a>
-                <a href="#">Contact Us</a>
+                <a href="{{ url('/home') }}">Home </a>
+                <a href="{{ url('/helplines') }}">Help Line </a>
+                <a href="{{ url('/about') }}">About </a>
+                <a href="{{ url('/contact') }}">Contact</a>
             </nav>
         </div>
         <div class="row">
-            <h6> Pakblood © {{ date('Y') }} by <a href="http://aalasolutions.com/">AA'LA Solutions.</a> All rights
-                reserved</h6>
+            <p> Pakblood © {{ date('Y') }} by <a href="http://aalasolutions.com/" target="_blank">AA'LA Solutions.</a> All rights
+                reserved</p>
             <p>"Pakblood" is not responsible of any misuse of the information, numbers or any other material presented
                 on
                 the site.</p>

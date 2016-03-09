@@ -7,14 +7,16 @@ function countryAndCitySelect(countryId, cityId) {
     var countryDiv = $("#" + countryId);
     var cityDiv = $("#" + cityId);
     var country_id, select;
+    var data = [];
 
     function updateCities() {
+        console.log(1);
         country_id = country_id || $('input[name=country_id]');
         select = select || cityDiv;
         select.find('option:not(option[value=""])').each(function () {
             $(this).remove();
         });
-        cityDiv.trigger("chosen:updated");
+        cityDiv.trigger("change.select2");
         $.ajax({
             //dataType: 'json',
             type: 'GET',
@@ -24,26 +26,25 @@ function countryAndCitySelect(countryId, cityId) {
 //                    console.log();
                     $.each(result.cities, function (i) {
 //                        console.log(result.cities[i]);
+                        data.push({id: result.cities[i]["id"], text: result.cities[i]["name"]});
                         select.append('<option value="' + result.cities[i]["id"] + '">' + result.cities[i]["name"] + '</option>');
                     });
                     cityDiv.prop("disabled", false);
-                    cityDiv.trigger("chosen:updated");
+                    cityDiv.trigger("change.select2");
                 }
             }
         });
     }
 
-    countryDiv.chosen({
+    countryDiv.select2({
+        allowClear: true
+    });
+    cityDiv.select2({
         disable_search_threshold: 10,
         no_results_text: 'Oops, nothing found!',
         width: "100%"
     });
-    cityDiv.chosen({
-        disable_search_threshold: 10,
-        no_results_text: 'Oops, nothing found!',
-        width: "100%"
-    });
-    countryDiv.chosen().change(function () {
+    countryDiv.select2().change(function () {
 //        console.log();
         country_id = $(this).val();
         select = cityDiv;

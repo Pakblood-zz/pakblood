@@ -17,9 +17,11 @@
             </div>
         @endif
         <form id="searchForm" method="GET" action="{{url('/search')}}" accept-charset="UTF-8"
+              style="height: {{ isset($bg)?"inherit":"" }}"
               class="{{ (\Request::is('/') || \Request::is('home'))?"large-13":"large-20" }} columns">
+            <p id="searchText" style="display: none">Search Donor</p>
             <div class="small-20 medium-5 large-5 columns">
-                <select name="bgroup">
+                <select id="bgroup" name="bgroup">
                     <option value="" selected disabled>Blood Group</option>
                     <option value="Ap"<?php if (isset($bg) && ($bg == 'Ap')) echo 'selected="selected"'; ?>>A+</option>
                     <option value="An"<?php if (isset($bg) && ($bg == 'An')) echo 'selected="selected"'; ?>>A-</option>
@@ -63,6 +65,10 @@
     </div>
 </div>
 <script>
+    $(document).on('change', 'select#bgroup', function () {
+        $('form#searchForm').css({'height': 'inherit'});
+    });
+
     //ID of select containing countries and ID of select containing cities.
     countryAndCitySelect('countries', 'cities');
     function validateForm() {

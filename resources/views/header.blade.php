@@ -27,7 +27,7 @@
     {!! HTML::style('css/responsive-tables.css') !!}
     {!! HTML::style('css/jquery.datetimepicker.css') !!}
     {!! HTML::style('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css') !!}
-    {!! HTML::style('css/chosen.css') !!}
+    {!! HTML::style('css/select2.css') !!}
     {!! HTML::style('css/foundation-icons/foundation-icons.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
@@ -39,7 +39,7 @@
     {!! HTML::script('js/responsive-tables.js') !!}
     {!! HTML::script('js/vendor/jquery.datetimepicker.js') !!}
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
-    {!! HTML::script('js/vendor/chosen.jquery.js') !!}
+    {!! HTML::script('js/vendor/select2/select2.full.js') !!}
     {!! HTML::script('js/myFunctions.js') !!}
 
     <script>

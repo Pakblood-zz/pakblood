@@ -7546,9 +7546,9 @@ th {
   .breadcrumbs {
     height: initial !important;
     margin: 0px !important; } }
-#user_nav a {
+#user_nav a, #admin_nav a {
   color: #000000; }
-#user_nav ul.f-dropdown {
+#user_nav ul.f-dropdown, #admin_nav ul.f-dropdown {
   outline: none; }
 
 #user_nav > a:after {
@@ -7649,6 +7649,15 @@ th {
 @media only screen and (max-width: 1025px) {
   .top-bar {
     width: 100%; } }
+@media only screen and (max-width: 400px) {
+  form#searchForm {
+    height: 85px;
+    overflow: hidden; }
+    form#searchForm p#searchText {
+      display: block !important;
+      text-align: center;
+      margin: 0;
+      color: white; } }
 /*Center alinged structure*/
 .myCenter {
   width: 85%;
@@ -7835,19 +7844,25 @@ th {
       border-right: 0; }
     .footer nav a:hover {
       color: rgba(152, 152, 152, 0.84); }
-  .footer h6, .footer p, .footer a {
+  .footer p, .footer a {
     color: white;
     font-weight: normal;
     margin-top: 20px;
     text-align: center; }
   .footer p {
     font-size: 12px; }
-  .footer h6 a {
+  .footer p a {
     color: #65910a !important;
     text-decoration: underline; }
   @media only screen and (max-width: 40em) {
     .footer nav {
       display: inline-block; } }
+
+.g-recaptcha {
+  transform: scale(0.85) !important;
+  -webkit-transform: scale(0.85) !important;
+  transform-origin: 0 0 !important;
+  -webkit-transform-origin: 0 0 !important; }
 
 /* Add Member page */
 #left-container {

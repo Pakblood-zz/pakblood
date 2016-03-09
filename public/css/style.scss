@@ -55,7 +55,7 @@
   }
 }
 
-#user_nav {
+#user_nav, #admin_nav {
   a {
     //text-transform: uppercase;
     color: #000000;
@@ -192,6 +192,19 @@
 @media only screen and (max-width: 1025px) {
   .top-bar {
     width: 100%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  form#searchForm {
+    height: 85px;
+    overflow: hidden;
+    p#searchText {
+      display: block !important;
+      text-align: center;
+      margin: 0;
+      color: white;
+    }
   }
 }
 
@@ -450,7 +463,7 @@
       color: rgba(152, 152, 152, 0.84);
     }
   }
-  h6, p, a {
+  p, a {
     color: white;
     font-weight: normal;
     margin-top: 20px;
@@ -459,7 +472,7 @@
   p {
     font-size: 12px;
   }
-  h6 a {
+  p a {
     color: $primary-color !important;
     text-decoration: underline;
   }
@@ -468,6 +481,14 @@
       display: inline-block;
     }
   }
+}
+
+// Goggle Captcha
+.g-recaptcha {
+  transform: scale(0.85) !important;
+  -webkit-transform: scale(0.85) !important;
+  transform-origin: 0 0 !important;
+  -webkit-transform-origin: 0 0 !important;
 }
 
 /* Add Member page */
