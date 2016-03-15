@@ -2,6 +2,12 @@
 @include('search_bar')
         <!-- Center Container-->
 <div class="row center-container">
+    <div data-alert class="alert-box info radius">
+        Pakblood is not a blood bank and can not entertain any messages which says
+        "HELP we need blood". We only have blood donors list and if the blood group you need is not in the search
+        result,
+        we dont have that blood group.
+    </div>
     <div class="row">
         {!! Form::open(['url' => '/contact','class' => 'small-20 medium-15 large-15 columns small-centered']) !!}
         <h5 style="color: red;">Contact Us</h5>
@@ -52,12 +58,43 @@
                 {!! Form::text('subject', Input::old('subject'),array('class' => 'inline','id' => 'subject','placeholder' => 'Subject ')) !!}
             </div>
         </div>
+
+        <div class="row">
+            <div class="hide-for-small-only medium-6 large-6 columns">
+                {!! Form::label('country', 'Country :' ,array('class' => 'inline')) !!}
+            </div>
+            <div class="small-20 medium-14 large-14 columns left">
+                <select name="country" id="countriesRegForm" data-placeholder="Choose a country..."
+                        class="chosen-select">
+                    <option value=""></option>
+                    @foreach($countries as $row)
+                        <option value="{{ $row->id }}" {{ (Input::old('country') == $row->id)?"selected":"" }}>{{ $row->short_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="hide-for-small-only medium-6 large-6 columns">
+                {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
+            </div>
+            <div class="small-20 medium-14 large-14 columns left">
+                <select name="city" id="citiesRegForm" data-placeholder="Choose a city..."
+                        class="chosen-select" {{ (isset($city))?"":"disabled" }}>
+                    <option value=""></option>
+                    @if(isset($cities))
+                        @foreach($cities as $row)
+                            <option value="{{ $row->id }}" {{ (isset($city) && $city== $row->id)?"selected":"" }}>{{ $row->name }}</option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+        </div>
         <div class="row">
             <div class="hide-for-small-only medium-6 large-6 columns">
                 {!! Form::label('message', 'Message :',array('class' => 'inline')) !!}
             </div>
             <div class="small-20 medium-14 large-14 columns left">
-                {!! Form::textarea('message', null, ['size' => '30x5']) !!}
+                {!! Form::textarea('message', NULL, ['size' => '30x5']) !!}
             </div>
         </div>
         <div class="row">
@@ -74,4 +111,8 @@
         {!! Form::close() !!}
     </div>
 </div>
+<script>
+    //ID of select containing countries and ID of select containing cities.
+    countryAndCitySelect('countriesRegForm', 'citiesRegForm');
+</script>
 @include('footer')
