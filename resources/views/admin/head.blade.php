@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pakblood</title>
+    <title>Pakblood - Admin Panel</title>
 
     <meta name="description" content="Pakblood...">
     <meta name="author" content="Pakblood website">
@@ -16,11 +16,13 @@
     {!! HTML::style('css/responsive-tables.css') !!}
     {!! HTML::style('css/foundation-icons/foundation-icons.css') !!}
     {!! HTML::style('css/jquery.datetimepicker.css') !!}
+    {!! HTML::style('css/jquery-ui.min.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
     {!! HTML::script('js/vendor/fastclick.js') !!}
     {!! HTML::script('js/vendor/jquery.js') !!}
     {!! HTML::script('js/vendor/jquery.cookie.js') !!}
+    {!! HTML::script('js/vendor/jquery-ui.min.js') !!}
     {!! HTML::script('js/vendor/placeholder.js') !!}
     {!! HTML::script('js/foundation.js') !!}
     {!! HTML::script('js/responsive-tables.js') !!}

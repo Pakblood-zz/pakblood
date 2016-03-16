@@ -14,17 +14,14 @@ use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller {
 
-    function __construct() {
-        if (Auth::user()) {
-//            dump(1);
-        }
-//        dump(2);
-        return redirect('/home');
-    }
-
     public function index() {
-        $data = array('total_org'  => Org::where('status', '=', 'active')->count(),
-                      'total_user' => User::where('status', '=', 'active')->count());
+        $data = [
+            'activeOrg'    => Org::where('status', '=', 'active')->count(),
+            'inactiveOrg'  => Org::where('status', '=', 'inactive')->count(),
+            'activeUser'   => User::where('status', '=', 'active')->count(),
+            'inactiveUser' => User::where('status', '=', 'inactive')->count(),
+            'reportedUser' => User::where('status', '=', 'reported')->count(),
+        ];
         return view('admin.dashboard', $data);
     }
 
@@ -38,5 +35,22 @@ class MainController extends Controller {
             return redirect('/admin');
         }
         return redirect('/admin')->with('message', 'Wrong Username or Password')->with('type', 'error');
+    }
+
+    public function getData() {
+        $term = \Input::get('term');
+        $table = \Input::get('table');
+
+        $results = array();
+
+        $queries = \DB::table('pb_' . $table)
+            ->where('email', 'LIKE', '%' . $term . '%')
+            ->take(10)
+            ->get();
+
+        foreach ($queries as $query) {
+            $results[] = ['id' => $query->id, 'value' => $query->email];
+        }
+        return \Response::json($results);
     }
 }

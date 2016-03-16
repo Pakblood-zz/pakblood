@@ -26,7 +26,7 @@
                     @endforeach
                 </div>
             @endif
-            <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{URL::previous()}}">Go Back</a>
+            <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{url('/admin/organization')}}">Go Back</a>
             <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{url('/admin/users')}}">All Users</a>
             @if(isset($type) && $type == 'view')
                 <div>

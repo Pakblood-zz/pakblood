@@ -36,7 +36,7 @@
                 </select>
                 <div class="error">Please Select Blood Group.</div>
             </div>
-            <div class="small-20 medium-5 large-5 columns">
+            <div class="small-20 medium-5 large-5 columns" id="countries_select2">
                 <select name="country" id="countries" data-placeholder="Choose a Country..."
                         class="chosen-select">
                     <option value=""></option>
@@ -46,7 +46,7 @@
                 </select>
                 <div class="error">Please Select Country.</div>
             </div>
-            <div class="small-20 medium-5 large-5 columns">
+            <div class="small-20 medium-5 large-5 columns" id="cities_select2">
                 <select name="city" id="cities" data-placeholder="Choose a City..."
                         class="chosen-select" {{ (isset($city))?"":"disabled" }}>
                     <option value=""></option>
@@ -59,7 +59,7 @@
                 <div class="error">Please Select City.</div>
             </div>
             <div id="search-btn" class="small-20 medium-5 large-5 columns">
-                <a href="javascript:;" class="small button radius" value="Search" onclick="validateForm()">Search</a>
+                <a href="javascript:;" class="small button radius" onclick="validateForm()">Search</a>
             </div>
         </form>
     </div>
@@ -74,25 +74,28 @@
     function validateForm() {
         var form = $('#searchForm');
         var bgroupSelect = $('select[name=bgroup]');
-        var countrySelect = $('div#countries_chosen');
-        var citySelect = $('div#cities_chosen');
+        var countrySelect = $('div#countries_select2');
+        var citySelect = $('div#cities_select2');
+//        console.log(bgroupSelect);
+//        console.log(countrySelect);
+//        console.log(citySelect);
         if (bgroupSelect.val() == null) {
             bgroupSelect.parent().find('div.error').css('display', 'block');
             return false;
         } else {
             bgroupSelect.parent().find('div.error').css('display', 'none');
         }
-        if (countrySelect.find('a').hasClass('chosen-default')) {
-            countrySelect.parent().find('div.error').css('display', 'block');
+        if (!countrySelect.find('span#select2-countries-container').attr('title')) {
+            countrySelect.find('div.error').css('display', 'block');
             return false;
         } else {
-            countrySelect.parent().find('div.error').css('display', 'none');
+            countrySelect.find('div.error').css('display', 'none');
         }
-        if (citySelect.find('a').hasClass('chosen-default')) {
-            citySelect.parent().find('div.error').css('display', 'block');
+        if (!citySelect.find('span#select2-cities-container').attr('title')) {
+            citySelect.find('div.error').css('display', 'block');
             return false;
         } else {
-            citySelect.parent().find('div.error').css('display', 'none');
+            citySelect.find('div.error').css('display', 'none');
         }
         form.submit();
     }

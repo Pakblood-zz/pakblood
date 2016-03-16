@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\City;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -204,6 +205,7 @@ class AuthController extends Controller {
             }
         }
         if (Auth::attempt($credentials, $request->has('remember'))) {
+            User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
             return $this->handleUserWasAuthenticated($request, $throttles);
         }
 
@@ -236,8 +238,19 @@ class AuthController extends Controller {
         if (method_exists($this, 'authenticated')) {
             return $this->authenticated($request, Auth::user());
         }
+
         $redirectId = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
-        return redirect('profile/' . $redirectId);
+//        return redirect('profile/' . $redirectId);
+        if (Auth::user()->role == 'admin') {
+            \Session::set('auth.type', 'admin');
+            return redirect('/admin');
+        }
+        elseif (Auth::user()->role == 'user') {
+            \Session::set('auth.type', 'user');
+            return redirect('profile/' . $redirectId);
+        }
+        \Auth::logout();
+        return redirect('/login')->with('message', 'Unauthorized.')->with('type', 'error');
     }
 
     /**
@@ -254,6 +267,7 @@ class AuthController extends Controller {
                 $userAccount->fb_id = $user->id;
                 $userAccount->save();
                 if (Auth::loginUsingId($userAccount->id)) {
+                    User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $data = array(
                         'name'  => \Auth::user()->name,
                         'email' => \Auth::user()->email,
@@ -276,6 +290,7 @@ class AuthController extends Controller {
             //If user Facebook id matches with Socialite result id
             if ($userEmailFound->fb_id == $user->id) {
                 if (Auth::loginUsingId($userEmailFound->id)) {
+                    User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect);
                 }
@@ -316,6 +331,7 @@ class AuthController extends Controller {
         $user->status = "active";
         if ($user->save()) {
             if (Auth::loginUsingId($user->id)) {
+                User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                 $data = array(
                     'name'        => $user->name,
                     'username'    => $user->username,
@@ -354,6 +370,7 @@ class AuthController extends Controller {
                 $userAccount->gp_id = $user->id;
                 $userAccount->save();
                 if (Auth::loginUsingId($userAccount->id)) {
+                    User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $data = array(
                         'name'  => \Auth::user()->name,
                         'email' => \Auth::user()->email,
@@ -377,6 +394,7 @@ class AuthController extends Controller {
             //If user Facebook id matches with Socialite result id
             if ($userEmailFound->gp_id == $user->id) {
                 if (Auth::loginUsingId($userEmailFound->id)) {
+                    User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect);
                 }
@@ -417,6 +435,7 @@ class AuthController extends Controller {
         $user->status = "active";
         if ($user->save()) {
             if (Auth::loginUsingId($user->id)) {
+                User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                 $data = array(
                     'name'        => $user->name,
                     'username'    => $user->username,

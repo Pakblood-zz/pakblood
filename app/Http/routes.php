@@ -13,6 +13,10 @@
 
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));
 //Route::get('test', 'ProfileController@hashPassword');
+//Route::get('/bulkEmail','ContactUsController@bulkEmail');
+/*Route::get('/bulkEmail', function () {
+    return view('emails.bulkEmail');
+});*/
 Route::get('/', function () {
     return view('index');
 });
@@ -78,43 +82,42 @@ Route::group(['middleware' => 'auth'], function () {
 });
 Route::get('/report/user', 'ReportsController@index');
 Route::post('/report/user', 'ReportsController@reportUser');
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'before' => 'admin'], function () {
-    Route::get('/login', 'MainController@login');
-    Route::post('/login', 'MainController@login');
+Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin', 'before' => 'admin'], function () {
+//    Route::get('/login', 'MainController@login');
+//    Route::post('/login', 'MainController@login');
+
+    //AutoComplete fetch data route
+//    Route::get('getData', 'MainController@getData');
+
     Route::get('/', 'MainController@index');
     Route::get('/dashboard', 'MainController@index');
-    Route::get('/users', 'UserController@getAll');
-    Route::get('/deleted/users', 'UserController@getDeleted');
-    Route::post('/deleted/users', 'UserController@filter');
-    Route::post('/users', 'UserController@filter');
-    Route::get('/user/{id}', 'UserController@getUser');
-    Route::get('/add/user', function () {
-        return view('admin.add_user');
-    });
-    Route::post('/add/user', 'UserController@add');
-    Route::get('/edit/user/{id}', 'UserController@edit');
-    Route::post('/edit/user', 'UserController@update');
-    Route::get('/delete/user/{id}', 'UserController@delete');
-    Route::get('/delete/reported/user/{id}', 'ReportsController@deleteReportedUser');
-    Route::get('/undo/delete/user/{id}', 'UserController@undoDelete');
+
+    //Users
+    Route::resource('/user', 'UserController');
+    Route::post('/user/filter', 'UserController@filter');
+    Route::get('/user/{id}/destroy', 'UserController@destroy');
     Route::get('/change/user/status/{id}', 'UserController@changeStatus');
+    Route::get('/deleted/user', 'UserController@getDeleted');
+    Route::post('/deleted/user', 'UserController@filter');
+    Route::get('/undo/delete/user/{id}', 'UserController@undoDelete');
+    Route::get('/hard/delete/user/{id}', 'UserController@hardDelete');
+
+    //Organizations
+    Route::resource('/organization', 'OrgController');
+    Route::post('/organization', 'OrgController@filter');
+    Route::get('/organization/{id}/delete', 'OrgController@destroy');
+    Route::get('/change/organization/status/{id}', 'OrgController@changeStatus');
+
+    //Reports
+    Route::get('/reports', 'ReportsController@getAll');
+    Route::get('/delete/reported/user/{id}', 'ReportsController@deleteReportedUser');
+
+    //Bleed
     Route::get('/user/{id}/bleed/history', 'BleedController@getAll');
     Route::get('/user/{user_id}/edit/bleed/{bleed_id}', 'BleedController@edit');
     Route::post('/user/edit/bleed', 'BleedController@update');
     Route::get('/add/user/{id}/bleed', 'BleedController@index');
     Route::post('/add/user/bleed', 'BleedController@add');
-    Route::get('/organizations', 'OrgController@getAll');
-    Route::post('/organizations', 'OrgController@filter');
-    Route::get('/organization/{id}', 'OrgController@getOrg');
-    Route::get('/add/organization', function () {
-        return view('admin.add_org');
-    });
-    Route::post('/add/organization', 'OrgController@add');
-    Route::get('/delete/organization/{id}', 'OrgController@delete');
-    Route::get('/edit/organization/{id}', 'OrgController@editOrg');
-    Route::post('/edit/organization', 'OrgController@update');
-    Route::get('/change/organization/status/{id}', 'OrgController@changeStatus');
-    Route::get('/reports', 'ReportsController@getAll');
 });
 Route::get('/fblogin', function () {
     return Socialite::with('facebook')->redirect();

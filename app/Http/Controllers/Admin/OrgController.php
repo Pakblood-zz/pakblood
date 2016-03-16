@@ -13,62 +13,45 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-class OrgController extends Controller
-{
-    public function getAll(){
-        $data = array('orgs' => Org::select('*')->paginate());
-        return view('admin.organizations',$data);
+class OrgController extends Controller {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index() {
+        $data = [
+            'orgs' => Org::select('*')->paginate(),
+        ];
+        return view('admin.organizations', $data);
     }
 
-    public function getOrg($id){
-        $org = Org::where('id','=',$id)->first();
-        $city = Org::join('pb_cities','pb_org.city_id','=','pb_cities.id')
-            ->select(DB::raw('pb_cities.*'))
-            ->where('pb_cities.id', '=', '208')
-            ->first();
-
-        $data = array('org' => $org,'city' => $city,'type' => 'view');
-        return view('admin.org_profile',$data);
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create() {
+        return view('admin.add_org');
     }
 
-    public function editOrg($id){
-        $data = array('org' => Org::where('id','=',$id)->first(), 'type' => 'edit');
-        return view('admin.org_profile',$data);
-    }
-
-    public function filter(Request $request){
-        if($request->input('status') == 'all' && $request->input('email') == null){
-            $data = array('users' => User::select('*')->paginate(15),
-                'email' => $request->input('email'), 'status' => $request->input('status'));
-            return view('admin.users',$data);
-        }
-        elseif($request->input('email') != NULL){
-            if($request->input('status') == 'all'){
-                $data = array('orgs' => Org::where('email','=',$request->input('email'))->paginate(15),
-                    'email' => $request->input('email'), 'status' => $request->input('status'));
-                return view('admin.organizations',$data);
-            }
-            $data = array('orgs' => Org::whereEmailAndStatus($request->input('email'),$request->input('status'))->paginate(15),
-                'email' => $request->input('email'), 'status' => $request->input('status'));
-            return view('admin.organizations',$data);
-        }
-        $data = array('orgs' => Org::where('status','=',$request->input('status'))->paginate(15),
-            'email' => $request->input('email'), 'status' => $request->input('status')
-        );
-        return view('admin.organizations',$data);
-    }
-
-    public function add(Request $request){
-        $rules = array(
-            'name' => 'required|unique:pb_org',
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request) {
+        $rules = [
+            'name'        => 'required|unique:pb_org',
             'org_address' => 'required',
-            'org_phone' => 'required',
-            'city' => 'required',
-            'username' => 'required|exists:pb_users,username,org_id,0',
-        );
+            'org_phone'   => 'required',
+            'city'        => 'required',
+            'username'    => 'required|exists:pb_users,username,org_id,0',
+        ];
 
         $messages = [
-            'username.exists' => 'Username Does not exist in database or is already a part of an organization.'
+            'username.exists' => 'Username Does not exist in database or is already a part of an organization.',
         ];
 
         $validator = Validator::make(Input::all(), $rules, $messages);
@@ -76,17 +59,19 @@ class OrgController extends Controller
             return Redirect('/admin/add/organization')
                 ->withErrors($validator)
                 ->withInput(Input::all());
-        } else {
+        }
+        else {
             $org = new Org;
-            $user = User::where('username','=',$request->input('username'))->first();
-            if($user->is_deleted == 1 || $user->status == 'inactive'){
+            $user = User::where('username', '=', $request->input('username'))->first();
+            if ($user->is_deleted == 1 || $user->status == 'inactive') {
                 return redirect()->back()->withInput(Input::all())
-                    ->with('message','User with Deactivated account can\'t be admin of an organization or user have not yet confirmed their email.')
-                    ->with('type','error');
-            }elseif($user->status == 'reported'){
+                    ->with('message', 'User with Deactivated account can\'t be admin of an organization or user have not yet confirmed their email.')
+                    ->with('type', 'error');
+            }
+            elseif ($user->status == 'reported') {
                 return redirect()->back()->withInput(Input::all())
-                    ->with('message','Reported users can\'t be admin of an organizaiton')
-                    ->with('type','error');
+                    ->with('message', 'Reported users can\'t be admin of an organizaiton')
+                    ->with('type', 'error');
             }
             $org->user_id = $user->id;
             $org->username = $user->username;
@@ -96,8 +81,7 @@ class OrgController extends Controller
             $org->phone = $request->input('org_phone');
             $org->mobile = $user->mobile;
             $org->city_id = $request->input('city');
-            if ($request->hasFile('logo'))
-            {
+            if ($request->hasFile('logo')) {
                 $logo = $org->name . '.' .
                     $request->file('logo')->getClientOriginalExtension();
                 $request->file('logo')->move(
@@ -108,49 +92,68 @@ class OrgController extends Controller
             $org->admin_name = $user->name;
             $org->email = $user->email;
             $org->status = 'active';
-            if($org->save()){
+            if ($org->save()) {
                 DB::table('pb_users')
                     ->where('id', $user->id)
                     ->update(['org_id' => $org->id]);
-                return redirect('/admin/organizations')
-                    ->with('message','Organization successfully created.')
-                    ->with('type','success');
+                return redirect('/admin/organization')
+                    ->with('message', 'Organization successfully created.')
+                    ->with('type', 'success');
             }
             return redirect()->back()->withInput(Input::all())
-                ->with('message','There was some probems with creating organizaiton.')
-                ->with('type','error');
+                ->with('message', 'There was some probems with creating organizaiton.')
+                ->with('type', 'error');
         }
     }
 
-    public function delete($id){
-        $org = Org::where('id','=',$id);
-        $users = User::where('org_id','=',$id)->get();
-        foreach($users as $user){
-            $user->org_id = 0;
-            $user->save();
-        }
-        if($org->delete()){
-            return redirect('/admin/organizations')
-                ->with('message','Organization successfully deleted.')
-                ->with('type','success');
-        }
-        return redirect('/admin/organizations')
-            ->with('message','there was some problem deleting Organization.')
-            ->with('type','error');
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id) {
+        $org = Org::where('id', '=', $id)->first();
+        $city = Org::join('pb_cities', 'pb_org.city_id', '=', 'pb_cities.id')
+            ->select(DB::raw('pb_cities.*'))
+            ->where('pb_cities.id', '=', '208')
+            ->first();
+
+        $data = ['org' => $org, 'city' => $city, 'type' => 'view'];
+        return view('admin.org_profile', $data);
     }
 
-    public function update(Request $request){
-        $user = User::whereUsernameAndEmail($request->input('admin_username'),$request->input('admin_email'))->first();
-        if($user->is_deleted == 1 || $user->status == 'inactive'){
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id) {
+        $data = ['org' => Org::where('id', '=', $id)->first(), 'type' => 'edit'];
+        return view('admin.org_profile', $data);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id) {
+        $user = User::whereUsernameAndEmail($request->input('admin_username'), $request->input('admin_email'))->first();
+        if ($user->is_deleted == 1 || $user->status == 'inactive') {
             return redirect()->back()->withInput(Input::all())
-                ->with('message','User with Deactivated account can\'t be admin of an organization or user have not yet confirmed their email.')
-                ->with('type','error');
-        }elseif($user->status == 'reported'){
-            return redirect()->back()->withInput(Input::all())
-                ->with('message','Reported users can\'t be admin of an organizaiton')
-                ->with('type','error');
+                ->with('message', 'User with Deactivated account can\'t be admin of an organization or user have not yet confirmed their email.')
+                ->with('type', 'error');
         }
-        $org = Org::where('id','=',$request->input('org_id'))->first();
+        elseif ($user->status == 'reported') {
+            return redirect()->back()->withInput(Input::all())
+                ->with('message', 'Reported users can\'t be admin of an organizaiton')
+                ->with('type', 'error');
+        }
+        $org = Org::where('id', '=', $request->input('org_id'))->first();
         $org->user_id = $user->id;
         $org->username = $user->username;
         $org->name = $request->input('org_name');
@@ -159,8 +162,7 @@ class OrgController extends Controller
         $org->phone = $request->input('org_phone');
         $org->mobile = $user->mobile;
         $org->city_id = $request->input('city');
-        if ($request->hasFile('logo'))
-        {
+        if ($request->hasFile('logo')) {
             $logo = $org->name . '.' .
                 $request->file('logo')->getClientOriginalExtension();
             $request->file('logo')->move(
@@ -171,38 +173,95 @@ class OrgController extends Controller
         $org->admin_name = $user->name;
         $org->email = $user->email;
         $org->status = $request->input('status');
-        if($org->save()){
+        if ($org->save()) {
             DB::table('pb_users')
                 ->where('id', $user->id)
                 ->update(['org_id' => $org->id]);
-            return redirect('/admin/edit/organization/'.$org->id)
-                ->with('message','Organization successfully edited.')
-                ->with('type','success');
+            return redirect('/admin/edit/organization/' . $org->id)
+                ->with('message', 'Organization successfully edited.')
+                ->with('type', 'success');
         }
         return redirect()->back()->withInput(Input::all())
-            ->with('message','There was some problems with editing organization.')
-            ->with('type','error');
+            ->with('message', 'There was some problems with editing organization.')
+            ->with('type', 'error');
     }
 
-    public function changeStatus($id){
-        $org = Org::Where('id','=',$id)->first();
-        if($org->status == 'active'){
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id) {
+        $org = Org::where('id', '=', $id);
+        $users = User::where('org_id', '=', $id)->get();
+        foreach ($users as $user) {
+            $user->org_id = 0;
+            $user->save();
+        }
+        if ($org->delete()) {
+            return redirect('/admin/organization')
+                ->with('message', 'Organization successfully deleted.')
+                ->with('type', 'success');
+        }
+        return redirect('/admin/organization')
+            ->with('message', 'there was some problem deleting Organization.')
+            ->with('type', 'error');
+    }
+
+    public function filter(Request $request) {
+        if ($request->input('status') == 'all' && $request->input('email') == NULL) {
+            $data = [
+                'orgs'  => Org::select('*')->paginate(15),
+                'email'  => $request->input('email'),
+                'status' => $request->input('status'),
+            ];
+            return view('admin.organizations', $data);
+        }
+        elseif ($request->input('email') != NULL) {
+            if ($request->input('status') == 'all') {
+                $data = [
+                    'orgs'   => Org::where('email', '=', $request->input('email'))->paginate(15),
+                    'email'  => $request->input('email'),
+                    'status' => $request->input('status'),
+                ];
+                return view('admin.organizations', $data);
+            }
+            $data = [
+                'orgs'   => Org::whereEmailAndStatus($request->input('email'), $request->input('status'))->paginate(15),
+                'email'  => $request->input('email'),
+                'status' => $request->input('status'),
+            ];
+            return view('admin.organizations', $data);
+        }
+        $data = [
+            'orgs'   => Org::where('status', '=', $request->input('status'))->paginate(15),
+            'email'  => $request->input('email'),
+            'status' => $request->input('status'),
+        ];
+        return view('admin.organizations', $data);
+    }
+
+    public function changeStatus($id) {
+        $org = Org::Where('id', '=', $id)->first();
+        if ($org->status == 'active') {
             $org->status = 'inactive';
             $org->save();
-        }else{
+        }
+        else {
             $org->status = 'active';
             $org->save();
-            $data = array(
-                'name' => $org->admin_name,
+            $data = [
+                'name'     => $org->admin_name,
                 'org_name' => $org->name,
-                'status' => 'Accepted'
-            );
+                'status'   => 'Accepted',
+            ];
             Mail::queue('emails/org_create_request', $data, function ($message) use ($org) {
                 $message
-                    ->to($org->email , $org->admin_name)
+                    ->to($org->email, $org->admin_name)
                     ->subject('Organization Create Request');
             });
         }
-        return redirect('/admin/organizations')->with('message','Organization status successfully changed.')->with('type','success');
+        return redirect('/admin/organization')->with('message', 'Organization status successfully changed.')->with('type', 'success');
     }
 }

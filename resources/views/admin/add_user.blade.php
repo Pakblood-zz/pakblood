@@ -3,18 +3,25 @@
 
 <section class="main-section">
     <div class="page_wrapper">
-        <div class="row"><h3 class="page_heading">Add User </h3><div class="bg_icon"><li class="fi-torso size-72"></li></div></div>
-        <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{url('/admin/organiztions')}}">Go back</a>
+        <div class="row"><h3 class="page_heading">Add User </h3>
+            <div class="bg_icon">
+                <li class="fi-torso size-72"></li>
+            </div>
+        </div>
+        <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{url('/admin/organization')}}">Go
+            back</a>
         <div class="row">
             @if(Session::get('message') != NULL)
                 @if((Session::has('type')) && (Session::get('type')=='success'))
-                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
+                         style="text-align: center;font-weight: bold;">
                         {{ Session::get('message') }}
                         <a href="#" class="close">&times;</a>
                     </div>
                 @endif
                 @if((Session::has('type')) && (Session::get('type')=='error'))
-                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                         style="text-align: center;font-weight: bold;">
                         {{ Session::get('message') }}
                         <a href="#" class="close">&times;</a>
                     </div>
@@ -27,7 +34,7 @@
                     @endforeach
                 </div>
             @endif
-            {!! Form::open(array('url' => 'admin/add/user')) !!}
+            {!! Form::open(array('url' => 'admin/user')) !!}
             <div class="row">
                 <div class="small-20 large-20 columns">
                     <div class="row">

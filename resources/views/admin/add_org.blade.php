@@ -9,17 +9,20 @@
                 <li class="fi-torsos-all size-72"></li>
             </div>
         </div>
-        <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{url('/admin/organiztions')}}">Go back</a>
+        <a class="small button" style="border-radius: 50px 5px 5px 50px;" href="{{url('/admin/organization')}}">Go
+            back</a>
         <div class="row">
             @if(Session::get('message') != NULL)
                 @if((Session::has('type')) && (Session::get('type')=='success'))
-                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                    <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
+                         style="text-align: center;font-weight: bold;">
                         {{ Session::get('message') }}
                         <a href="#" class="close">&times;</a>
                     </div>
                 @endif
                 @if((Session::has('type')) && (Session::get('type')=='error'))
-                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round" style="text-align: center;font-weight: bold;">
+                    <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                         style="text-align: center;font-weight: bold;">
                         {{ Session::get('message') }}
                         <a href="#" class="close">&times;</a>
                     </div>
@@ -145,7 +148,7 @@
                         {!! Form::label('logo', 'Organization Logo :' ,array('class' => 'inline')) !!}
                     </div>
                     <div class="small-20 medium-10 large-10 columns left">
-                        {!! Form::file('logo', null, array('class' => 'inline','id' => 'logo')) !!}
+                        {!! Form::file('logo', NULL, array('class' => 'inline','id' => 'logo')) !!}
                     </div>
                 </div>
             </div>
@@ -158,12 +161,12 @@
                     <div class="small-20 medium-10 large-6 columns left">
                         {!! Form::text('username', Input::old('username'), array('class' => 'inline','id' => 'username','placeholder' => 'Username')) !!}
                     </div>
-                   {{-- <div class="hide-for-small-only hide-for-medium-only medium-7 large-4 columns">
-                        {!! Form::label('email', 'Email :' ,array('class' => 'inline')) !!}
-                    </div>
-                    <div class="small-20 medium-10 large-6 columns left">
-                        {!! Form::text('email', Input::old('email'), array('class' => 'inline','id' => 'email','placeholder' => 'Email ')) !!}
-                    </div>--}}
+                    {{-- <div class="hide-for-small-only hide-for-medium-only medium-7 large-4 columns">
+                         {!! Form::label('email', 'Email :' ,array('class' => 'inline')) !!}
+                     </div>
+                     <div class="small-20 medium-10 large-6 columns left">
+                         {!! Form::text('email', Input::old('email'), array('class' => 'inline','id' => 'email','placeholder' => 'Email ')) !!}
+                     </div>--}}
                 </div>
                 {{--<div class="row">
                     <div class="hide-for-small-only hide-for-medium-only medium-7 large-4 columns">
