@@ -22,7 +22,7 @@ class SearchController extends Controller {
 
     public function getAllUsers(Request $request) {
 
-        if ($request->input('page') != null) {
+        if ($request->input('page') != NULL) {
             $page = $request->input('page');
             $page--;
         }
@@ -31,7 +31,7 @@ class SearchController extends Controller {
         }
 
         $currPage = $page;
-        $perPage = 15;
+        $perPage  = 15;
 
         $start = $currPage * $perPage;
 
@@ -53,7 +53,7 @@ class SearchController extends Controller {
             Paginator::resolveCurrentPage(),
             ['path' => Paginator::resolveCurrentPath()]
         );
-        $data = array('users' => $users);
+        $data  = array('users' => $users);
         return view::make('members', $data);
     }
 
@@ -67,7 +67,7 @@ class SearchController extends Controller {
             $bg = substr($bg, 0, -1) . '-';
         }*/
         if (Auth::guest()) {
-            if ($request->input('page') != null) {
+            if ($request->input('page') != NULL) {
                 $page = $request->input('page');
                 $page--;
             }
@@ -76,7 +76,7 @@ class SearchController extends Controller {
             }
 
             $currPage = $page;
-            $perPage = 15;
+            $perPage  = 15;
 
             $start = $currPage * $perPage;
 
@@ -88,6 +88,10 @@ class SearchController extends Controller {
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
                 ->addselect('pb_users.*')
                 ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
+                ->where(function($query){
+                    $query ->where('phone', '!=', '')
+                        ->whereOr('mobile', '!=', '');
+                })
                 ->where('pb_users.city_id', $request->input('city'))
                 ->where('pb_users.blood_group', $bg)
                 ->having('report_count', '<', 2)->groupby('pb_users.id')->get();
@@ -96,6 +100,10 @@ class SearchController extends Controller {
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
                 ->addselect('pb_users.*')
                 ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
+                ->where(function($query){
+                    $query ->where('phone', '!=', '')
+                        ->whereOr('mobile', '!=', '');
+                })
                 ->where('pb_users.city_id', $request->input('city'))
                 ->where('pb_users.blood_group', $bg)
                 ->whereRaw('pb_users.last_bleed < DATE_SUB(NOW(),INTERVAL 3 month)')
@@ -112,7 +120,7 @@ class SearchController extends Controller {
             );
         }
         else {
-            if ($request->input('page') != null) {
+            if ($request->input('page') != NULL) {
                 $page = $request->input('page');
                 $page--;
             }
@@ -121,7 +129,7 @@ class SearchController extends Controller {
             }
 
             $currPage = $page;
-            $perPage = 15;
+            $perPage  = 15;
 
             $start = $currPage * $perPage;
 
@@ -142,6 +150,10 @@ class SearchController extends Controller {
                 ->where(function ($query) {
                     $query->where('org_id', '=', 0)->orWhere('org_id', '=', Auth::user()->org_id);
                 })
+                ->where(function($query){
+                    $query ->where('phone', '!=', '')
+                        ->whereOr('mobile', '!=', '');
+                })
                 ->where('pb_users.city_id', $request->input('city'))
                 ->where('pb_users.blood_group', $bg)
                 ->having('report_count', '<', 2)->groupby('pb_users.id')->get();
@@ -153,6 +165,10 @@ class SearchController extends Controller {
                 ->where('pb_users.id', '!=', Auth::user()->id)
                 ->where(function ($query) {
                     $query->where('org_id', '=', 0)->orWhere('org_id', '=', Auth::user()->org_id);
+                })
+                ->where(function($query){
+                    $query ->where('phone', '!=', '')
+                        ->whereOr('mobile', '!=', '');
                 })
                 ->where('pb_users.city_id', $request->input('city'))
                 ->where('pb_users.blood_group', $bg)

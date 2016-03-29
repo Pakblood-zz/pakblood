@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class ContactUsController extends Controller {
+
     public function sendMail(Request $request) {
         $data = Input::all();
 //        dd($data);
-        $rules = [
+        $rules     = [
             'name'                 => 'required',
             'email'                => 'required|email',
             'subject'              => 'required',
@@ -72,8 +73,9 @@ class ContactUsController extends Controller {
         }
         dd(1);*/
         $array = [];
-        $users = User::where('email', 'LIKE', '%_@__%.__%')->orderBy('id')->get();
-        foreach ($users as $user) {
+        $users = User::where('email', 'LIKE', '%_@__%.__%')->where('email_sent', '!=', 1)->orderBy('id')->get();
+//        $users = User::where('email', 'asad.zaheer@aalasolutions.com')->where('email_sent', '!=', 1)->orderBy('id')->get();
+        /*foreach ($users as $user) {
             array_push($array, ['name' => $user->name, 'email' => $user->email]);
         }
 //        dump($array);
@@ -90,21 +92,22 @@ class ContactUsController extends Controller {
             if ($mail) {
                 dump($array[$i]['name'] . ' => ' . $array[$i]['email']);
             }
+        }*/
+//       dd($users);
+        foreach ($users as $user) {
+            $data = [
+                'name'  => $user->name,
+                'email' => $user->email,
+            ];
+            $mail = Mail::send(['html' => 'emails/bulkEmail'], $data, function ($message) use ($data) {
+                $message
+                    ->to($data['email'], $data['name'])
+                    ->subject('Pakblood Site Updates.');
+            });
+            if ($mail) {
+                User::where('id', $user->id)->update(['email_sent' => 1]);
+                dump("Mail Sent To : " . $user->id . " : " . $user->email);
+            }
         }
-//       dd();
-        /*foreach ($users as $user) {
-           $data = [
-               'name'  => $user->name,
-               'email' => $user->email
-           ];
-           $mail = Mail::send(['html' => 'emails/bulkEmail'], $data, function ($message) use ($data) {
-               $message
-                   ->to($data['email'], $data['name'])
-                   ->subject('Pakblood Site Updates.');
-           });
-           if ($mail) {
-               dump("Mail Sent To : " . $user->id . " : " . $user->email);
-           }
-       }*/
     }
 }
