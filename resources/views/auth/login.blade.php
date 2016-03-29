@@ -24,8 +24,10 @@
             @if((Session::has('type')) && (Session::get('type')=='deactivated'))
                 <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns"
                      style="text-align: center;font-weight: bold;">
-                    {{ Session::get('message') }} <a href="{{ url('/account/activation') }}">Click Here to
-                        activate your account.</a>
+                    {{ Session::get('message') }}
+                    <a href="{{ url('/account/activation') }}"
+                       style="color: white; font-weight: bold; text-decoration: underline;">Click Here to activate your
+                        account.</a>
                     <a href="#" class="close">&times;</a>
                 </div>
             @endif
@@ -61,7 +63,7 @@
         </div>
         <div class="large-10 columns">
             <h5>Or</h5>
-            <div class="large-20 columns">
+            <div class="large-20 columns" style="    margin-bottom: 10px;">
                 <a href="{{ url('fblogin') }}" class="fb_btn button"><i class="fa fa-facebook-official"></i> <span>Login With Facebook</span></a>
             </div>
             <div class="large-20 columns">

@@ -36,15 +36,12 @@ function countryAndCitySelect(countryId, cityId) {
         });
     }
 
-    countryDiv.select2({
-        allowClear: true
-    });
     cityDiv.select2({
-        disable_search_threshold: 10,
-        no_results_text: 'Oops, nothing found!',
         width: "100%"
     });
-    countryDiv.select2().change(function () {
+    countryDiv.select2({
+        width: "100%"
+    }).change(function () {
 //        console.log();
         country_id = $(this).val();
         select = cityDiv;
