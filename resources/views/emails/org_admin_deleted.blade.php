@@ -11,8 +11,8 @@
     account has been deleted from pakblood due to reports from other users.<br>
     If you would like to take ownership of your organization please send us email with details at info@pakblood.com<br><br>
 
-    Regards,<br>
-    Pakblood Team<br>
+    @include ('emails.__footer')
+
 </div>
 
 </body>

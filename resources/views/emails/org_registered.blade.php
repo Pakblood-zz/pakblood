@@ -18,6 +18,7 @@
     City : {{ $city }} <br>
     Blood Group : {{ $blood_group }} <br>
     Status : {{ $status }} <br>
+    @include ('emails.__footer')
 </div>
 
 </body>

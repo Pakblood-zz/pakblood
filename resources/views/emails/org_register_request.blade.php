@@ -11,6 +11,7 @@
 if your organization is accepted or not.<br><br>
     Regards,<br>
     Pakblood Team<br>
+    @include ('emails.__footer')
 </div>
 
 </body>

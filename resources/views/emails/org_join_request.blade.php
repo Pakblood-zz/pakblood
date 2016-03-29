@@ -8,8 +8,8 @@
 <div>
     Dear {{$name}},<br><br>
     This email is to inform you that, your request to join {{$org_name}}, has been {{$status}}.<br><br>
-    Regards,<br>
-    Pakblood Team<br>
+    @include ('emails.__footer')
+
 </div>
 
 </body>
