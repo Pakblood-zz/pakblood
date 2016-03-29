@@ -18,16 +18,17 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller {
 
-    public $bloodGroupArray = [
-        'Ap'  => 'A+',
-        'An'  => 'A-',
-        'Bp'  => 'B+',
-        'Bn'  => 'B-',
-        'Op'  => 'O+',
-        'On'  => 'O-',
-        'ABp' => 'AB+',
-        'ABn' => 'AB-'
-    ];
+    public $bloodGroupArray
+        = [
+            'Ap'  => 'A+',
+            'An'  => 'A-',
+            'Bp'  => 'B+',
+            'Bn'  => 'B-',
+            'Op'  => 'O+',
+            'On'  => 'O-',
+            'ABp' => 'AB+',
+            'ABn' => 'AB-',
+        ];
 
     public function hashPassword() {
         /*$user = User::where('id', 1)->first();
@@ -55,16 +56,16 @@ class ProfileController extends Controller {
     }
 
     public function getProfile() {
-        $user = User::find(Auth::user()->id);
-        $user['gender'] = ($user->gender == 'm') ? "Male" : "Female";
+        $user               = User::find(Auth::user()->id);
+        $user['gender']     = ($user->gender == 'm') ? "Male" : "Female";
         $user['country_id'] = City::where('id', $user->city_id)->pluck('country_id');
-        $user['city'] = City::where('id', $user->city_id)->pluck('name');
-        $user['org'] = Org::where('id', $user->org_id)->pluck('name');
-        $user['bg'] = (array_key_exists($user->blood_group, $this->bloodGroupArray)) ? $this->bloodGroupArray[$user->blood_group] : '';
-        $data = [
+        $user['city']       = City::where('id', $user->city_id)->pluck('name');
+        $user['org']        = Org::where('id', $user->org_id)->pluck('name');
+        $user['bg']         = (array_key_exists($user->blood_group, $this->bloodGroupArray)) ? $this->bloodGroupArray[$user->blood_group] : '';
+        $data               = [
             'bleed'  => Bleed::select('*')->where('user_id', '=', Auth::user()->id)->orderBy('date', 'DESC')->get(),
             'user'   => $user,
-            'cities' => City::where('country_id', $user->country_id)->get()
+            'cities' => City::where('country_id', $user->country_id)->get(),
         ];
         return view('profile', $data);
     }
@@ -72,24 +73,24 @@ class ProfileController extends Controller {
     public function updateProfile(Request $request) {
 //        dd(1);
         $redirectId = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
-        $user = User::where('id', '=', Auth::user()->id)->first();
+        $user       = User::where('id', '=', Auth::user()->id)->first();
         $user->name = $request->input('name');
         if (($request->input('username') != '') && count(User::where('username', $request->input('username'))->where('id', '!=', Auth::user()->id)->get()) > 0) {
             return Redirect::to('profile/' . $redirectId)->with('message', 'Username already exists.')->with('type', 'error');
         }
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->gender = $request->input('gender');
-        $user->dob = date('Y-m-d', strtotime($request->input('dob')));
-        $user->phone = $request->input('phone');
-        $user->mobile = $request->input('mobile');
-        $user->address = $request->input('address');
-        $user->city_id = $request->input('city');
+        $user->username    = $request->input('username');
+        $user->email       = $request->input('email');
+        $user->gender      = $request->input('gender');
+        $user->dob         = date('Y-m-d', strtotime($request->input('dob')));
+        $user->phone       = $request->input('phone');
+        $user->mobile      = $request->input('mobile');
+        $user->address     = $request->input('address');
+        $user->city_id     = $request->input('city');
         $user->blood_group = $request->input('bgroup');
         if ($user->save()) {
             $data = [
                 'email' => $user->email,
-                'name'  => $user->name
+                'name'  => $user->name,
             ];
             Mail::send(['html' => 'emails/profile_updated'], $data, function ($message) use ($data) {
                 $message
@@ -105,18 +106,22 @@ class ProfileController extends Controller {
      * User delete
      */
     public function deleteUser(Request $request) {
+//        dd($request->input('feedback'));
         $org = Org::where('user_id', '=', Auth::user()->id)->first();
         if ($org != NULL) {
             return Redirect::to('profile/' . Auth::user()->username)->with('message', 'Error!! can\'t delete your account until you\'r admin of an Organization,Please change admin of your organization to someone else and try again.')->with('type', 'error');
         }
-        $user = User::where('id', '=', Auth::user()->id)->first();
+        $user             = User::where('id', '=', Auth::user()->id)->first();
         $user->is_deleted = '1';
         $user->save();
-        $data = array('name' => $user->name);
+        $data = [
+            'name'   => $user->name,
+            'reason' => $request->input('feedback'),
+        ];
         Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
             $message
                 ->to($user->email, $user->name)->cc('info@pakblood.com')
-                ->subject('Account Deactivation');
+                ->subject('Account Deactivated');
         });
         Auth::logout();
         return Redirect::to('/');
@@ -126,7 +131,7 @@ class ProfileController extends Controller {
 //        dd($request->input());
         // validate
         // read more on validation at http://laravel.com/docs/validation
-        $rules = array(
+        $rules     = array(
             'old_password' => 'required',
             'new_password' => 'required|confirmed|min:6',
         );
@@ -145,7 +150,7 @@ class ProfileController extends Controller {
                 if ($user->save()) {
                     $data = [
                         'email' => $user->email,
-                        'name'  => $user->name
+                        'name'  => $user->name,
                     ];
                     Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
                         $message
@@ -168,8 +173,8 @@ class ProfileController extends Controller {
 
     public function activateAccount(Request $request) {
 
-        $rules = array(
-            'email' => 'required'
+        $rules     = array(
+            'email' => 'required',
         );
         $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
@@ -179,8 +184,8 @@ class ProfileController extends Controller {
         $user = User::where('email', '=', $request->input('email'))->first();
         if (count($user) > 0) {
             $user->is_deleted = '0';
-            $user->password = bcrypt($pass);
-            $data = array('name' => $user->name, 'email' => $user->email, 'password' => $pass);
+            $user->password   = bcrypt($pass);
+            $data             = array('name' => $user->name, 'email' => $user->email, 'password' => $pass);
             if ($user->save()) {
                 Mail::queue('emails/rejoin', $data, function ($message) use ($user) {
                     $message
@@ -222,15 +227,15 @@ class ProfileController extends Controller {
      */
     function unlinkAccount($type) {
 //        dd($type);
-        $user = User::find(\Auth::user()->id);
+        $user     = User::find(\Auth::user()->id);
         $redirect = ($user->username) ? $user->username : $user->id;
         if ($type == 'fb') {
-            $user->fb_id = null;
+            $user->fb_id = NULL;
             $user->save();
             return redirect('/profile/' . $redirect)->with('message', 'Facebook Account Successfully Unlinked.')->with('type', 'success');
         }
         else if ($type == 'gp') {
-            $user->gp_id = null;
+            $user->gp_id = NULL;
             $user->save();
             return redirect('/profile/' . $redirect)->with('message', 'Google+ Account Successfully Unlinked.')->with('type', 'success');
         }

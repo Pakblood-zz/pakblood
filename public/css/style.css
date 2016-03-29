@@ -288,12 +288,12 @@ select {
 
   .small-push-11 {
     position: relative;
-    left: 55.0%;
+    left: 55%;
     right: auto; }
 
   .small-pull-11 {
     position: relative;
-    right: 55.0%;
+    right: 55%;
     left: auto; }
 
   .small-push-12 {
@@ -414,7 +414,7 @@ select {
     width: 50%; }
 
   .small-11 {
-    width: 55.0%; }
+    width: 55%; }
 
   .small-12 {
     width: 60%; }
@@ -477,7 +477,7 @@ select {
     margin-left: 50% !important; }
 
   .small-offset-11 {
-    margin-left: 55.0% !important; }
+    margin-left: 55% !important; }
 
   .small-offset-12 {
     margin-left: 60% !important; }
@@ -659,12 +659,12 @@ select {
 
   .medium-push-11 {
     position: relative;
-    left: 55.0%;
+    left: 55%;
     right: auto; }
 
   .medium-pull-11 {
     position: relative;
-    right: 55.0%;
+    right: 55%;
     left: auto; }
 
   .medium-push-12 {
@@ -785,7 +785,7 @@ select {
     width: 50%; }
 
   .medium-11 {
-    width: 55.0%; }
+    width: 55%; }
 
   .medium-12 {
     width: 60%; }
@@ -848,7 +848,7 @@ select {
     margin-left: 50% !important; }
 
   .medium-offset-11 {
-    margin-left: 55.0% !important; }
+    margin-left: 55% !important; }
 
   .medium-offset-12 {
     margin-left: 60% !important; }
@@ -1030,12 +1030,12 @@ select {
 
   .push-11 {
     position: relative;
-    left: 55.0%;
+    left: 55%;
     right: auto; }
 
   .pull-11 {
     position: relative;
-    right: 55.0%;
+    right: 55%;
     left: auto; }
 
   .push-12 {
@@ -1230,12 +1230,12 @@ select {
 
   .large-push-11 {
     position: relative;
-    left: 55.0%;
+    left: 55%;
     right: auto; }
 
   .large-pull-11 {
     position: relative;
-    right: 55.0%;
+    right: 55%;
     left: auto; }
 
   .large-push-12 {
@@ -1356,7 +1356,7 @@ select {
     width: 50%; }
 
   .large-11 {
-    width: 55.0%; }
+    width: 55%; }
 
   .large-12 {
     width: 60%; }
@@ -1419,7 +1419,7 @@ select {
     margin-left: 50% !important; }
 
   .large-offset-11 {
-    margin-left: 55.0% !important; }
+    margin-left: 55% !important; }
 
   .large-offset-12 {
     margin-left: 60% !important; }
@@ -1601,12 +1601,12 @@ select {
 
   .push-11 {
     position: relative;
-    left: 55.0%;
+    left: 55%;
     right: auto; }
 
   .pull-11 {
     position: relative;
-    right: 55.0%;
+    right: 55%;
     left: auto; }
 
   .push-12 {
@@ -7512,6 +7512,11 @@ th {
   src: url("../fonts/Abel.ttf.woff") format("woff"), url("../fonts/Abel.ttf.svg#Abel") format("svg"), url("../fonts/Abel.ttf.eot"), url("../fonts/Abel.ttf.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
   font-style: normal; }
+.alert-box a {
+  color: white;
+  font-weight: bold;
+  text-decoration: underline; }
+
 /* Logo & Top user nav bar*/
 .logo {
   width: 100%;

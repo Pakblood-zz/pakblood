@@ -141,24 +141,24 @@
             </div>
             <div class="row collapse">
                 <div class="large-10 columns">
-                    @if($user->fb_id == null)
+                    @if($user->fb_id == NULL)
                         <a href="{{ url('linkAccount/fb') }}">Connect Facebook</a>
                     @else
                         <a href="{{ url('https://www.facebook.com/'.$user->fb_id) }}" target="_blank">Connected With
                             Facebook</a>
-                        @if(!($user->gp_id == null && $user->password == ''))
+                        @if(!($user->gp_id == NULL && $user->password == ''))
                             <a href="{{ url('unlinkAccount/fb') }}" data-account="fb"
                                style="margin-left: 20px;color: red;">Unlink</a>
                         @endif
                     @endif
                 </div>
                 <div class="large-10 columns">
-                    @if($user->gp_id == null)
+                    @if($user->gp_id == NULL)
                         <a href="{{ url('linkAccount/gp') }}">Connect Google+</a>
                     @else
                         <a href="{{ url('https://plus.google.com/'.$user->gp_id) }}" target="_blank">Connected With
                             Google+</a>
-                        @if(!($user->fb_id == null && $user->password == ''))
+                        @if(!($user->fb_id == NULL && $user->password == ''))
                             <a href="{{ url('unlinkAccount/gp') }}" data-account="gp"
                                style="margin-left: 20px;color: red;">Unlink</a>
                         @endif
@@ -443,6 +443,10 @@
                             PAKBLOOD TEAM
                         </p>
                     </div>
+                </div>
+                <div style="margin-bottom: 20px;" class="small-20 medium-10 large-10 columns small-centered">
+                    <textarea rows="4" cols="50" name="feedback" placeholder="Please us tell your reason for leaving."
+                              required></textarea>
                 </div>
                 <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
                     <input type="submit" class="small button radius" value="Unoin">

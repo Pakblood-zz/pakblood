@@ -8,24 +8,24 @@
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         @if(Session::has('message'))
             @if((Session::has('type')) && (Session::get('type')=='success'))
-                <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns round"
+                <div data-alert class="alert-box success radius  small-20 medium-14 large-20 columns"
                      style="text-align: center;font-weight: bold;">
                     {{ Session::get('message') }}
                     <a href="#" class="close">&times;</a>
                 </div>
             @endif
             @if((Session::has('type')) && (Session::get('type')=='error'))
-                <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns"
                      style="text-align: center;font-weight: bold;">
                     {{ Session::get('message') }}
                     <a href="#" class="close">&times;</a>
                 </div>
             @endif
             @if((Session::has('type')) && (Session::get('type')=='deactivated'))
-                <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns round"
+                <div data-alert class="alert-box alert radius  small-20 medium-14 large-20 columns"
                      style="text-align: center;font-weight: bold;">
-                    {{ Session::get('message') }} Click<a href="{{ url('/account/activation') }}"> Here</a> to
-                    activate your account.
+                    {{ Session::get('message') }} <a href="{{ url('/account/activation') }}">Click Here to
+                        activate your account.</a>
                     <a href="#" class="close">&times;</a>
                 </div>
             @endif

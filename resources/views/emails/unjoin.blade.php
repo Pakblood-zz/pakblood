@@ -6,10 +6,10 @@
     We regret this, but you will no longer be displayed in our search results for donors.<br><br>
     Thank you for spending time with Pakblood, We hope you enjoyed our services.<br><br>
 
+    Reason For Leaving : {{$reason}}<br><br>
 
-    <br>
-    <br>
-    If you have any feedback, please reply to this email.
+    If you ever wish to rejoin Pakblood just visit this link <a href="http://pakblood.com/account/activation">Account
+        Activation</a>
     @include ('emails.__footer')
 
 </div>
