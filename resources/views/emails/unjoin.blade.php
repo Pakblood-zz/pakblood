@@ -1,5 +1,5 @@
 <div>
-    Dear {{$username}}, <br><br>
+    Dear {{$name}}, <br><br>
 
 
     This email is to inform you that your account from Pakblood have been deactivated.<br><br>

@@ -112,7 +112,7 @@ class ProfileController extends Controller {
         $user = User::where('id', '=', Auth::user()->id)->first();
         $user->is_deleted = '1';
         $user->save();
-        $data = array('username' => $user->username);
+        $data = array('name' => $user->name);
         Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
             $message
                 ->to($user->email, $user->name)->cc('info@pakblood.com')
