@@ -73,7 +73,7 @@ class ContactUsController extends Controller {
         }
         dd(1);*/
         $array = [];
-        $users = User::where('email', 'LIKE', '%_@__%.__%')->where('email_sent', '!=', 1)->orderBy('id')->get();
+        $users = User::where('email', 'LIKE', '%_@__%.__%')->where('email_sent', '!=', 1)->orderBy('id')->skip(0)->take(100)->get();
 //        $users = User::where('email', 'asad.zaheer@aalasolutions.com')->where('email_sent', '!=', 1)->orderBy('id')->get();
         /*foreach ($users as $user) {
             array_push($array, ['name' => $user->name, 'email' => $user->email]);

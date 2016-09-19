@@ -7706,8 +7706,7 @@ th {
 /*Center container*/
 .center-container {
   width: 85%;
-  height: auto;
-  margin: 52px auto; }
+  height: auto; }
   .center-container select {
     font-size: 0.875rem; }
 
@@ -7768,7 +7767,7 @@ th {
     text-align: center; } }
 
 /* Right Container */
-#right-container {
+#right-container #promote-pakblood {
   border: 1px solid #cacaca; }
 
 /* Promote Pakblood */

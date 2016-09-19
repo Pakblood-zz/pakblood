@@ -56,7 +56,19 @@
                 body: 'Are you sure you want to delete your account from Pakblood?',
                 password: 'DELETE',
                 ok: 'Confirm!'
-            })
+            });
+            FastClick.attach(document.body);
+            $('.select2 span').addClass('needsclick');
+            $('.select2-container span').addClass('needsclick');
+        });
+    </script>
+
+    <!-- Google Add -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-1709767846664941",
+            enable_page_level_ads: true
         });
     </script>
 </head>

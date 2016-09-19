@@ -415,7 +415,7 @@
     background-image: -o-linear-gradient(top, white 50%, #eeeeee 100%);
     background-image: linear-gradient(to bottom, white 50%, #eeeeee 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0);
+    filter:"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0)";
 }
 
 .select2-container--classic .select2-selection--single:focus {
@@ -453,7 +453,7 @@
     background-image: -o-linear-gradient(top, #eeeeee 50%, #cccccc 100%);
     background-image: linear-gradient(to bottom, #eeeeee 50%, #cccccc 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0);
+    filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFCCCCCC', GradientType=0)";
 }
 
 .select2-container--classic .select2-selection--single .select2-selection__arrow b {
@@ -505,7 +505,7 @@
     background-image: -o-linear-gradient(top, white 0%, #eeeeee 50%);
     background-image: linear-gradient(to bottom, white 0%, #eeeeee 50%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0);
+    filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFFF', endColorstr='#FFEEEEEE', GradientType=0)";
 }
 
 .select2-container--classic.select2-container--open.select2-container--below .select2-selection--single {
@@ -516,7 +516,7 @@
     background-image: -o-linear-gradient(top, #eeeeee 50%, white 100%);
     background-image: linear-gradient(to bottom, #eeeeee 50%, white 100%);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFFFFFFF', GradientType=0);
+    filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFEEEEEE', endColorstr='#FFFFFFFF', GradientType=0)";
 }
 
 .select2-container--classic .select2-selection--multiple {

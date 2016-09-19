@@ -7,3 +7,5 @@ Homestead.yaml
 .htaccess (pakblood-old)
 liveSite.zip
 pakblood(old 03-03-16).zip
+/resources/views/test.blade.php
+/public/js/vendor/select2/select2.full-old.js

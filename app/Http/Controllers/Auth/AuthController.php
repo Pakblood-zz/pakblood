@@ -6,6 +6,7 @@ use App\City;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use League\Flysystem\Exception;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -15,7 +16,8 @@ use Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     /*
     |--------------------------------------------------------------------------
     | Registration & Login Controller
@@ -29,7 +31,7 @@ class AuthController extends Controller {
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
-    protected $redirectPath = '/';
+    protected $redirectPath        = '/';
     protected $redirectAfterLogout = '/login';
 
     /**
@@ -37,8 +39,34 @@ class AuthController extends Controller {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest', ['except' => 'getLogout']);
+    }
+
+
+    /**
+     * Show the application login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getLogin()
+    {
+        if (view()->exists('auth.authenticate')) {
+            return view('auth.authenticate');
+        }
+
+        return view('auth.login');
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRegister()
+    {
+        return view('auth.register');
     }
 
     /**
@@ -47,13 +75,15 @@ class AuthController extends Controller {
      * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data) {
+    protected function validator(array $data)
+    {
         return Validator::make($data, [
-            'name'                 => 'required|max:255',
-            'username'             => 'required|max:255|unique:pb_users',
-            'email'                => 'required|email|max:255|unique:pb_users',
-            'password'             => 'required|min:6|confirmed',
-            'city'                 => 'required',
+            'name' => 'required|max:255',
+            'username' => 'required|max:255|unique:pb_users',
+            'email' => 'required|email|max:255|unique:pb_users',
+            'password' => 'required|min:6|confirmed',
+            'city' => 'required',
+            'phone' => 'required',
             'g-recaptcha-response' => 'required|captcha',
         ]);
     }
@@ -65,26 +95,28 @@ class AuthController extends Controller {
      * @return User
      */
 
-    protected function create(array $data) {
+    protected function create(array $data)
+    {
         return User::create([
-            'name'     => $data['name'],
-            'username' => $data['username'],
-            'email'    => $data['email'],
-            'password' => bcrypt($data['password']),
-            'gender'   => $data['gender'],
-            'dob'      => $data['dob'],
-            'phone'    => $data['phone'],
-            'address'  => $data['address'],
-            'city_id'  => $data['city_id'],
-            'status'   => 'inactive'
-        ]);
+                                'name' => $data['name'],
+                                'username' => $data['username'],
+                                'email' => $data['email'],
+                                'password' => bcrypt($data['password']),
+                                'gender' => $data['gender'],
+                                'dob' => $data['dob'],
+                                'phone' => $data['phone'],
+                                'address' => $data['address'],
+                                'city_id' => $data['city_id'],
+                                'status' => 'inactive'
+                            ]);
 
     }
 
     /**
      * Create a new user and send verification email to activate account
      */
-    public function postRegister(Request $request) {
+    public function postRegister(Request $request)
+    {
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
@@ -111,18 +143,18 @@ class AuthController extends Controller {
 
         if ($user->save()) {
             $data = array(
-                'name'        => $user->name,
-                'username'    => $user->username,
-                'email'       => $user->email,
-                'gender'      => $user->gender,
-                'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
-                'phone'       => $user->phone,
-                'mobile'      => $user->mobile,
-                'address'     => $user->address,
-                'city'        => City::where('id', $user->city_id)->pluck('name'),
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'gender' => $user->gender,
+                'dob' => date('Y-m-d', strtotime($request->input('dob'))),
+                'phone' => $user->phone,
+                'mobile' => $user->mobile,
+                'address' => $user->address,
+                'city' => City::where('id', $user->city_id)->pluck('name'),
                 'blood_group' => $user->blood_group,
-                'status'      => $user->status,
-                'code'        => $confirmation_code,
+                'status' => $user->status,
+                'code' => $confirmation_code,
             );
             Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
                 $message
@@ -135,8 +167,7 @@ class AuthController extends Controller {
                     ->subject('New User Registered');
             });
             return redirect('account/verify');
-        }
-        else {
+        } else {
             Session::flash('message', 'Your account couldn\'t be created please try again');
             return redirect()->back()->withInput();
         }
@@ -146,10 +177,11 @@ class AuthController extends Controller {
     /**
      * Activate user account after reciving confirmation code
      */
-    public function activateAccount($code, User $user) {
+    public function activateAccount($code, User $user)
+    {
         if ($user->ActivateAccount($code)) {
             $data = array(
-                'name'  => \Auth::user()->name,
+                'name' => \Auth::user()->name,
                 'email' => \Auth::user()->email
             );
             Mail::queue('emails/welcome', $data, function ($message) use ($data) {
@@ -166,7 +198,8 @@ class AuthController extends Controller {
     /**
      * check if user is active and registered
      */
-    public function postLogin(Request $request) {
+    public function postLogin(Request $request)
+    {
 //        $credentials = $this->getCredentials($request);
 //        $user = User::where('email', $request->input('email'))->first();
 //        dump($user);
@@ -176,7 +209,8 @@ class AuthController extends Controller {
 //        dump(Auth::attempt($credentials, $request->has('remember')));
 //        dd();
         $this->validate($request, [
-            $this->loginUsername() => 'required', 'password' => 'required',
+            $this->loginUsername() => 'required',
+            'password' => 'required',
         ]);
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
@@ -190,14 +224,13 @@ class AuthController extends Controller {
         $credentials = $this->getCredentials($request);
         $user = new User;
         if ($user->hasUser($request->input('email'))) {
-            if ($user->accountIsActive($credentials['email']) == 0) {
+            if ($user->accountIsActive($credentials['email'])) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
                     ->withErrors([
-                        "Account Not Activated, you need to activate your account before login.",
-                    ]);
-            }
-            elseif ($user->isDeleted($request->input('email'))) {
+                                     "Account Not Activated, you need to activate your account before login.",
+                                 ]);
+            } elseif ($user->isDeleted($request->input('email'))) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
                     ->with("message", "This is account is deactivated.")
@@ -219,8 +252,8 @@ class AuthController extends Controller {
         return redirect($this->loginPath())
             ->withInput($request->only($this->loginUsername(), 'remember'))
             ->withErrors([
-                "Wrong Email or Password",
-            ]);
+                             "Wrong Email or Password",
+                         ]);
     }
 
     /**
@@ -230,7 +263,8 @@ class AuthController extends Controller {
      * @param  bool $throttles
      * @return \Illuminate\Http\Response
      */
-    protected function handleUserWasAuthenticated(Request $request, $throttles) {
+    protected function handleUserWasAuthenticated(Request $request, $throttles)
+    {
         if ($throttles) {
             $this->clearLoginAttempts($request);
         }
@@ -244,8 +278,7 @@ class AuthController extends Controller {
         if (Auth::user()->role == 'admin') {
             \Session::set('auth.type', 'admin');
             return redirect('/admin');
-        }
-        elseif (Auth::user()->role == 'user') {
+        } elseif (Auth::user()->role == 'user') {
             \Session::set('auth.type', 'user');
             return redirect('profile/' . $redirectId);
         }
@@ -254,12 +287,33 @@ class AuthController extends Controller {
     }
 
     /**
-     * Callback function for facebook login
-     * @return bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function fbLoginCallback() {
-        $user = \Socialite::with('facebook')->user();
+    public function fbLoginCallback(Request $request)
+    {
+
+        $state = $request->get('state');
+        $request->session()->put('state', $state);
+        if (!\Session::get('state')) {
+            return redirect($this->loginPath());
+        }
+//        dd($request);
+
+        try {
+//            var_dump(1);
+            $user = \Socialite::driver('facebook')->user();
+        } catch (\Exception $e) {
+            //Here you can write excepion Handling Login
+            return redirect($this->loginPath());
+        }
+
+//        $user = \Socialite::with('facebook')->user();
         $fb = true;
+        $checkUser = new User();
+//        dump($checkUser->isDeleted($user->email));
+//        dd($checkUser);
+
         // Condition when user is linking his/her social account to pakblood account.
         if (\Session::get('userAccountId') && \Session::get('userAccountId') != 0) {
             $userAccount = User::find(\Session::get('userAccountId'));
@@ -269,7 +323,7 @@ class AuthController extends Controller {
                 if (Auth::loginUsingId($userAccount->id)) {
                     User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $data = array(
-                        'name'  => \Auth::user()->name,
+                        'name' => \Auth::user()->name,
                         'email' => \Auth::user()->email,
                         'fb_id' => $user->id
                     );
@@ -287,6 +341,12 @@ class AuthController extends Controller {
         // If user social email exists in pakblood db.
         $userEmailFound = User::where('email', $user->email)->first();
         if ($userEmailFound) {
+            if ($checkUser->isDeleted($user->email)) {
+                return redirect($this->loginPath())
+                    ->withInput($request->only($this->loginUsername(), 'remember'))
+                    ->with("message", "This is account is deactivated.")
+                    ->with('type', 'deactivated');
+            }
             //If user Facebook id matches with Socialite result id
             if ($userEmailFound->fb_id == $user->id) {
                 if (Auth::loginUsingId($userEmailFound->id)) {
@@ -294,22 +354,24 @@ class AuthController extends Controller {
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect);
                 }
-            }
-            else {
+            } else {
+                session()->regenerate();
                 return redirect('login')->with('message', 'Email already exists.')->with('type', 'error');
             }
-        }
-        // If user social email does not exists in pakblood db.
+        } // If user social email does not exists in pakblood db.
         else {
             $socialIdFound = User::where('fb_id', $user->id)->first();
             //If Socialite id found in pakblood user accounts
             if ($socialIdFound) {
-                return redirect('login')->with('message', 'This Account is already attached to a Pakblood account.')->with('type', 'error');
-            }
-            else {
+                session()->regenerate();
+                return redirect('login')->with('message',
+                                               'This Account is already attached to a Pakblood account.')->with('type',
+                                                                                                                'error');
+            } else {
                 return view('index', compact('user', 'fb'));
             }
         }
+        session()->regenerate();
         return redirect('login')->with('message', 'Something went wrong please try again.')->with('type', 'error');
     }
 
@@ -318,7 +380,8 @@ class AuthController extends Controller {
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function postFbLogin(Request $request) {
+    public function postFbLogin(Request $request)
+    {
         $user = new User();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -333,17 +396,17 @@ class AuthController extends Controller {
             if (Auth::loginUsingId($user->id)) {
                 User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                 $data = array(
-                    'name'        => $user->name,
-                    'username'    => $user->username,
-                    'email'       => $user->email,
-                    'gender'      => $user->gender,
-                    'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
-                    'phone'       => $user->phone,
-                    'mobile'      => $user->mobile,
-                    'address'     => $user->address,
-                    'city'        => City::where('id', $user->city_id)->pluck('name'),
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'gender' => $user->gender,
+                    'dob' => date('Y-m-d', strtotime($request->input('dob'))),
+                    'phone' => $user->phone,
+                    'mobile' => $user->mobile,
+                    'address' => $user->address,
+                    'city' => City::where('id', $user->city_id)->pluck('name'),
                     'blood_group' => $user->blood_group,
-                    'status'      => $user->status,
+                    'status' => $user->status,
                 );
                 Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
                     $message
@@ -357,10 +420,14 @@ class AuthController extends Controller {
     }
 
     /**
-     * Callback function for google+ login
-     * @return bool|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function gpLoginCallback() {
+    public function gpLoginCallback(Request $request)
+    {
+        if (!\Session::get('state')) {
+            return redirect($this->loginPath());
+        }
         $user = \Socialite::with('google')->user();
 //        dd($user);
         // Condition when user link his/her social account.
@@ -372,7 +439,7 @@ class AuthController extends Controller {
                 if (Auth::loginUsingId($userAccount->id)) {
                     User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $data = array(
-                        'name'  => \Auth::user()->name,
+                        'name' => \Auth::user()->name,
                         'email' => \Auth::user()->email,
                         'gp_id' => \Auth::user()->gp_id
                     );
@@ -383,14 +450,22 @@ class AuthController extends Controller {
                     });
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect)->with('message', 'Google+ Account Successfully Connected')
-                        ->with('type', 'success');
+                                                           ->with('type', 'success');
                 }
             }
             \Session::set('userAccountId', 0);
         }
         // If user social email exists in pakblood db.
         $userEmailFound = User::where('email', $user->email)->first();
+
         if ($userEmailFound) {
+            $checkUser = new User();
+//        dd($checkUser->isDeleted($user->email));
+            if ($checkUser->isDeleted($user->email)) {
+                return redirect($this->loginPath())
+                    ->with("message", "This is account is deactivated.")
+                    ->with('type', 'deactivated');
+            }
             //If user Facebook id matches with Socialite result id
             if ($userEmailFound->gp_id == $user->id) {
                 if (Auth::loginUsingId($userEmailFound->id)) {
@@ -398,19 +473,20 @@ class AuthController extends Controller {
                     $redirect = (Auth::user()->username) ? Auth::user()->username : Auth::user()->id;
                     return redirect('profile/' . $redirect);
                 }
+            } else {
+                return redirect('login')->with('message',
+                                               'Email already exists, If you have forgotten your password you can reset it.')->with('type',
+                                                                                                                                    'error');
             }
-            else {
-                return redirect('login')->with('message', 'Email already exists, If you have forgotten you password you can reset it.')->with('type', 'error');
-            }
-        }
-        // If user social email does not exists in pakblood db.
+        } // If user social email does not exists in pakblood db.
         else {
             $socialIdFound = User::where('gp_id', $user->id)->first();
             //If Socialite id found in pakblood user accounts
             if ($socialIdFound) {
-                return redirect('login')->with('message', 'This Account is already attached to a Pakblood account.')->with('type', 'error');
-            }
-            else {
+                return redirect('login')
+                    ->with('message', 'This Account is already attached to a Pakblood account.')
+                    ->with('type', 'error');
+            } else {
                 return view('index', compact('user'));
             }
         }
@@ -422,7 +498,8 @@ class AuthController extends Controller {
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function postGpLogin(Request $request) {
+    public function postGpLogin(Request $request)
+    {
         $user = new User();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -437,17 +514,17 @@ class AuthController extends Controller {
             if (Auth::loginUsingId($user->id)) {
                 User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                 $data = array(
-                    'name'        => $user->name,
-                    'username'    => $user->username,
-                    'email'       => $user->email,
-                    'gender'      => $user->gender,
-                    'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
-                    'phone'       => $user->phone,
-                    'mobile'      => $user->mobile,
-                    'address'     => $user->address,
-                    'city'        => City::where('id', $user->city_id)->pluck('name'),
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'gender' => $user->gender,
+                    'dob' => date('Y-m-d', strtotime($request->input('dob'))),
+                    'phone' => $user->phone,
+                    'mobile' => $user->mobile,
+                    'address' => $user->address,
+                    'city' => City::where('id', $user->city_id)->pluck('name'),
                     'blood_group' => $user->blood_group,
-                    'status'      => $user->status,
+                    'status' => $user->status,
                 );
                 Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
                     $message
@@ -460,7 +537,8 @@ class AuthController extends Controller {
         return redirect('login');
     }
 
-    public function getLogout() {
+    public function getLogout()
+    {
         Auth::logout();
 
         if (\Session::get('redirect')) {

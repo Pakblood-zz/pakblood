@@ -51,7 +51,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if ($user && $user->status == 'active') {
             return true;
         }
-        return 0;
+        return false;
     }
 
     public function hasUser($email) {
@@ -64,9 +64,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function isDeleted($email) {
         $user = User::where('email', '=', $email)->first();
-        if ($user->is_deleted == '1') {
+        if ($user && $user->is_deleted == '1') {
             return true;
         }
-        return 0;
+        return false;
     }
 }

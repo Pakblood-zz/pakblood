@@ -14,7 +14,7 @@
 </style>
 <div class="row center-container">
     <!-- left container -->
-    <div class="small-20 medium-13 large-13 columns">
+    <div class="small-20 medium-20 large-13 columns">
         <div id="donation-vid" class="">
             <div class="small-20 large-20">
                 <iframe width="100%" height="315" src="https://www.youtube.com/embed/ezafVzfJw60" frameborder="0"
@@ -85,7 +85,7 @@
         {{--</div>--}}
     </div>
     <!-- right container -->
-    <div id="right-container" class="small-20 medium-6 large-6 columns">
+    <div id="right-container" class="small-20 medium-20 large-7 columns">
         <div id="promote-pakblood" class="row">
             <h5>Promote Pakblood</h5>
 
@@ -117,6 +117,19 @@
                 <div class="small-10 large-10 left columns">
                     <a href="{{ url('images/on.jpg') }}" target="_blank">{!! HTML::image('images/on.jpg') !!}</a>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-20 columns show-for-medium-up" style="margin: 10px 0;text-align: center;">
+                {{--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>--}}
+                        <!-- seostuff.com sidebar -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:300px;height:600px"
+                     data-ad-client="ca-pub-1709767846664941"
+                     data-ad-slot="7858605701"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
         {{--<div id="latest-updates" class="row">
@@ -168,8 +181,12 @@
     <p>
         <select name="gender" required>
             <option value="" {{ (!isset($user))?'selected':'' }} disabled>Gender</option>
-            <option value="m" {{ (isset($user)&& $user->user['gender'] == 'Male')?'selected':'' }}>Male</option>
-            <option value="f" {{ (isset($user)&& $user->user['gender'] == 'Female')?'selected':'' }}>Female</option>
+            <option value="m" {{ (isset($user) && isset($user->user['gender']) && $user->user['gender'] == 'Male')?'selected':'' }}>
+                Male
+            </option>
+            <option value="f" {{ (isset($user) && isset($user->user['gender']) && $user->user['gender'] == 'Female')?'selected':'' }}>
+                Female
+            </option>
         </select>
     </p>
     <p>

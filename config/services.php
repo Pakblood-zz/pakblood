@@ -37,13 +37,13 @@ return [
     'facebook' => [
         'client_id'     => getenv('FB_CLIENT_ID'),
         'client_secret' => getenv('FB_CLIENT_SECRET'),
-//        'redirect'      => 'http://pakblood.com/fbAuth',
+//        'redirect'      => 'https://pakblood.com/fbAuth',
         'redirect'      => 'http://localhost:8000/fbAuth',
     ],
     'google'   => [
         'client_id'     => getenv('GOOGLE_CLIENT_ID'),
         'client_secret' => getenv('GOOGLE_CLIENT_SECRET'),
-//        'redirect'      => 'http://pakblood.com/gpAuth',
+//        'redirect'      => 'https://pakblood.com/gpAuth',
         'redirect'      => 'http://localhost:8000/gpAuth',
     ],
 

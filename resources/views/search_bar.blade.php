@@ -64,6 +64,28 @@
         </form>
     </div>
 </div>
+
+<!-- Google Add -->
+<div class="row" style="text-align: center;padding: 20px 0;">
+    {{--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>--}}
+    <!-- Pakblood Header -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-1709767846664941"
+         data-ad-slot="5514451306"
+         data-ad-format="auto"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    {{-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+     <ins class="adsbygoogle"
+          style="display:inline-block;width:728px;height:90px"
+          data-ad-client="ca-pub-1709767846664941"
+          data-ad-slot="4905139300"></ins>
+     <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>--}}
+</div>
 <script>
     $(document).on('change', 'select#bgroup', function () {
         $('form#searchForm').css({'height': 'inherit'});
@@ -76,9 +98,9 @@
         var bgroupSelect = $('select[name=bgroup]');
         var countrySelect = $('div#countries_select2');
         var citySelect = $('div#cities_select2');
-//        console.log(bgroupSelect);
-//        console.log(countrySelect);
-//        console.log(citySelect);
+        //        console.log(bgroupSelect);
+        //        console.log(countrySelect);
+        //        console.log(citySelect);
         if (bgroupSelect.val() == null) {
             bgroupSelect.parent().find('div.error').css('display', 'block');
             return false;

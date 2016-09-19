@@ -12,8 +12,10 @@
 */
 
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));
-//Route::get('test', 'ProfileController@hashPassword');
-Route::get('/bulkEmail','ContactUsController@bulkEmail');
+//Route::get('test', function () {
+//    return view('tests');
+//});
+//Route::get('/bulkEmail','ContactUsController@bulkEmail');
 /*Route::get('/bulkEmail', function () {
     return view('emails.bulkEmail');
 });*/

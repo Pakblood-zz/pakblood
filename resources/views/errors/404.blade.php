@@ -41,6 +41,7 @@
 <div class="container">
     <div class="content">
         <div class="title">404 Page Not Found.</div>
+        <a href="{{ url('') }}">Go Back</a>
     </div>
 </div>
 </body>

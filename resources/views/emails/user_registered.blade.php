@@ -34,7 +34,7 @@
             <td> {{ $address }} </td>
         <tr>
             <td>City :</td>
-            <td>> {{ $city }} </td>
+            <td> {{ $city }} </td>
         <tr>
             <td>Blood Group :</td>
             <td>{{ $blood_group }} </td>

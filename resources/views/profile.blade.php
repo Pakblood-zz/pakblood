@@ -249,10 +249,10 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             <select id="gender" name="gender">
-                                <option value="Male" <?php if ((\Auth::user()->gender) == 'Male') echo 'selected="selected"'; ?>>
+                                <option value="m" <?php if ((\Auth::user()->gender) == 'm') echo 'selected="selected"'; ?>>
                                     Male
                                 </option>
-                                <option value="Female" <?php if ((\Auth::user()->gender) == 'Female') echo 'selected="selected"'; ?>>
+                                <option value="f" <?php if ((\Auth::user()->gender) == 'f') echo 'selected="selected"'; ?>>
                                     Female
                                 </option>
                             </select>
@@ -330,28 +330,28 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             <select id="bgroup" name="bgroup">
-                                <option value="A+"<?php if ((Auth::user()->blood_group) == 'ap') echo 'selected="selected"'; ?>>
+                                <option value="Ap"<?php if ((Auth::user()->blood_group) == 'Ap') echo 'selected="selected"'; ?>>
                                     A+
                                 </option>
-                                <option value="A-"<?php if ((Auth::user()->blood_group) == 'an') echo 'selected="selected"'; ?>>
+                                <option value="An"<?php if ((Auth::user()->blood_group) == 'An') echo 'selected="selected"'; ?>>
                                     A-
                                 </option>
-                                <option value="B+"<?php if ((Auth::user()->blood_group) == 'bp') echo 'selected="selected"'; ?>>
+                                <option value="Bp"<?php if ((Auth::user()->blood_group) == 'Bp') echo 'selected="selected"'; ?>>
                                     B+
                                 </option>
-                                <option value="B-"<?php if ((Auth::user()->blood_group) == 'bn') echo 'selected="selected"'; ?>>
+                                <option value="Bn"<?php if ((Auth::user()->blood_group) == 'Bn') echo 'selected="selected"'; ?>>
                                     B-
                                 </option>
-                                <option value="O+"<?php if ((Auth::user()->blood_group) == 'op') echo 'selected="selected"'; ?>>
+                                <option value="Op"<?php if ((Auth::user()->blood_group) == 'Op') echo 'selected="selected"'; ?>>
                                     O+
                                 </option>
-                                <option value="O-"<?php if ((Auth::user()->blood_group) == 'on') echo 'selected="selected"'; ?>>
+                                <option value="On"<?php if ((Auth::user()->blood_group) == 'On') echo 'selected="selected"'; ?>>
                                     O-
                                 </option>
-                                <option value="AB+"<?php if ((Auth::user()->blood_group) == 'abp') echo 'selected="selected"'; ?>>
+                                <option value="ABp"<?php if ((Auth::user()->blood_group) == 'ABp') echo 'selected="selected"'; ?>>
                                     AB+
                                 </option>
-                                <option value="AB-"<?php if ((Auth::user()->blood_group) == 'abn') echo 'selected="selected"'; ?>>
+                                <option value="ABn"<?php if ((Auth::user()->blood_group) == 'ABn') echo 'selected="selected"'; ?>>
                                     AB-
                                 </option>
                             </select>
@@ -460,8 +460,8 @@
     //ID of select containing countries and ID of select containing cities.
     countryAndCitySelect('countriesRegForm', 'citiesRegForm');
     $(document).on('change', '#tabSelect', function () {
-//        console.log($(this));
-//        console.log($(this).val());
+        //        console.log($(this));
+        //        console.log($(this).val());
         $('.tabs-content#add_member').find('section.active').removeClass('active');
         $('.tabs-content#add_member').find('section' + $(this).val()).addClass('active');
     });
