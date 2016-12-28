@@ -9,7 +9,7 @@
         we dont have that blood group.
     </div>
     <div class="row">
-        {!! Form::open(['url' => '/contact','class' => 'small-20 medium-15 large-15 columns small-centered']) !!}
+        {!! Form::open(['url' => '/contact','class' => 'small-20 medium-15 large-15 columns small-centered','id'=>'contact_form']) !!}
         <h5 style="color: red;">Contact Us</h5>
         @if (count($errors) > 0)
             <div class="row">

@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -28,15 +29,24 @@ class Handler extends ExceptionHandler
     public function report(Exception $e)
     {
         \Log::error($e);
-        if (\Config::get('settings.environment') == 'production') {
-            $data = array('exception' => $e);
-            \Mail::send('emails.site_error', $data, function ($message) {
+//        dump($e);
+        if (!$e instanceof NotFoundHttpException) {
+//            dump(1);
+//            dd();
+            if (\Config::get('settings.environment') == 'production') {
+                $data = [
+                    'exception' => $e,
+                    'url' => \Request::url(),
+                    'method' => \Request::method()
+                ];
+                \Mail::send('emails.site_error', $data, function ($message) {
 //            $message->from($email_app);
-                $message->to(\Config::get('settings.error_email'))->subject(\Config::get('settings.app_name') . ' Error');
-            });
+                    $message->to(\Config::get('settings.error_email'))->subject(\Config::get('settings.app_name') . ' Error');
+                });
 //        dd();
-            \Log::info('Error Email sent to ' . \Config::get('settings.error_email'));
+                \Log::info('Error Email sent to ' . \Config::get('settings.error_email'));
 //                return Response::view('errors.500', array(), 500);
+            }
         }
 
         return parent::report($e);

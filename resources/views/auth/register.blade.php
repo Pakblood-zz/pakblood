@@ -32,14 +32,14 @@
                     </div>
                 @endif
             </div>
-            <div class="large-20 columns" style="margin-bottom: 20px;">
-                <div class="large-10 columns">
-                    <a href="{{ url('fblogin') }}" class="fb_btn button"><i class="fa fa-facebook-official"></i> <span>Sign-up With Facebook</span></a>
-                </div>
-                <div class="large-10 columns">
-                    <a href="{{ url('gplogin') }}" class="gp_btn button"><i class="fa fa-google-plus"></i> <span>Sign-up With Google+</span></a>
-                </div>
-            </div>
+            {{--<div class="large-20 columns" style="margin-bottom: 20px;">--}}
+                {{--<div class="large-10 columns">--}}
+                    {{--<a href="{{ url('fblogin') }}" class="fb_btn button"><i class="fa fa-facebook-official"></i> <span>Sign-up With Facebook</span></a>--}}
+                {{--</div>--}}
+                {{--<div class="large-10 columns">--}}
+                    {{--<a href="{{ url('gplogin') }}" class="gp_btn button"><i class="fa fa-google-plus"></i> <span>Sign-up With Google+</span></a>--}}
+                {{--</div>--}}
+            {{--</div>--}}
             <div>
                 {!! Form::open(array('url' => 'auth/register','id' => 'add_member_form')) !!}
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

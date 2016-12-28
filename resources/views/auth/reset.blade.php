@@ -31,7 +31,6 @@
                 @endif
             @endif
             <input type="hidden" name="token" value="{{ $token or '' }}">
-            <input type="hidden" name="email" value="{{ $email or '' }}">
             {{-- <div class="row">
                  <div class="hide-for-small-only medium-6 large-6 columns">
                      {!! Form::label('email', 'E-Mail Address :' ,array('class' => 'inline')) !!}
@@ -40,6 +39,14 @@
                      {!! Form::email('email', Input::old('email'), array('class' => 'inline','id' => 'email','placeholder' => 'Email')) !!}
                  </div>
              </div>--}}
+            <div class="row">
+                <div class="hide-for-small-only medium-6 large-6 columns">
+                    {!! Form::label('email', 'Email :',array('class' => 'inline')) !!}
+                </div>
+                <div class="small-20 medium-14 large-14 columns left">
+                    <input type="email" name="email" value="{{ $email or '' }}" id="email" placeholder="Email">
+                </div>
+            </div>
             <div class="row">
                 <div class="hide-for-small-only medium-6 large-6 columns">
                     {!! Form::label('pass', 'Password :',array('class' => 'inline')) !!}

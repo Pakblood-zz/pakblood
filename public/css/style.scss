@@ -11,6 +11,41 @@
   font-style: normal;
 }
 
+.text-red {
+  color: red;
+}
+
+.inner-page-search-bar #cities_select2 div.loading {
+  //width: 91%;
+}
+
+#contact_form div.loading {
+  top: 0;
+}
+
+#add_member_form div.loading {
+  top: 0;
+  left: 0.5rem;
+  right: 0.5rem;
+}
+
+div.loading {
+  position: absolute;
+  top: 38%;
+  left: 0.9375rem;
+  right: 0.9375rem;
+  height: 43px;
+  line-height: 40px;
+  //width: 86%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  i {
+    font-size: 24px;
+    vertical-align: middle;
+  }
+}
+
 /* Logo & Top user nav bar*/
 .logo {
   width: 100%;

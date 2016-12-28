@@ -147,8 +147,9 @@
                         <a href="{{ url('https://www.facebook.com/'.$user->fb_id) }}" target="_blank">Connected With
                             Facebook</a>
                         @if(!($user->gp_id == NULL && $user->password == ''))
-                            <a href="{{ url('unlinkAccount/fb') }}" data-account="fb"
-                               style="margin-left: 20px;color: red;">Unlink</a>
+                            <a class="text-red" href="{{ url('unlinkAccount/fb') }}" data-account="fb"
+                               data-confirm='{"title":"Are you sure?","body":"Are you sure, that you want to unlink your facebook account??","password":"YES"}'
+                            >Unlink</a>
                         @endif
                     @endif
                 </div>
@@ -159,8 +160,8 @@
                         <a href="{{ url('https://plus.google.com/'.$user->gp_id) }}" target="_blank">Connected With
                             Google+</a>
                         @if(!($user->fb_id == NULL && $user->password == ''))
-                            <a href="{{ url('unlinkAccount/gp') }}" data-account="gp"
-                               style="margin-left: 20px;color: red;">Unlink</a>
+                            <a class="text-red" href="{{ url('unlinkAccount/gp') }}" data-account="gp"
+                               data-confirm='{"title":"Are you sure?","body":"Are you sure, that you want to unlink your Google+ account??","password":"YES"}'>Unlink</a>
                         @endif
                     @endif
                 </div>

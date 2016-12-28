@@ -2,5 +2,5 @@
 return [
     'error_email' => 'info@pakblood.com',
     'app_name' => 'Pakblood',
-    'environment' => 'production',
+    'environment' => 'development',
 ];

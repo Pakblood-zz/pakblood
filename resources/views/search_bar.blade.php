@@ -8,7 +8,7 @@
         background-color: white;
     }
 </style>
-<div class="row search-bar">
+<div class="row search-bar @if(!\Request::is('/') && !\Request::is('home'))inner-page-search-bar @endif">
     <div class="myCenter" style="width: 100%;">
         @if(\Request::is('/') || \Request::is('home'))
             <div class="small-20 medium-20 large-7 colums left donors">
@@ -68,7 +68,7 @@
 <!-- Google Add -->
 <div class="row" style="text-align: center;padding: 20px 0;">
     {{--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>--}}
-    <!-- Pakblood Header -->
+            <!-- Pakblood Header -->
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-1709767846664941"

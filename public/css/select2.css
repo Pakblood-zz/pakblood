@@ -206,8 +206,8 @@
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
-    /*border-color: #888 transparent transparent transparent;*/
-    border-color: #000 transparent transparent transparent;
+    border-color: #888 transparent transparent transparent;
+    /*border-color: #000 transparent transparent transparent;*/
     border-style: solid;
     /*border-width: 5px 4px 0 4px;*/
     border-width: 3px 3px 0 3px;

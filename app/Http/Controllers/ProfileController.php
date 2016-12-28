@@ -191,7 +191,6 @@ class ProfileController extends Controller
 
     public function activateAccount(Request $request)
     {
-
         $rules = array(
             'email' => 'required',
         );
@@ -203,6 +202,7 @@ class ProfileController extends Controller
         $user = User::where('email', '=', $request->input('email'))->first();
         if (count($user) > 0) {
             $user->is_deleted = '0';
+            $user->status = 'active';
             $user->password = bcrypt($pass);
             $data = array('name' => $user->name, 'email' => $user->email, 'password' => $pass);
             if ($user->save()) {

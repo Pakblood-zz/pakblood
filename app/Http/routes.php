@@ -11,6 +11,53 @@
 |
 */
 
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::any('/login', 'UserController@login');
+        Route::post('/register', 'UserController@register');
+        Route::any('/logout', 'UserController@logout');
+        Route::any('/revoke', 'UserController@logout');
+        Route::post('/refreshtoken', 'UserController@refresh');
+        Route::group(['middleware' => 'jwt.auth'], function () {
+            Route::get('/profile', 'UserController@getProfile');
+            Route::put('/update', 'UserController@update');
+            Route::get('/bleedhistory', 'UserController@bleedHistory');
+            Route::put('/bleedhistory/{bleed_id}/update', 'UserController@updateBleed');
+            Route::post('/bleedhistory/create', 'UserController@createBleed');
+            Route::get('/deactivateaccount', 'UserController@deactivateAccount');
+            Route::post('/activateaccount', 'UserController@activateAccount');
+            Route::post('/changepassword', 'UserController@changePassword');
+            Route::get('/getnotifications', 'UserController@getNotifications');
+        });
+    });
+
+    Route::group(['prefix' => 'organizations', 'middleware' => 'jwt.auth'], function () {
+        Route::get('/', 'OrgController@index');
+        Route::post('/create', 'OrgController@store');
+        Route::group(['prefix' => '{orgId}'], function () {
+            Route::post('/join', 'OrgController@orgJoinRequest');
+            Route::put('/update', 'OrgController@update');
+            Route::post('/addmember', 'OrgController@addMember');
+            Route::put('/updatemember/{uId}', 'OrgController@addMember');
+            Route::post('/changeadmin', 'OrgController@changeAdmin');
+            Route::delete('/deletemember/{id}', 'OrgController@deleteMember');
+            Route::get('/requests', 'OrgController@getAllRequest');
+            Route::get('/requests/{request_id}', 'OrgController@updateRequest');
+//        Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
+//        Route::post('/delete', 'OrgController@delete');
+        });
+    });
+
+    Route::get('/search', 'SearchController@getSearchData');
+
+    Route::post('/reportuser', 'UserController@reportUser');
+    Route::post('/currentlocation', 'UserController@currentLocation');
+
+    Route::get('/getcountries', 'OtherController@getCountries');
+    Route::get('/getcities', 'OtherController@getCities');
+});
+
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));
 //Route::get('test', function () {
 //    return view('tests');
@@ -76,11 +123,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/delete/user/{id}', 'OrgController@deleteMember');
     Route::get('/organization/request/accept/{id}', 'OrgController@acceptRequest');
     Route::get('/organization/request/reject/{id}', 'OrgController@rejectRequest');
+    Route::post('/delete/organization', 'OrgController@delete');
     Route::get('/profile/{username}', 'ProfileController@getProfile');
     Route::post('/profile/update', 'ProfileController@updateProfile');
     Route::post('/bleed/update', 'BleedController@update');
     Route::post('/delete/user', 'ProfileController@deleteUser');
-    Route::post('/delete/organization', 'OrgController@delete');
 });
 Route::get('/report/user', 'ReportsController@index');
 Route::post('/report/user', 'ReportsController@reportUser');

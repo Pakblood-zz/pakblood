@@ -61,7 +61,7 @@
                 <input type="submit" class="small button radius" name="submit" value="Login">
             </div>
         </div>
-        <div class="large-10 columns">
+       {{-- <div class="large-10 columns">
             <h5>Or</h5>
             <div class="large-20 columns" style="    margin-bottom: 10px;">
                 <a href="{{ url('fblogin') }}" class="fb_btn button"><i class="fa fa-facebook-official"></i> <span>Login With Facebook</span></a>
@@ -69,7 +69,8 @@
             <div class="large-20 columns">
                 <a href="{{ url('gplogin') }}" class="gp_btn button"><i class="fa fa-google-plus"></i> <span>Login With Google+</span></a>
             </div>
-        </div>
+        </div>--}}
+        <input type="hidden" name="_token" value="{!! csrf_token()  !!}">
         {!! Form::close() !!}
         <div class="large-20 columns">
             <h5>Organization Login</h5>

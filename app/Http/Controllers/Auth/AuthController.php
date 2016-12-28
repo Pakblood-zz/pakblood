@@ -224,16 +224,18 @@ class AuthController extends Controller
         $credentials = $this->getCredentials($request);
         $user = new User;
         if ($user->hasUser($request->input('email'))) {
-            if ($user->accountIsActive($credentials['email'])) {
+            if (!($user->accountIsActive($credentials['email']))) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
                     ->withErrors([
                                      "Account Not Activated, you need to activate your account before login.",
-                                 ]);
+                                 ])
+                    ->with(["activation_link" => "<a href='" . url('/account/activation') . "'>Activate Account Here</a>"]);
+
             } elseif ($user->isDeleted($request->input('email'))) {
                 return redirect($this->loginPath())
                     ->withInput($request->only($this->loginUsername(), 'remember'))
-                    ->with("message", "This is account is deactivated.")
+                    ->with("message", "This account is deactivated.")
                     ->with('type', 'deactivated');
             }
         }

@@ -7512,6 +7512,31 @@ th {
   src: url("../fonts/Abel.ttf.woff") format("woff"), url("../fonts/Abel.ttf.svg#Abel") format("svg"), url("../fonts/Abel.ttf.eot"), url("../fonts/Abel.ttf.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
   font-style: normal; }
+.text-red {
+  color: red; }
+
+#contact_form div.loading {
+  top: 0; }
+
+#add_member_form div.loading {
+  top: 0;
+  left: 0.5rem;
+  right: 0.5rem; }
+
+div.loading {
+  position: absolute;
+  top: 38%;
+  left: 0.9375rem;
+  right: 0.9375rem;
+  height: 43px;
+  line-height: 40px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white; }
+  div.loading i {
+    font-size: 24px;
+    vertical-align: middle; }
+
 /* Logo & Top user nav bar*/
 .logo {
   width: 100%;

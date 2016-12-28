@@ -23,6 +23,7 @@
     <meta property="og:image" content="http://www.pakblood.com/images/logo_fb.jpg"/>
     <meta property="og:site_name" content="Pakblood.com Online blood donors database"/>
     <link rel="icon" href="favicon.ico" type="image/gif" sizes="16x16">
+    {{--{!! HTML::style('css/zurb/foundation.css') !!}--}}
     {!! HTML::style('css/style.css') !!}
     {!! HTML::style('css/responsive-tables.css') !!}
     {!! HTML::style('css/jquery.datetimepicker.css') !!}

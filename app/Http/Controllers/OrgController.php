@@ -20,13 +20,15 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
-class OrgController extends Controller {
+class OrgController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
         $data = array('orgs' => Org::where('status', '=', 'active')->paginate(10));
         return view('organizations', $data);
     }
@@ -36,7 +38,8 @@ class OrgController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         return view('add_org');
     }
 
@@ -46,15 +49,16 @@ class OrgController extends Controller {
      * @param  Request $request
      * @return Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // validate
         // read more on validation at http://laravel.com/docs/validation
         $rules = array(
-            'name'            => 'required|unique:pb_org',
-            'org_address'     => 'required',
-            'org_phone'       => 'required',
-            'admin_name'      => 'required|unique:pb_org',
-            'org_logo'        => 'required:mimes:png,jpg,jpeg',
+            'name' => 'required|unique:pb_org',
+            'org_address' => 'required',
+            'org_phone' => 'required',
+            'admin_name' => 'required|unique:pb_org',
+            'org_logo' => 'required:mimes:png,jpg,jpeg',
             'org_application' => 'required:mimes:png,jpg,jpeg'
         );
         $validator = Validator::make(Input::all(), $rules);
@@ -63,10 +67,9 @@ class OrgController extends Controller {
         // process the login
         if ($validator->fails()) {
             return Redirect::to('/create/organization')
-                ->withErrors($validator)
-                ->withInput(Input::all());
-        }
-        else {
+                           ->withErrors($validator)
+                           ->withInput(Input::all());
+        } else {
             // store
             $org = new Org;
             $org->user_id = Auth::user()->id;
@@ -77,16 +80,16 @@ class OrgController extends Controller {
             $org->mobile = Input::get('admin_phone');
             $org->city_id = Input::get('city');
             if ($request->hasFile('org_logo')) {
-                $logo = $org->name . '.' .
-                    $request->file('org_logo')->getClientOriginalExtension();
+                $logo = $org->name . '_logo' . '.' .
+                        $request->file('org_logo')->getClientOriginalExtension();
                 $request->file('org_logo')->move(
                     base_path() . '/public/images/logos/', $logo
                 );
                 $org->image = $logo;
             }
-            if ($request->hasFile('org_logo')) {
-                $application = $org->name . '.' .
-                    $request->file('org_application')->getClientOriginalExtension();
+            if ($request->hasFile('org_application')) {
+                $application = $org->name . '_application' . '.' .
+                               $request->file('org_application')->getClientOriginalExtension();
                 $request->file('org_application')->move(
                     base_path() . '/public/images/applications/', $application
                 );
@@ -99,11 +102,11 @@ class OrgController extends Controller {
 
             if ($org->save()) {
                 DB::table('pb_users')
-                    ->where('id', Auth::user()->id)
-                    ->update(['org_id' => $org->id]);
+                  ->where('id', Auth::user()->id)
+                  ->update(['org_id' => $org->id]);
                 $data = array(
                     'username' => Auth::user()->username,
-                    'email'    => Auth::user()->email,
+                    'email' => Auth::user()->email,
                     'org_name' => Input::get('name')
                 );
                 Mail::queue('emails/org_register_request', $data, function ($message) use ($org) {
@@ -111,10 +114,13 @@ class OrgController extends Controller {
                         ->to(Auth::user()->email, Auth::user()->name)->cc('info@pakblood.com')
                         ->subject('Organization Registration');
                 });
-                return Redirect::to('profile/' . $redirect)->with('message', 'Organization registration successful, Your organization will be active after Pakblood admin review!!');
+                return Redirect::to('profile/' . $redirect)->with('message',
+                                                                  'Organization registration successful, Your organization will be active after Pakblood admin review!!');
             }
         }
-        return Redirect::to('profile/' . $redirect)->with('message', 'Organization registration error, please try again!!')->with('type', 'error');
+        return Redirect::to('profile/' . $redirect)->with('message',
+                                                          'Organization registration error, please try again!!')->with('type',
+                                                                                                                       'error');
     }
 
     /**
@@ -123,7 +129,8 @@ class OrgController extends Controller {
      * @param  int $id
      * @return Response
      */
-    public function getProfile($id) {
+    public function getProfile($id)
+    {
         if (Auth::guest()) {
             $data = array('org' => Org::whereIdAndStatus($id, 'active')->first());
             return view::make('org_profile', $data);
@@ -131,21 +138,22 @@ class OrgController extends Controller {
         $org = Org::whereIdAndStatus($id, 'active')->first();
         $countryId = City::where('id', $org->city_id)->pluck('country_id');
         $data = array(
-            'org'        => $org,
-            'users'      => User::where('org_id', '=', $id)->where('id', '!=', Auth::user()->id)->paginate(10),
-            'reqs'       => OrgRequests::join('pb_users', 'pb_org_join_requests.user_id', '=', 'pb_users.id')
-                ->join('pb_org', 'pb_org_join_requests.org_id', '=', 'pb_org.id')
-                ->select(DB::raw('pb_users.*,pb_org_join_requests.id as req_id,pb_org_join_requests.reason'))
-                ->where('pb_org.id', '=', $id)
-                ->get(),
+            'org' => $org,
+            'users' => User::where('org_id', '=', $id)->where('id', '!=', Auth::user()->id)->paginate(10),
+            'reqs' => OrgRequests::join('pb_users', 'pb_org_join_requests.user_id', '=', 'pb_users.id')
+                                 ->join('pb_org', 'pb_org_join_requests.org_id', '=', 'pb_org.id')
+                                 ->select(DB::raw('pb_users.*,pb_org_join_requests.id as req_id,pb_org_join_requests.reason'))
+                                 ->where('pb_org.id', '=', $id)
+                                 ->get(),
             'orgCountry' => $countryId,
-            'orgCity'    => $org->city_id,
-            'orgCities'  => City::where('country_id', $countryId)->get(),
+            'orgCity' => $org->city_id,
+            'orgCities' => City::where('country_id', $countryId)->get(),
         );
         $redirect = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
         if ($data['org'] == NULL) {
             return redirect('/profile/' . $redirect)
-                ->with('message', 'Your organization is not active yet, please wait, until pakblood admin review your organization')
+                ->with('message',
+                       'Your organization is not active yet, please wait, until pakblood admin review your organization')
                 ->with('type', 'error');
         }
         return view::make('org_profile', $data);
@@ -158,7 +166,8 @@ class OrgController extends Controller {
      * @param  int $id
      * @return Response
      */
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $org = Org::where('id', '=', $request->input('org_id'))->first();
         $org->username = $request->Input('admin_username');
         $org->name = $request->Input('org_name');
@@ -168,7 +177,7 @@ class OrgController extends Controller {
         $org->city_id = $request->Input('city');
         if ($request->hasFile('org_logo')) {
             $logo = $org->name . '.' .
-                $request->file('org_logo')->getClientOriginalExtension();
+                    $request->file('org_logo')->getClientOriginalExtension();
             $request->file('org_logo')->move(
                 base_path() . '/public/images/logos/', $logo
             );
@@ -176,7 +185,7 @@ class OrgController extends Controller {
         }
         if ($request->hasFile('org_logo')) {
             $application = $org->name . '.' .
-                $request->file('org_application')->getClientOriginalExtension();
+                           $request->file('org_application')->getClientOriginalExtension();
             $request->file('org_application')->move(
                 base_path() . '/public/images/applications/', $application
             );
@@ -189,10 +198,12 @@ class OrgController extends Controller {
         $org->save();
         if ($org->save()) {
             return Redirect::to('organization/' . $request->input('org_id') . '#fndtn-editprofile')
-                ->with('message', 'Organization Profile Successfully Updated!!')->with('type', 'success');
+                           ->with('message', 'Organization Profile Successfully Updated!!')->with('type', 'success');
         }
         return Redirect::to('organization/' . $request->input('org_id') . '#fndtn-editprofile')
-            ->with('message', 'There was some Problems Saving Organization Profile please try again. ')->with('type', 'error');
+                       ->with('message',
+                              'There was some Problems Saving Organization Profile please try again. ')->with('type',
+                                                                                                              'error');
     }
 
     /**
@@ -201,19 +212,21 @@ class OrgController extends Controller {
      * @param  int $id
      * @return Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         //
     }
 
     /**
      * Register user without email verification when added by an organization
      */
-    public function addMember(Request $request) {
+    public function addMember(Request $request)
+    {
 
         $rules = array(
-            'name'     => 'required',
+            'name' => 'required',
             'username' => 'required|unique:pb_users',
-            'email'    => 'required|unique:pb_users|email',
+            'email' => 'required|unique:pb_users|email',
             'password' => 'required|confirmed',
         );
         $validator = Validator::make(Input::all(), $rules);
@@ -223,8 +236,7 @@ class OrgController extends Controller {
             return Redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')
                 ->withErrors($validator)
                 ->withInput(Input::all());
-        }
-        else {
+        } else {
             $user = new User;
             $user->name = $request->input('name');
             $user->username = $request->input('username');
@@ -240,16 +252,21 @@ class OrgController extends Controller {
             $user->status = 'active';
             $user->org_id = $request->input('org_id');
             if ($user->save()) {
-                return redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')->with('message', 'Member registered successfully')->with('type', 'success');
+                return redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')->with('message',
+                                                                                                        'Member registered successfully')->with('type',
+                                                                                                                                                'success');
             }
-            return redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')->with('message', 'There was some problem registering member')->with('type', 'error');
+            return redirect('organization/' . $request->input('org_id') . '#fndtn-addmember')->with('message',
+                                                                                                    'There was some problem registering member')->with('type',
+                                                                                                                                                       'error');
         }
     }
 
     /**
      * Change Organization Admin
      */
-    public function changeAdmin(Request $request) {
+    public function changeAdmin(Request $request)
+    {
         $user = User::where('id', '=', $request->input('new_owner'))->first();
         $oldAdmin = User::where('id', \Auth::user()->id)->first();
         $org = Org::where('id', '=', $request->input('org_id'))->first();
@@ -261,44 +278,52 @@ class OrgController extends Controller {
         $org->email = $user->email;
         if ($org->save()) {
             $data = [
-                'name'     => $oldAdmin->name,
+                'name' => $oldAdmin->name,
                 'oldEmail' => $oldAdmin->email,
                 'newEmail' => $user->email,
-                'org'      => $org->name,
-                'toUser'   => $user->name,
+                'org' => $org->name,
+                'toUser' => $user->name,
             ];
             Mail::queue('emails/rejoin', $data, function ($message) use ($data) {
                 $message
                     ->to($data['oldEmail'])->cc($data['newEmail'])->cc('info@pakblood.com')
                     ->subject('Account Activated');
             });
-            return redirect('profile/' . Auth::user()->username)->with('message', 'Ownership of organization successfully changed.')->with('type', 'success');
+            return redirect('profile/' . Auth::user()->username)->with('message',
+                                                                       'Ownership of organization successfully changed.')->with('type',
+                                                                                                                                'success');
         }
-        return redirect('organization/' . $request->input('org_id') . '#fndtn-adminsettings')->with('message', 'There was some problems transferring ownership, please try again')->with('type', 'error');
+        return redirect('organization/' . $request->input('org_id') . '#fndtn-adminsettings')->with('message',
+                                                                                                    'There was some problems transferring ownership, please try again')->with('type',
+                                                                                                                                                                              'error');
     }
 
     /**
      * Delete Member
      */
-    public function deleteMember($id) {
+    public function deleteMember($id)
+    {
         $user = User::where('id', '=', $id)->delete();
-        return redirect('/organization/' . Auth::user()->org_id . '#fndtn-viewmember')->with('message', 'Member successfully deleted')->with('type', 'success');
+        return redirect('/organization/' . Auth::user()->org_id . '#fndtn-viewmember')->with('message',
+                                                                                             'Member successfully deleted')->with('type',
+                                                                                                                                  'success');
     }
 
     /**
      * Accept request to join organization
      */
-    public function acceptRequest($id) {
+    public function acceptRequest($id)
+    {
         $req = OrgRequests::where('id', '=', $id)->first();
         $user = User::where('id', '=', $req->user_id)->first();
         $org = Org::where('id', '=', $req->org_id)->first();
         $user->org_id = $req->org_id;
         if ($user->save()) {
             $data = array(
-                'name'     => $user->name,
-                'email'    => $user->email,
+                'name' => $user->name,
+                'email' => $user->email,
                 'org_name' => $org->name,
-                'status'   => 'Accepted'
+                'status' => 'Accepted'
             );
             Mail::queue('emails/org_join_request', $data, function ($message) use ($user) {
                 $message
@@ -307,24 +332,29 @@ class OrgController extends Controller {
                     ->subject('Request To Join Organization');
             });
             $req->delete();
-            return redirect('organization/' . $user->org_id . '#fndtn-viewrequests')->with('message', 'Member join request accepted')->with('type', 'success');
+            return redirect('organization/' . $user->org_id . '#fndtn-viewrequests')->with('message',
+                                                                                           'Member join request accepted')->with('type',
+                                                                                                                                 'success');
         }
-        return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message', 'There was some problems accepting request,please try again')->with('type', 'error');
+        return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
+                                                                                      'There was some problems accepting request,please try again')->with('type',
+                                                                                                                                                          'error');
     }
 
     /**
      * Reject request to join organization
      */
-    public function rejectRequest($id) {
+    public function rejectRequest($id)
+    {
         $req = OrgRequests::where('id', '=', $id)->first();
         $user = User::where('id', '=', $req->user_id)->first();
         $org = Org::where('id', '=', $req->org_id)->first();
         if ($req->delete()) {
             $data = array(
-                'name'     => $user->name,
-                'email'    => $user->email,
+                'name' => $user->name,
+                'email' => $user->email,
                 'org_name' => $org->name,
-                'status'   => 'Rejected'
+                'status' => 'Rejected'
             );
             Mail::queue('emails/org_join_request', $data, function ($message) use ($user) {
                 $message
@@ -333,12 +363,17 @@ class OrgController extends Controller {
                     ->subject('Request To Join Organization');
             });
             $req->delete();
-            return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message', 'Member join request rejected')->with('type', 'success');
+            return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
+                                                                                          'Member join request rejected')->with('type',
+                                                                                                                                'success');
         }
-        return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message', 'There was some problems rejecting request,please try again')->with('type', 'error');
+        return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
+                                                                                      'There was some problems rejecting request,please try again')->with('type',
+                                                                                                                                                          'error');
     }
 
-    public function delete(Request $request) {
+    public function delete(Request $request)
+    {
         $org = Org::where('id', '=', $request->input('org_id'));
         $users = User::where('org_id', '=', $request->input('org_id'))->get();
         foreach ($users as $user) {
@@ -351,8 +386,7 @@ class OrgController extends Controller {
                 ->with('type', 'success');
         }
         return redirect()->back()
-            ->with('message', 'there was some problem deleting Organization.')
-            ->with('type', 'error');
+                         ->with('message', 'there was some problem deleting Organization.')
+                         ->with('type', 'error');
     }
-
 }

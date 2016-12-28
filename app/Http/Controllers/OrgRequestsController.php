@@ -10,6 +10,7 @@ use App\Org;
 use App\OrgRequests;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrgRequestsController extends Controller {
     /**

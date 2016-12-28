@@ -9,7 +9,8 @@
     "laravel/framework": "5.1.*",
     "illuminate/html": "5.*",
     "anhskohbo/no-captcha": "2.*",
-    "laravel/socialite": "^2.0"
+    "laravel/socialite": "^2.0",
+    "tymon/jwt-auth": "^0.5.9"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
