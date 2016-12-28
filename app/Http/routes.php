@@ -29,6 +29,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
             Route::post('/activateaccount', 'UserController@activateAccount');
             Route::post('/changepassword', 'UserController@changePassword');
             Route::get('/getnotifications', 'UserController@getNotifications');
+            Route::get('/forgotpassword', 'UserController@forgotPassword');
         });
     });
 
@@ -78,9 +79,6 @@ Route::get('/addmember', function () {
 Route::get('register/organization', function () {
     return view('add_org');
 });
-Route::get('/forgotpassword', function () {
-    return view('auth/password');
-});
 Route::get('/account/activation', function () {
     return view('account_activation');
 });
@@ -105,6 +103,9 @@ Route::get('/login', 'Auth\AuthController@getLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
 Route::get('/register', 'Auth\AuthController@getRegister');
 Route::get('/account/verify/{code}', 'Auth\AuthController@activateAccount');
+Route::get('/forgotpassword', function () {
+    return view('auth/password');
+});
 Route::get('/rest/password/{token}', 'Auth\PasswordController@getReset');
 Route::post('/change/password', 'ProfileController@changePassword');
 Route::get('/members', 'SearchController@getAllUsers');
