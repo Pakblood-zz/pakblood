@@ -19,18 +19,18 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         Route::any('/logout', 'UserController@logout');
         Route::any('/revoke', 'UserController@logout');
         Route::post('/refreshtoken', 'UserController@refresh');
+        Route::get('/forgotpassword', 'UserController@forgotPassword');
         Route::group(['middleware' => 'jwt.auth'], function () {
             Route::get('/profile', 'UserController@getProfile');
             Route::put('/update', 'UserController@update');
             Route::get('/bleedhistory', 'UserController@bleedHistory');
-            Route::put('/bleedhistory/{bleed_id}/update', 'UserController@updateBleed');
             Route::post('/bleedhistory/create', 'UserController@createBleed');
+            Route::put('/bleedhistory/{bleed_id}/update', 'UserController@updateBleed');
             Route::get('/deactivateaccount', 'UserController@deactivateAccount');
-            Route::post('/activateaccount', 'UserController@activateAccount');
             Route::post('/changepassword', 'UserController@changePassword');
             Route::get('/getnotifications', 'UserController@getNotifications');
-            Route::get('/forgotpassword', 'UserController@forgotPassword');
         });
+        Route::post('/activateaccount', 'UserController@activateAccount');
     });
 
     Route::group(['prefix' => 'organizations', 'middleware' => 'jwt.auth'], function () {
@@ -67,6 +67,7 @@ Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\Pa
 /*Route::get('/bulkEmail', function () {
     return view('emails.bulkEmail');
 });*/
+
 Route::get('/', function () {
     return view('index');
 });

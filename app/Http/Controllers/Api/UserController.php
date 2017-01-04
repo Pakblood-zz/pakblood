@@ -85,13 +85,16 @@ class UserController extends Controller
             return \Response::json(['msg' => 'Email Already Exists.'], 400);
         }
         $data['password'] = bcrypt($data['password']);
+        $data['status'] = 'active';
         if (User::create($data)) {
             $msg = 'User is created successfully!';
+            return \Response::json(['response' => $msg], 200);
         } else {
             $msg = 'Error: Sorry! User could not create!';
+            return \Response::json(['response' => $msg], 400);
         }
 
-        return \Response::json(['response' => $msg], 200);
+//        return \Response::json(['response' => $msg], 200);
     }
 
     public function logout()
@@ -195,6 +198,27 @@ class UserController extends Controller
         return \Response::json(compact('data'), 200);
     }
 
+    public function createBleed()
+    {
+        $input = \Input::json();
+
+        $bleed = new Bleed();
+        $bleed->user_id = \Auth::user()->id;
+        $bleed->receiver_name = $input->get('receiver_name');
+        $bleed->city = $input->get('city');
+        $bleed->comments = $input->get('comments');
+        $bleed->date = $input->get('date');
+        if ($bleed->save()) {
+            $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
+            $user = User::find(\Auth::user()->id);
+            $user->last_bleed = $latestBleed->date;
+            $user->save();
+            $this->addNotification('Bleed Status Added.');
+            return \Response::json(['msg' => 'bleed added.'], 200);
+        }
+        return \Response::json(['msg' => 'error adding bleed.'], 400);
+    }
+
     public function updateBleed($bleedId)
     {
         $input = \Input::json();
@@ -216,27 +240,6 @@ class UserController extends Controller
             return \Response::json(['msg' => 'error updating bleed.'], 400);
         }
         return \Response::json(['msg' => 'error updating bleed.'], 400);
-    }
-
-    public function createBleed()
-    {
-        $input = \Input::json();
-
-        $bleed = new Bleed();
-        $bleed->user_id = \Auth::user()->id;
-        $bleed->receiver_name = $input->get('receiver_name');
-        $bleed->city = $input->get('city');
-        $bleed->comments = $input->get('comments');
-        $bleed->date = $input->get('date');
-        if ($bleed->save()) {
-            $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
-            $user = User::find(\Auth::user()->id);
-            $user->last_bleed = $latestBleed->date;
-            $user->save();
-            $this->addNotification('Bleed Status Added.');
-            return \Response::json(['msg' => 'bleed added.'], 200);
-        }
-        return \Response::json(['msg' => 'error adding bleed.'], 400);
     }
 
     public function deactivateAccount(Request $request)
