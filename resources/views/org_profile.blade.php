@@ -35,7 +35,11 @@
         <div class="org_profile">
             <h4>{{$org->name}}</h4>
             <div class="row">
-                {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
+                @if($org->image == null || $org->image == '')
+                    {!! HTML::image('images/default.png', $org->name.' Logo', ['style'=>'max-width: 250px;height: auto;'])!!}
+                @else
+                    {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
+                @endif
             </div>
             <p>
                 <b>Please Allow 30-45 mints to {{$org->name}} to confirm that blood you need is available with
@@ -79,7 +83,11 @@
         <div @if(Auth::user()->org_id == 0) class="large-10 left" @else class="org_profile" @endif >
             <h4>{{$org->name}}</h4>
             <div class="row">
-                {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
+                @if($org->image == null || $org->image == '')
+                    {!! HTML::image('images/default.png', $org->name.' Logo', ['style'=>'max-width: 250px;height: auto;'])!!}
+                @else
+                    {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
+                @endif
             </div>
             <table>
                 <tr>
@@ -175,7 +183,11 @@
                 <section role="tabpanel" aria-hidden="false" class="content active" id="profile">
                     <div class="org_profile">
                         <div class="row">
-                            {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
+                            @if($org->image == null || $org->image == '')
+                                {!! HTML::image('images/default.png', $org->name.' Logo', ['style'=>'max-width: 250px;height: auto;'])!!}
+                            @else
+                                {!! HTML::image('images/logos/'.$org->image, $org->name.' Logo')!!}
+                            @endif
                         </div>
                         <div class="row collapse">
                             <div class="large-10 columns">
@@ -669,8 +681,8 @@
     //ID of select containing countries and ID of select containing cities.
     countryAndCitySelect('countriesRegForm', 'citiesRegForm');
     $(document).on('change', '#tabSelect', function () {
-//        console.log($(this));
-//        console.log($(this).val());
+        //        console.log($(this));
+        //        console.log($(this).val());
         $('.tabs-content#add_member').find('section.active').removeClass('active');
         $('.tabs-content#add_member').find('section' + $(this).val()).addClass('active');
     });
