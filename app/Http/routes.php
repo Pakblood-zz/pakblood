@@ -153,9 +153,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin
     Route::get('/undo/delete/user/{id}', 'UserController@undoDelete');
     Route::get('/hard/delete/user/{id}', 'UserController@hardDelete');
 
+    Route::get('getUser/{user_id}', 'UserController@getUser');
+
     //Organizations
     Route::resource('/organization', 'OrgController');
-    Route::post('/organization', 'OrgController@filter');
+    Route::post('/organization/filter', 'OrgController@filter');
     Route::get('/organization/{id}/delete', 'OrgController@destroy');
     Route::get('/change/organization/status/{id}', 'OrgController@changeStatus');
 

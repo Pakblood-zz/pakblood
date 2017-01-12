@@ -31,7 +31,7 @@
                         <a href="{{url('/admin/user')}}" class="">Show List
                             <li class="fi-arrow-right size-12"></li>
                         </a>
-                        <div class="right add panel_blue"><a>Add </a></div>
+                        <div class="right add panel_blue"><a href="{{url('/admin/user/create')}}">Add </a></div>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                         <a href="{{url('/admin/organization')}}" class="">Show List
                             <li class="fi-arrow-right size-12"></li>
                         </a>
-                        <div class="right add panel_green"><a>Add </a></div>
+                        <div class="right add panel_green"><a href="{{url('/admin/organization/create')}}">Add </a></div>
                     </div>
                 </div>
             </div>

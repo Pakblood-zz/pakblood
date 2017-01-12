@@ -29,7 +29,7 @@
                 @endif
             @endif
             <div class="row">
-                {!! Form::open(array('url' => 'admin/organization')) !!}
+                {!! Form::open(array('url' => 'admin/organization/filter')) !!}
                 <div class="">
                     <div class="hide-for-small-only medium-3 large-3 columns">
                         {!! Form::label('email', 'Email :' ,array('class' => 'inline')) !!}
@@ -49,11 +49,17 @@
                                 <option <?php if (isset($status) && $status == 'all') echo 'selected'?> value="all">
                                     All
                                 </option>
+                                <option <?php if (isset($status) && $status == 'pending') echo 'selected'?> value="pending">
+                                    Pending Approval
+                                </option>
                                 <option <?php if (isset($status) && $status == 'active') echo 'selected'?> value="active">
                                     Active
                                 </option>
                                 <option <?php if (isset($status) && $status == 'inactive') echo 'selected'?> value="inactive">
                                     Inactive
+                                </option>
+                                <option <?php if (isset($status) && $status == 'deleted') echo 'selected'?> value="deleted">
+                                    Deleted
                                 </option>
                             </select>
                         </label>
@@ -93,16 +99,23 @@
                                href="{{url('admin/organization/'.$org->id.'/edit')}}">
                                 <li class="fi-page-edit size-25"></li>
                             </a>
-                            @if($org->status == 'active')
-                                <a data-tooltip aria-haspopup="true" class="tip-left" title="Inactivate"
-                                   href="{{url('admin/change/organization/status/'.$org->id)}}">
-                                    <li class="fi-x-circle size-25"></li>
+                            @if(isset($status) && $status == 'deleted')
+                                <a data-tooltip aria-haspopup="true" class="tip-left" title="Undo"
+                                   href="{{url('/admin/organization/'.$org->id.'/delete')}}">
+                                    <li class="fi-trash size-25"></li>
                                 </a>
                             @else
-                                <a data-tooltip aria-haspopup="true" class="tip-left" title="Activate"
-                                   href="{{url('admin/change/organization/status/'.$org->id)}}">
-                                    <li class="fi-checkbox size-25"></li>
-                                </a>
+                                @if($org->status == 'active')
+                                    <a data-tooltip aria-haspopup="true" class="tip-left" title="Inactivate"
+                                       href="{{url('admin/change/organization/status/'.$org->id)}}">
+                                        <li class="fi-x-circle size-25"></li>
+                                    </a>
+                                @else
+                                    <a data-tooltip aria-haspopup="true" class="tip-left" title="Activate"
+                                       href="{{url('admin/change/organization/status/'.$org->id)}}">
+                                        <li class="fi-checkbox size-25"></li>
+                                    </a>
+                                @endif
                             @endif
                         </td>
                     </tr>

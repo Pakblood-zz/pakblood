@@ -14,38 +14,43 @@ use Illuminate\Support\Facades\Mail;
 
 class ReportsController extends Controller
 {
-    public function getAll(){
-        $users = User::join('pb_user_reports','pb_user_reports.reported_user_id','=','pb_users.id')
-            ->select(DB::raw('pb_users.id as user_id,pb_users.*'))->groupby('pb_users.id')->get();
-        $reports=[];
-        foreach($users as $user){
-            $reports[] = Report::where('reported_user_id','=',$user->user_id)->get();
+    public function getAll()
+    {
+        $users = User::join('pb_user_reports', 'pb_user_reports.reported_user_id', '=', 'pb_users.id')
+                     ->select(DB::raw('pb_users.id as user_id,pb_users.*'))->groupby('pb_users.id')->get();
+        $reports = [];
+        foreach ($users as $user) {
+            $reports[] = Report::where('reported_user_id', '=', $user->user_id)->get();
         }
 
-        $data = array('users' => $users,'reports' => $reports);
-        return view('admin.reports',$data);
+        $data = array('users' => $users, 'reports' => $reports);
+        return view('admin.reports', $data);
     }
 
-    public function deleteReportedUser($id){
-        $user = User::where('id','=',$id)->first();
-        $org = Org::where('user_id','=',$id)->first();
-        if($org == null){
-            if($user->delete()){
-                return redirect()->back()->with('message','User account successfully deleted')->with('type','success');
+    public function deleteReportedUser($id)
+    {
+        $user = User::where('id', '=', $id)->first();
+        $org = Org::where('user_id', '=', $id)->first();
+        if ($org == null) {
+            $user->status = 'reported';
+            if ($user->save()) {
+                return redirect()->back()->with('message', 'User account status changed to reported')->with('type',
+                                                                                                      'success');
             }
         }
-        $users = User::where('org_id','=',$org->id)->get();
+        $users = User::where('org_id', '=', $org->id)->get();
         $emails = [];
-        foreach($users as $user){
+        foreach ($users as $user) {
             $emails[] = $user->email;
         }
         $data = array(
-            'org_name' => $org->name,
+            'org_name'  => $org->name,
             'org_admin' => $org->admin_name
         );
         Mail::queue('emails/org_admin_deleted', $data, function ($message) use ($emails) {
             $message
                 ->to($emails)->cc('info@pakblood.com')
+                ->replyTo('info@pakblood.com')
                 ->subject('Organization Admin');
         });
 
@@ -53,9 +58,12 @@ class ReportsController extends Controller
         $org->username = '';
         $org->admin_name = '';
         $org->email = '';
-        $org->status  = 'inacitve';
+        $org->status = 'inacitve';
         $org->save();
-        $user->delete();
-        return redirect()->back()->with('message','User account successfully deleted')->with('type','success');
+//        $user->delete();
+        $user->status = 'reported';
+//        $user->is_deleted = 1;
+        $user->save();
+        return redirect()->back()->with('message', 'User account status changed to reported')->with('type', 'success');
     }
 }

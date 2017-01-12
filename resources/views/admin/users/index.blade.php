@@ -65,9 +65,6 @@
                                     <option <?php if (isset($status) && $status == 'inactive') echo 'selected'?> value="inactive">
                                         Inactive
                                     </option>
-                                    <option <?php if (isset($status) && $status == 'reported') echo 'selected'?> value="reported">
-                                        Reported
-                                    </option>
                                 </select>
                             </label>
                         </div>
@@ -143,9 +140,6 @@
                                     </option>
                                     <option <?php if (isset($status) && $status == 'inactive') echo 'selected'?> value="inactive">
                                         Inactive
-                                    </option>
-                                    <option <?php if (isset($status) && $status == 'reported') echo 'selected'?> value="reported">
-                                        Reported
                                     </option>
                                 </select>
                             </label>
