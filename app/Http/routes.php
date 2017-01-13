@@ -164,6 +164,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin
     //Reports
     Route::get('/reports', 'ReportsController@getAll');
     Route::get('/delete/reported/user/{id}', 'ReportsController@deleteReportedUser');
+    Route::get('/delete/report/{id}', 'ReportsController@deleteReport');
 
     //Bleed
     Route::get('/user/{id}/bleed/history', 'BleedController@getAll');

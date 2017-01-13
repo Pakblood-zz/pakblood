@@ -270,15 +270,15 @@ class UserController extends Controller
 
     public function changeStatus($id)
     {
-        $user = User::where('id', '=', $id)->first();
+        $user = User::find($id);
         if ($user->status == 'active') {
             $user->status = 'inactive';
             $user->save();
-            return redirect()->back()->with('message', 'User status changed to inactive!')->with('type', 'success');
+            return redirect('/admin/user')->with('message', 'User status changed to inactive!')->with('type', 'success');
         } else {
             $user->status = 'active';
             $user->save();
-            return redirect()->back()->with('message', 'User status changed to active!')->with('type', 'success');
+            return redirect('/admin/user')->with('message', 'User status changed to active!')->with('type', 'success');
         }
     }
 

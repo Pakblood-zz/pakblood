@@ -29,41 +29,60 @@ class ReportsController extends Controller
 
     public function deleteReportedUser($id)
     {
-        $user = User::where('id', '=', $id)->first();
+        $user = User::find($id);
         $org = Org::where('user_id', '=', $id)->first();
+//        dump($user);
+//        dd($org);
         if ($org == null) {
             $user->status = 'reported';
             if ($user->save()) {
                 return redirect()->back()->with('message', 'User account status changed to reported')->with('type',
-                                                                                                      'success');
+                                                                                                            'success');
             }
         }
-        $users = User::where('org_id', '=', $org->id)->get();
-        $emails = [];
-        foreach ($users as $user) {
-            $emails[] = $user->email;
+        if (\Config::get('settings.environment') == 'production') {
+            $users = User::where('org_id', '=', $org->id)->get();
+            $emails = [];
+            foreach ($users as $user) {
+                $emails[] = $user->email;
+            }
+            $data = array(
+                'org_name'  => $org->name,
+                'org_admin' => $org->admin_name
+            );
+            Mail::queue('emails/org_admin_deleted', $data, function ($message) use ($emails) {
+                $message
+                    ->to($emails)->cc('info@pakblood.com')
+                    ->replyTo('info@pakblood.com')
+                    ->subject('Organization Admin');
+            });
         }
-        $data = array(
-            'org_name'  => $org->name,
-            'org_admin' => $org->admin_name
-        );
-        Mail::queue('emails/org_admin_deleted', $data, function ($message) use ($emails) {
-            $message
-                ->to($emails)->cc('info@pakblood.com')
-                ->replyTo('info@pakblood.com')
-                ->subject('Organization Admin');
-        });
-
-        $org->user_id = 0;
-        $org->username = '';
-        $org->admin_name = '';
-        $org->email = '';
+//        $org->user_id = 0;
+//        $org->username = '';
+//        $org->admin_name = '';
+//        $org->email = '';
         $org->status = 'inacitve';
         $org->save();
 //        $user->delete();
         $user->status = 'reported';
 //        $user->is_deleted = 1;
         $user->save();
-        return redirect()->back()->with('message', 'User account status changed to reported')->with('type', 'success');
+        return redirect()->back()->with('message',
+                                        'User account status changed to reported, and organization to inactive')->with('type',
+                                                                                                                       'success');
+    }
+
+    function deleteReport($id)
+    {
+        $report = Report::find($id);
+        $user = User::find($report->reported_user_id);
+        if ($report->delete()) {
+            $reports = Report::where('reported_user_id', $user->id)->count();
+            $user->status = ($reports >= 3) ? "reported" : "active";
+            $user->save();
+            return redirect()->back()->with('message', 'Report Successfully deleted.')->with('type', 'success');
+        }
+        return redirect()->back()->with('message', 'There was some problem with deleting user report.')->with('type',
+                                                                                                              'error');
     }
 }
