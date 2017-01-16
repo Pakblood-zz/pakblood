@@ -12,7 +12,10 @@ use App\Http\Controllers\Controller;
 
 class OtherController extends Controller
 {
-
+    /**
+     * Get list of all countries
+     * @return mixed
+     */
     public function getCountries()
     {
         $countries = Country::get();
@@ -20,6 +23,12 @@ class OtherController extends Controller
         return \Response::json(compact('countries'), 200);
     }
 
+    /**
+     * Get list of all cities, if country id is provided then get list of cities in that country
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public function getCities(Request $request)
     {
         $cities = City::get();

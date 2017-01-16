@@ -14,6 +14,12 @@ use App\Http\Controllers\Controller;
 
 class SearchController extends Controller
 {
+    /**
+     * get list of all users.
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public function getAllUsers(Request $request)
     {
         if ($request->input('page') != NULL) {
@@ -52,15 +58,18 @@ class SearchController extends Controller
         return \Response::json(compact('data'), 200);
     }
 
+    /**
+     * Get list of all users matching search parameters
+     * @param Request $request
+     *
+     * @return mixed
+     */
     public function getSearchData(Request $request)
     {
         $input = $request->input();
         $bg = $input['bgroup'];
         $country = $input['country'];
         $city = $input['city'];
-//        dump($bg);
-//        dump($city);
-//        dd($input);
         if (\Auth::guest()) {
             if ($input->get('page') != NULL) {
                 $page = $request->input('page');
@@ -102,16 +111,13 @@ class SearchController extends Controller
                          ->where('pb_users.blood_group', $bg)
                          ->whereRaw('pb_users.last_bleed < DATE_SUB(NOW(),INTERVAL 3 month)')
                          ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
-//            dump($users);
-//            dump($totalrec);
-//            dd();
-            $users = new LengthAwarePaginator(
+            /*$users = new LengthAwarePaginator(
                 $users,
                 count($totalrec),
                 15,
                 Paginator::resolveCurrentPage(),
                 ['path' => Paginator::resolveCurrentPath()]
-            );
+            );*/
         } else {
             if ($request->input('page') != NULL) {
                 $page = $request->input('page');
@@ -192,9 +198,15 @@ class SearchController extends Controller
         return \Response::json(compact('data'), 200);
     }
 
-    public function getCities($country_id)
+    /**
+     * Get list of cities according to country id provided
+     * @param $country_id
+     *
+     * @return mixed
+     */
+    /*public function getCities($country_id)
     {
         $cities = City::where('country_id', $country_id)->get();
         return \Response::json(['status' => 1, 'cities' => $cities]);
-    }
+    }*/
 }

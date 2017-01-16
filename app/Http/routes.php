@@ -37,6 +37,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         Route::get('/', 'OrgController@index');
         Route::post('/create', 'OrgController@store');
         Route::group(['prefix' => '{orgId}'], function () {
+            Route::get('/', 'OrgController@getProfile');
             Route::post('/join', 'OrgController@orgJoinRequest');
             Route::put('/update', 'OrgController@update');
             Route::post('/addmember', 'OrgController@addMember');

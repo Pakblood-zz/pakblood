@@ -16,9 +16,15 @@ use JWTAuth;
 
 class UserController extends Controller
 {
+    /**
+    * Login user
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function login(Request $request)
     {
-//        dd($request->input());
+        //        dd($request->input());
         $email = $request->input('email');
         $password = ($request->input('password')) ? $request->input('password') : '';
         $provider = ($request->input('provider')) ? $request->input('provider') : 'default';
@@ -57,10 +63,10 @@ class UserController extends Controller
             $newUser = new User;
             if (!($newUser->accountIsActive($user->email))) {
                 return \Response::json(['msg' => 'Account Not Activated, you need to activate your account before login.'],
-                                       400);
+                400);
             } elseif ($newUser->isDeleted($user->email)) {
                 return \Response::json(['msg' => 'Account is deleted.'],
-                                       400);
+                400);
             }
 
             return \Response::json(compact('access_token', 'token_type', 'expires_in', 'user', 'provider'), 200);
@@ -73,6 +79,12 @@ class UserController extends Controller
 
     }
 
+    /**
+    * Register User
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function register(Request $request)
     {
         $input = \Input::json();
@@ -90,31 +102,36 @@ class UserController extends Controller
             $msg = 'User is created successfully!';
             return \Response::json(['response' => $msg], 200);
         } else {
-            $msg = 'Error: Sorry! User could not create!';
+            $msg = 'Error: Sorry! User could not be created!';
             return \Response::json(['response' => $msg], 400);
         }
 
-//        return \Response::json(['response' => $msg], 200);
+        //        return \Response::json(['response' => $msg], 200);
     }
 
+    /**
+    * Logout User
+    * @return mixed
+    */
     public function logout()
     {
         if (\Auth::guest()) {
-            return \Response::json(['msg' => 'error logout.user not logedin.'], 400);
+            return \Response::json(['msg' => 'Error! User not logedin.'], 400);
         }
 
         $token = JWTAuth::invalidate(JWTAuth::getToken());
 
         if ($token) {
             \Auth::logout();
-            return \Response::json(['msg' => 'user logout done.'], 200);
+            return \Response::json(['msg' => 'User successfully logout.'], 200);
         }
-        return \Response::json(['msg' => 'error logout.'], 400);
+        return \Response::json(['msg' => 'Error! while trying to logout please try again.'], 400);
     }
 
     /**
-     * Session check, if user is logged in or not
-     */
+    * Refresh user jwtauth token
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function refresh()
     {
         $tokenOld = JWTAuth::getToken();
@@ -134,6 +151,10 @@ class UserController extends Controller
 
     }
 
+    /**
+    * Get user profile details
+    * @return mixed
+    */
     public function getProfile()
     {
         if (\Auth::user()) {
@@ -143,8 +164,9 @@ class UserController extends Controller
     }
 
     /**
-     * @return mixed
-     */
+    * Update user profile details
+    * @return mixed
+    */
     public function update()
     {
         $input = \Input::json();
@@ -152,45 +174,52 @@ class UserController extends Controller
         $user = User::find(\Auth::user()->id);
 
         $data = $input->get('user');
-//        $data['password'] = bcrypt($data['password']);
-//        unset($data['password']);
-//        dd($data);
+        //        $data['password'] = bcrypt($data['password']);
+        //        unset($data['password']);
+        //        dd($data);
         if ($user) {
             $user->update($data);
-//            $user->update(['name' => $data['name'], 'email' => $data['email']]);
+            //            $user->update(['name' => $data['name'], 'email' => $data['email']]);
             if ($user->save()) {
                 $this->addNotification('Profile Successfully Updated.');
-                return \Response::json(['message' => 'Profile Successfully Updated.'], 200);
+                return \Response::json(['msg' => 'Profile Successfully Updated.'], 200);
             }
-            return \Response::json(['message' => 'Problem with updating user profile.'], 400);
+            return \Response::json(['msg' => 'Problem with updating user profile.'], 400);
         }
 
-        return \Response::json(['message' => 'Error!, while updating profile.'], 400);
+        return \Response::json(['msg' => 'Error! User not found.'], 400);
     }
 
     /**
-     * @return mixed
-     */
+    * Reset user password
+    * @return mixed
+    */
     public function resetPassword()
     {
         $input = \Input::json();
 
         $user = User::find(\Auth::user()->id);
-
+        if (count($user) == 0) {
+            return \Response::json(['msg' => 'Error! user not found.'], 400);
+        }
         $data = $input->get('user');
 
         if (\Hash::check($data['old_password'], $user->password)) {
             $user->update(['password' => bcrypt($data['new_password'])]);
             if ($user->save()) {
                 $this->addNotification('Password Reset.');
-                return \Response::json(['message' => 'Password Updated.'], 200);
+                return \Response::json(['msg' => 'Password Updated.'], 200);
             }
-            return \Response::json(['message' => 'error updating Password.'], 400);
+            return \Response::json(['msg' => 'Error! updating Password.'], 400);
         }
 
-        return \Response::json(['message' => 'Old Password Does Not Match.'], 200);
+        return \Response::json(['msg' => 'Old Password Does Not Match.'], 400);
     }
 
+    /**
+    * Get user bleed history
+    * @return mixed
+    */
     public function bleedHistory()
     {
         $data = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->get();
@@ -198,6 +227,10 @@ class UserController extends Controller
         return \Response::json(compact('data'), 200);
     }
 
+    /**
+    * Create user bleed details
+    * @return mixed
+    */
     public function createBleed()
     {
         $input = \Input::json();
@@ -211,14 +244,23 @@ class UserController extends Controller
         if ($bleed->save()) {
             $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
             $user = User::find(\Auth::user()->id);
+            if (count($user) == 0) {
+                return \Response::json(['msg' => 'Error! user not found.'], 400);
+            }
             $user->last_bleed = $latestBleed->date;
             $user->save();
             $this->addNotification('Bleed Status Added.');
-            return \Response::json(['msg' => 'bleed added.'], 200);
+            return \Response::json(['msg' => 'User bleed status added.'], 200);
         }
-        return \Response::json(['msg' => 'error adding bleed.'], 400);
+        return \Response::json(['msg' => 'Error! Adding user bleed status.'], 400);
     }
 
+    /**
+    * Update user bleed details
+    * @param $bleedId
+    *
+    * @return mixed
+    */
     public function updateBleed($bleedId)
     {
         $input = \Input::json();
@@ -235,36 +277,48 @@ class UserController extends Controller
                 $user->last_bleed = $latestBleed->date;
                 $user->save();
                 $this->addNotification('Bleed Status Updated.');
-                return \Response::json(['msg' => 'bleed updated.'], 200);
+                return \Response::json(['msg' => 'User bleed status updated.'], 200);
             }
-            return \Response::json(['msg' => 'error updating bleed.'], 400);
+            return \Response::json(['msg' => 'Error! Updating user bleed status.'], 400);
         }
-        return \Response::json(['msg' => 'error updating bleed.'], 400);
+        return \Response::json(['msg' => 'Error! User bleed record not found.'], 400);
     }
 
+    /**
+    * Deactivate user account
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function deactivateAccount(Request $request)
     {
         $input = \Input::json();
 
         $user = User::where('email', \Auth::user()->email)->first();
         if (count($user) > 0) {
-//            $user->is_deleted = '0';
+            //            $user->is_deleted = '0';
             $user->status = 'inactive';
-//            $user->password = bcrypt($pass);
+            //            $user->password = bcrypt($pass);
             $data = array('name' => $user->name, 'email' => $user->email, 'reason' => $input->get('reason'));
             if ($user->save()) {
                 \Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
                     $message
-                        ->to($user->email, $user->name)->cc('info@pakblood.com')
-                        ->replyTo('info@pakblood.com', 'Pakblood Team')
-                        ->subject('Account Deactivated');
+                    ->to($user->email, $user->name)->cc('info@pakblood.com')
+                    ->replyTo('info@pakblood.com', 'Pakblood Team')
+                    ->subject('Account Deactivated');
                 });
-                return \Response::json(['msg' => 'account deactivated.'], 200);
+                return \Response::json(['msg' => 'User account deactivated.'], 200);
             }
         }
-        return \Response::json(['msg' => 'problem with deactivating account.'], 400);
+        return \Response::json(['msg' => 'Error! User not found.'], 400);
     }
 
+    /**
+    * Activate user account
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function activateAccount(Request $request)
     {
         $input = \Input::json();
@@ -272,7 +326,7 @@ class UserController extends Controller
         $pass = str_random(15);
         $user = User::where('email', $input->get('email'))->first();
         if (count($user) > 0) {
-//            $user->is_deleted = '0';
+            //            $user->is_deleted = '0';
             $user->status = 'active';
             $user->password = bcrypt($pass);
             $data = array('name' => $user->name, 'email' => $user->email, 'password' => $pass);
@@ -280,17 +334,24 @@ class UserController extends Controller
                 $this->addNotification('Account activated.');
                 \Mail::queue('emails/rejoin', $data, function ($message) use ($user) {
                     $message
-                        ->to($user->email, $user->name)->cc('info@pakblood.com')
-                        ->replyTo('info@pakblood.com', 'Pakblood Team')
-                        ->subject('Account Activated');
+                    ->to($user->email, $user->name)->cc('info@pakblood.com')
+                    ->replyTo('info@pakblood.com', 'Pakblood Team')
+                    ->subject('Account Activated');
                 });
                 return \Response::json(['msg' => 'account activation details sent to email, please follow the process to access account.'],
-                                       200);
+                200);
             }
+            return \Response::json(['msg' => 'Error! Activating user account, please try again.'], 400);
         }
-        return \Response::json(['msg' => 'problem with activating account.'], 400);
+        return \Response::json(['msg' => 'Error! User not found.'], 400);
     }
 
+    /**
+    * Change user password
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function changePassword(Request $request)
     {
         $input = \Input::json();
@@ -306,28 +367,34 @@ class UserController extends Controller
                 ];
                 \Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
                     $message
-                        ->to($data['email'], $data['name'])->cc('info@pakblood.com')
-                        ->replyTo('info@pakblood.com', 'Pakblood Team')
-                        ->subject('Password Changed');
+                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                    ->replyTo('info@pakblood.com', 'Pakblood Team')
+                    ->subject('Password Changed');
                 });
                 \Auth::logout();
                 return \Response::json(['msg' => 'Password Successfully Change.Please login again with your new password.'],
-                                       200);
+                200);
             }
         }
-        return \Response::json(['msg' => 'Problem changing password.'], 400);
+        return \Response::json(['msg' => 'Old password does not match.'], 400);
     }
 
+    /**
+    * Report user
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function reportUser(Request $request)
     {
         $input = \Input::json();
 
         if (\Auth::user()) {
             $report = Report::whereReported_user_idAndReporter_user_id($input->get('reported_user_id'),
-                                                                       \Auth::user()->id)->first();
+            \Auth::user()->id)->first();
             if (count($report) > 0) {
                 return \Response::json(['msg' => 'You have already reported that user, please wait for our admin team to review your report'],
-                                       400);
+                400);
             }
             $reporter = [
                 'name'  => \Auth::user()->name,
@@ -335,10 +402,10 @@ class UserController extends Controller
             ];
         } else {
             $report = Report::whereReported_user_idAndReporter_user_ip($input->get('reported_user_id'),
-                                                                       \Request::ip())->first();
+            \Request::ip())->first();
             if (count($report) > 0) {
                 return \Response::json(['msg' => 'You have already reported that user, please wait for our admin team to review your report'],
-                                       400);
+                400);
             }
             $reporter = [
                 'name'  => $input->get('name'),
@@ -356,9 +423,9 @@ class UserController extends Controller
         $report->reporter_email = $reporter['email'];
         $report->type = $input->get('report_type');
         $report->reporter_message = $input->get('comments');
-//        dump($request->input());
+        //        dump($request->input());
         $user = User::find($input->get('reported_user_id'));
-//        dd($user);
+        //        dd($user);
         if ($report->save()) {
             $data = [
                 'email'  => $user->email,
@@ -366,18 +433,18 @@ class UserController extends Controller
                 'reason' => $input->get('report_type'),
                 'msg'    => $input->get('comments')
             ];
-//            dump($data['msg']);
+            //            dump($data['msg']);
             \Mail::send(['html' => 'emails/user_reported'], $data, function ($message) use ($data) {
                 $message
-                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
-                    ->replyTo('info@pakblood.com', 'Pakblood Team')
-                    ->subject('Account Reported.');
+                ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                ->replyTo('info@pakblood.com', 'Pakblood Team')
+                ->subject('Account Reported.');
             });
             \Mail::send(['html' => 'emails/thank_you_for_reporting'], $reporter, function ($message) use ($reporter) {
                 $message
-                    ->to($reporter['email'], $reporter['name'])->cc('info@pakblood.com')
-                    ->replyTo('info@pakblood.com', 'Pakblood Team')
-                    ->subject('Thank you for reporting user on Pakblood.');
+                ->to($reporter['email'], $reporter['name'])->cc('info@pakblood.com')
+                ->replyTo('info@pakblood.com', 'Pakblood Team')
+                ->subject('Thank you for reporting user on Pakblood.');
             });
             if (!\Auth::guest()) {
                 $this->addNotification('User Reported.');
@@ -387,12 +454,16 @@ class UserController extends Controller
         return \Response::json(['msg' => 'There was some problems reporting user please try again.'], 400);
     }
 
+    /**
+    * Update user current location
+    * @return mixed
+    */
     public function currentLocation()
     {
         $input = \Input::json();
 
         if (\Auth::guest()) {
-            return \Response::json(['msg' => 'No user currently loged in.'], 400);
+            return \Response::json(['msg' => 'No user currently logedin.'], 400);
         }
 
         $user = User::find(\Auth::user()->id);
@@ -401,24 +472,33 @@ class UserController extends Controller
         if ($user->save()) {
             return \Response::json(['msg' => 'User location updated.'], 200);
         }
-        return \Response::json(['msg' => 'Error updating user location.'], 400);
+        return \Response::json(['msg' => 'Error! Updating user location.'], 400);
     }
 
-
+    /**
+    * Get user notifications
+    * @return mixed
+    */
     public function getNotifications()
     {
         if (\Auth::guest()) {
-            return \Response::json(['msg' => 'User not loged in.'], 200);
+            return \Response::json(['msg' => 'User not logedin.'], 200);
         }
         $notifications = Notification::where('user_id', \Auth::user()->id)->get();
 
         return \Response::json(compact('notifications'), 200);
     }
 
+    /**
+    * Add user notification
+    * @param $msg
+    *
+    * @return bool
+    */
     public function addNotification($msg)
     {
         if (\Auth::guest()) {
-            return \Response::json(['msg' => 'User not loged in.'], 200);
+            return \Response::json(['msg' => 'User not logedin.'], 200);
         }
 
         $notification = new Notification();
@@ -431,12 +511,18 @@ class UserController extends Controller
         return false;
     }
 
+    /**
+    * Send user password reset email
+    * @param Request $request
+    *
+    * @return mixed
+    */
     public function forgotPassword(Request $request)
     {
         $input = \Input::json();
-//        dd($input->get('email'));
+        //        dd($input->get('email'));
         if ($request->only('email') == null) {
-            return \Response::json(['msg' => 'no email provided'], 400);
+            return \Response::json(['msg' => 'Error! No email provided.'], 400);
         }
         $response = Password::sendResetLink($request->only('email'), function (Message $message) {
             $message->subject('Your Password Reset Link');
@@ -444,10 +530,10 @@ class UserController extends Controller
 
         switch ($response) {
             case Password::RESET_LINK_SENT:
-                return \Response::json(['msg' => $response], 200);
+            return \Response::json(['msg' => $response], 200);
 
             case Password::INVALID_USER:
-                return \Response::json(['msg' => $response], 400);
+            return \Response::json(['msg' => $response], 400);
         }
     }
 }

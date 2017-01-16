@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\City;
 use App\Org;
 use App\OrgRequests;
 use App\User;
@@ -13,9 +14,8 @@ use App\Http\Controllers\Controller;
 class OrgController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return Response
+     * Get list of all organizations
+     * @return mixed
      */
     public function index()
     {
@@ -23,19 +23,31 @@ class OrgController extends Controller
         return \Response::json(compact('data'), 200);
     }
 
-
+    /**
+     * Send join request for an organization
+     *
+     * @param Request $request
+     * @param         $orgId
+     *
+     * @return mixed
+     */
     public function orgJoinRequest(Request $request, $orgId)
     {
         $input = \Input::json();
 //        $orgId = $input->get('org_id');
         $reason = $input->get('reason');
-
+        if (\Auth::guest()) {
+            return \Response::json(['msg' => 'Error! User not logedin.'], 400);
+        }
         if ((OrgRequests::whereUser_idAndOrg_id(\Auth::user()->id, $orgId)->count()) > 0) {
             return \Response::json(['msg' => 'You have already sent a request to join this organization, please wait until organization admin approve your request.'],
                                    400);
         }
 
         $org = Org::find($orgId);
+        if (count($org) == 0) {
+            return \Response::json(['msg' => 'Error! Organization not found.'], 400);
+        }
         $orgreq = new OrgRequests;
         $orgreq->user_id = \Auth::user()->id;
         $orgreq->org_id = $org->id;
@@ -57,15 +69,15 @@ class OrgController extends Controller
             return \Response::json(['msg' => 'Request successfully submitted, please wait for organization admin to approve your request.'],
                                    200);
         }
-        return \Response::json(['msg' => 'Error refresh and try again.'], 400);
+        return \Response::json(['msg' => 'Error! could not send request to organization please try again.'], 400);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Add organization
      *
-     * @param  Request $request
+     * @param Request $request
      *
-     * @return Response
+     * @return mixed
      */
     public function store(Request $request)
     {
@@ -121,19 +133,23 @@ class OrgController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update organization data
      *
-     * @param  Request $request
+     * @param Request $request
+     * @param         $orgId
      *
-     * @return Response
+     * @return mixed
      */
     public function update(Request $request, $orgId)
     {
         $input = \Input::json();
-//        dump($id);
-//        dump($input);
-//        dd();
         $org = Org::where('id', '=', $orgId)->first();
+        if (\Auth::guest()) {
+            return \Response::json(['msg' => 'Error! User not logedin.'], 400);
+        }
+        if (count($org) == 0) {
+            return \Response::json(['msg' => 'Error! Organization not found.'], 400);
+        }
         $org->username = $input->get('admin_username');
         $org->name = $input->get('org_name');
         $org->address = $input->get('org_address');
@@ -168,13 +184,17 @@ class OrgController extends Controller
     }
 
     /**
-     * Register user without email verification when added by an organization
+     * Add or Update organizations member details
+     *
+     * @param Request $request
+     * @param         $orgId
+     * @param null    $uId
+     *
+     * @return mixed
      */
     public function addMember(Request $request, $orgId, $uId = null)
     {
         $input = \Input::json();
-//        dump();
-//        dd($input);
         if ($uId) {
             $user = User::find($uId);
             $msg = 'member successfully updated.';
@@ -202,7 +222,12 @@ class OrgController extends Controller
     }
 
     /**
-     * Change Organization Admin
+     * Change admin of an organization
+     *
+     * @param Request $request
+     * @param         $orgId
+     *
+     * @return mixed
      */
     public function changeAdmin(Request $request, $orgId)
     {
@@ -232,11 +257,16 @@ class OrgController extends Controller
             });
             return \Response::json(['msg' => 'Ownership successfully changed.'], 200);
         }
-        return \Response::json(['msg' => 'there was some problem with changing ownership', 400]);
+        return \Response::json(['msg' => 'Error! Changing ownership', 400]);
     }
 
     /**
-     * Delete Member
+     * Delete member of an organization
+     *
+     * @param $orgId
+     * @param $uId
+     *
+     * @return mixed
      */
     public function deleteMember($orgId, $uId)
     {
@@ -252,16 +282,27 @@ class OrgController extends Controller
         }
     }
 
+    /**
+     * Get list of join request of an organization
+     *
+     * @param $orgId
+     *
+     * @return mixed
+     */
     public function getAllRequest($orgId)
     {
         $req = OrgRequests::where('org_id', $orgId)->get();
-//        dump($req);
-//        dd($orgId);
         return \Response::json(compact('req'), 200);
     }
 
     /**
-     * Accept request to join organization
+     * Update user join request for organization
+     *
+     * @param         $orgId
+     * @param         $requestId
+     * @param Request $request
+     *
+     * @return mixed
      */
     public function updateRequest($orgId, $requestId, Request $request)
     {
@@ -270,7 +311,13 @@ class OrgController extends Controller
             return \Response::json(['msg' => 'Invalid request id.'], 400);
         }
         $user = User::where('id', $req->user_id)->first();
+        if (count($user) == 0) {
+            return \Response::json(['msg' => 'Error! User not found.'], 400);
+        }
         $org = Org::where('id', $orgId)->first();
+        if (count($org) == 0) {
+            return \Response::json(['msg' => 'Error! Organization not found.'], 400);
+        }
         $user->org_id = $orgId;
         if (!$request->input('status')) {
             $req->delete();
@@ -283,113 +330,101 @@ class OrgController extends Controller
                 'org_name' => $org->name,
                 'status'   => 'Accepted'
             );
-            /*\Mail::queue('emails/org_join_request', $data, function ($message) use ($user) {
-                $message
-                    ->from('noreply@pakblood.com', 'Pakblood')
-                    ->to($user->email, $user->name)
-                    ->subject('Request To Join Organization');
-            });*/
-            $req->delete();
-            return \Response::json(['msg' => 'Request accepted.'], 200);
-        }
-        return \Response::json(['msg' => 'there was some problem with updating request.'], 400);
-    }
-
-    /**
-     * Send Organization profile data, its members and requests to join that organization.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function getProfile($id)
-    {
-        if (Auth::guest()) {
-            $data = array('org' => Org::whereIdAndStatus($id, 'active')->first());
-            return view::make('org_profile', $data);
-        }
-        $org = Org::whereIdAndStatus($id, 'active')->first();
-        $countryId = City::where('id', $org->city_id)->pluck('country_id');
-        $data = array(
-            'org'        => $org,
-            'users'      => User::where('org_id', '=', $id)->where('id', '!=', Auth::user()->id)->paginate(10),
-            'reqs'       => OrgRequests::join('pb_users', 'pb_org_join_requests.user_id', '=', 'pb_users.id')
-                                       ->join('pb_org', 'pb_org_join_requests.org_id', '=', 'pb_org.id')
-                                       ->select(DB::raw('pb_users.*,pb_org_join_requests.id as req_id,pb_org_join_requests.reason'))
-                                       ->where('pb_org.id', '=', $id)
-                                       ->get(),
-            'orgCountry' => $countryId,
-            'orgCity'    => $org->city_id,
-            'orgCities'  => City::where('country_id', $countryId)->get(),
-        );
-        $redirect = (Auth::user()->username != '') ? Auth::user()->username : Auth::user()->id;
-        if ($data['org'] == NULL) {
-            return redirect('/profile/' . $redirect)
-                ->with('message',
-                       'Your organization is not active yet, please wait, until pakblood admin review your organization')
-                ->with('type', 'error');
-        }
-        return view::make('org_profile', $data);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    /**
-     * Reject request to join organization
-     */
-    public function rejectRequest($id)
-    {
-        $req = OrgRequests::where('id', '=', $id)->first();
-        $user = User::where('id', '=', $req->user_id)->first();
-        $org = Org::where('id', '=', $req->org_id)->first();
-        if ($req->delete()) {
-            $data = array(
-                'name'     => $user->name,
-                'email'    => $user->email,
-                'org_name' => $org->name,
-                'status'   => 'Rejected'
-            );
-            Mail::queue('emails/org_join_request', $data, function ($message) use ($user) {
+            \Mail::queue('emails/org_join_request', $data, function ($message) use ($user) {
                 $message
                     ->from('noreply@pakblood.com', 'Pakblood')
                     ->to($user->email, $user->name)
                     ->subject('Request To Join Organization');
             });
             $req->delete();
-            return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
-                                                                                          'Member join request rejected')->with('type',
-                                                                                                                                'success');
+            return \Response::json(['msg' => 'Request accepted.'], 200);
         }
-        return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
-                                                                                      'There was some problems rejecting request,please try again')->with('type',
-                                                                                                                                                          'error');
+        return \Response::json(['msg' => 'Error! While updating request.'], 400);
     }
 
-    public function delete(Request $request)
+    /**
+     * Get organization profile data (Eg users, request, country, city)
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function getProfile($id)
     {
-        $org = Org::where('id', '=', $request->input('org_id'));
-        $users = User::where('org_id', '=', $request->input('org_id'))->get();
-        foreach ($users as $user) {
-            $user->org_id = 0;
-            $user->save();
+        if (\Auth::guest()) {
+            $org = Org::whereIdAndStatus($id, 'active')->first();
+            return \Response::json(['org' => $org], 200);
+//            return view::make('org_profile', compact('org'));
         }
-        if ($org->delete()) {
-            return redirect('/profile/' . Auth::user()->id)
-                ->with('message', 'Organization successfully deleted.')
-                ->with('type', 'success');
+        $org = Org::whereIdAndStatus($id, 'active')->first();
+        if (!$org) {
+            return \Response::json(['msg' => 'Error! Organization not found or not active.']);
         }
-        return redirect()->back()
-                         ->with('message', 'there was some problem deleting Organization.')
-                         ->with('type', 'error');
+        $countryId = City::where('id', $org->city_id)->pluck('country_id');
+        $users = User::where('org_id', '=', $id)->where('id', '!=', \Auth::user()->id)->paginate(10);
+        $reqs = OrgRequests::join('pb_users', 'pb_org_join_requests.user_id', '=', 'pb_users.id')
+                           ->join('pb_org', 'pb_org_join_requests.org_id', '=', 'pb_org.id')
+                           ->select(\DB::raw('pb_users.*,pb_org_join_requests.id as req_id,pb_org_join_requests.reason'))
+                           ->where('pb_org.id', '=', $id)
+                           ->get();
+        $orgCity = $org->city_id;
+        $orgCities = City::where('country_id', $countryId)->get();
+
+        return \Response::json([
+                                   'org'        => $org,
+                                   'orgCountry' => $countryId,
+                                   'orgCity'    => $orgCity,
+                                   'cities'     => $orgCities,
+                                   'users'      => $users,
+                                   'reqs'       => $reqs
+                               ], 200);
     }
+
+    /**
+     * Reject request to join organization
+     */
+//    public function rejectRequest($id)
+//    {
+//        $req = OrgRequests::where('id', '=', $id)->first();
+//        $user = User::where('id', '=', $req->user_id)->first();
+//        $org = Org::where('id', '=', $req->org_id)->first();
+//        if ($req->delete()) {
+//            $data = array(
+//                'name'     => $user->name,
+//                'email'    => $user->email,
+//                'org_name' => $org->name,
+//                'status'   => 'Rejected'
+//            );
+//            Mail::queue('emails/org_join_request', $data, function ($message) use ($user) {
+//                $message
+//                    ->from('noreply@pakblood.com', 'Pakblood')
+//                    ->to($user->email, $user->name)
+//                    ->subject('Request To Join Organization');
+//            });
+//            $req->delete();
+//            return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
+//                                                                                          'Member join request rejected')->with('type',
+//                                                                                                                                'success');
+//        }
+//        return redirect('organization/' . $req->org_id . '#fndtn-viewrequests')->with('message',
+//                                                                                      'There was some problems rejecting request,please try again')->with('type',
+//                                                                                                                                                          'error');
+//    }
+
+//    public function delete(Request $request)
+//    {
+//        $org = Org::where('id', '=', $request->input('org_id'));
+//        $users = User::where('org_id', '=', $request->input('org_id'))->get();
+//        foreach ($users as $user) {
+//            $user->org_id = 0;
+//            $user->save();
+//        }
+//        if ($org->delete()) {
+//            return redirect('/profile/' . Auth::user()->id)
+//                ->with('message', 'Organization successfully deleted.')
+//                ->with('type', 'success');
+//        }
+//        return redirect()->back()
+//                         ->with('message', 'there was some problem deleting Organization.')
+//                         ->with('type', 'error');
+//    }
 }
