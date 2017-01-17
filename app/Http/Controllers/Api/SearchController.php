@@ -16,6 +16,7 @@ class SearchController extends Controller
 {
     /**
      * get list of all users.
+     *
      * @param Request $request
      *
      * @return mixed
@@ -45,21 +46,26 @@ class SearchController extends Controller
                      ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
                      ->addselect('pb_users.*')
                      ->whereStatusAndOrg_idAndIs_deleted('active', 0, 0)
-                     ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
+                     ->having('report_count', '<', 2)->groupby('pb_users.id')/*->skip($start)->take(15)*/
+                     ->get();
 
-        $users = new LengthAwarePaginator(
+        /*$users = new LengthAwarePaginator(
             $users,
             $totalrec['tottalrec'],
             15,
             Paginator::resolveCurrentPage(),
             ['path' => Paginator::resolveCurrentPath()]
-        );
-        $data = $users;
-        return \Response::json(compact('data'), 200);
+        );*/
+//        $data = $users;
+        return \Response::json([
+                                   'users'         => $users,
+                                   'responseCode' => 1
+                               ], 200);
     }
 
     /**
      * Get list of all users matching search parameters
+     *
      * @param Request $request
      *
      * @return mixed
@@ -110,7 +116,8 @@ class SearchController extends Controller
                          ->where('pb_users.city_id', $city)
                          ->where('pb_users.blood_group', $bg)
                          ->whereRaw('pb_users.last_bleed < DATE_SUB(NOW(),INTERVAL 3 month)')
-                         ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
+                         ->having('report_count', '<', 2)->groupby('pb_users.id')/*->skip($start)->take(15)*/
+                         ->get();
             /*$users = new LengthAwarePaginator(
                 $users,
                 count($totalrec),
@@ -170,36 +177,40 @@ class SearchController extends Controller
                          })
                          ->where('pb_users.city_id', $city)
                          ->where('pb_users.blood_group', $bg)
-                         ->having('report_count', '<', 2)->groupby('pb_users.id')->skip($start)->take(15)->get();
+                         ->having('report_count', '<', 2)->groupby('pb_users.id')/*->skip($start)->take(15)*/
+                         ->get();
 
-           /* $users = new LengthAwarePaginator(
-                $users,
-                count($totalrec),
-                15,
-                Paginator::resolveCurrentPage(),
-                ['path' => Paginator::resolveCurrentPath()]
-            );*/
+            /* $users = new LengthAwarePaginator(
+                 $users,
+                 count($totalrec),
+                 15,
+                 Paginator::resolveCurrentPage(),
+                 ['path' => Paginator::resolveCurrentPath()]
+             );*/
         }
 //        dd($users);
-        $data = array(
-            'users' => $users,
-            'bg' => $bg,
-            'country' => $country,
-            'city' => $city,
-            'cities' => City::where('country_id', $request->input('country'))->get(),
-            'orgs' => Org::join('pb_users', 'pb_users.org_id', '=', 'pb_org.id')
-                         ->select(\DB::raw('Count(pb_users.id) as total_users,pb_org.id,pb_org.name'))
-                         ->where('pb_users.blood_group', '=', $bg)
-                         ->where('pb_users.status', '=', 'active')
-                         ->where('pb_org.status', '=', 'active')
-                         ->where('pb_org.city_id', '=', $request->input('city'))
-                         ->groupBy('pb_org.id')->get()
-        );
-        return \Response::json(compact('data'), 200);
+        $cities = City::where('country_id', $request->input('country'))->get();
+        $orgs = Org::join('pb_users', 'pb_users.org_id', '=', 'pb_org.id')
+                   ->select(\DB::raw('Count(pb_users.id) as total_users,pb_org.id,pb_org.name'))
+                   ->where('pb_users.blood_group', '=', $bg)
+                   ->where('pb_users.status', '=', 'active')
+                   ->where('pb_org.status', '=', 'active')
+                   ->where('pb_org.city_id', '=', $request->input('city'))
+                   ->groupBy('pb_org.id')->get();
+        return \Response::json([
+                                   'users'         => $users,
+                                   'bloodGroup'    => $bg,
+                                   'country'       => $country,
+                                   'city'          => $city,
+                                   'cities'        => $cities,
+                                   'organizations' => $orgs,
+                                   'responseCode'  => 1
+                               ], 200);
     }
 
     /**
      * Get list of cities according to country id provided
+     *
      * @param $country_id
      *
      * @return mixed

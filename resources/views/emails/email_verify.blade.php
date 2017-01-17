@@ -14,7 +14,7 @@
     <p style="text-align: center">
 
         Please click on the following link to activate your account.<br><br>
-        <b> <a href="{!! URL::to('account/verify/' . $code) !!}">{{ URL::to('account/verify/' . $code) }}.</a></b><br>
+        <b> <a href="{!! URL::to('account/verify/' . $confirmation_code) !!}">{{ URL::to('account/verify/' . $confirmation_code) }}.</a></b><br>
     </p>
 
 

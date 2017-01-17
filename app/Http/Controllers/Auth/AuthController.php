@@ -154,7 +154,7 @@ class AuthController extends Controller
                 'city' => City::where('id', $user->city_id)->pluck('name'),
                 'blood_group' => $user->blood_group,
                 'status' => $user->status,
-                'code' => $confirmation_code,
+                'confirmation_code' => $confirmation_code,
             );
             Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
                 $message

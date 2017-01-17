@@ -20,7 +20,10 @@ class OrgController extends Controller
     public function index()
     {
         $data = Org::where('status', '=', 'active')->get();
-        return \Response::json(compact('data'), 200);
+        return \Response::json([
+                                   'data'         => $data,
+                                   'responseCode' => 1
+                               ], 200);
     }
 
     /**
@@ -37,16 +40,25 @@ class OrgController extends Controller
 //        $orgId = $input->get('org_id');
         $reason = $input->get('reason');
         if (\Auth::guest()) {
-            return \Response::json(['msg' => 'Error! User not logedin.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'Error! User not logedin.',
+                                       'responseCode'    => -5
+                                   ], 400);
         }
         if ((OrgRequests::whereUser_idAndOrg_id(\Auth::user()->id, $orgId)->count()) > 0) {
-            return \Response::json(['msg' => 'You have already sent a request to join this organization, please wait until organization admin approve your request.'],
+            return \Response::json([
+                                       'responseMessage' => 'You have already sent a request to join this organization, please wait until organization admin approve your request.',
+                                       'responseCode'    => -2
+                                   ],
                                    400);
         }
 
         $org = Org::find($orgId);
         if (count($org) == 0) {
-            return \Response::json(['msg' => 'Error! Organization not found.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'Error! Organization not found.',
+                                       'responseCode'    => -4
+                                   ], 400);
         }
         $orgreq = new OrgRequests;
         $orgreq->user_id = \Auth::user()->id;
@@ -66,10 +78,16 @@ class OrgController extends Controller
                     ->replyTo($data['memberEmail'], $data['member'])
                     ->subject('User Join Request.');
             });
-            return \Response::json(['msg' => 'Request successfully submitted, please wait for organization admin to approve your request.'],
+            return \Response::json([
+                                       'responseMessage' => 'Request successfully submitted, please wait for organization admin to approve your request.',
+                                       'responseCode'    => 1
+                                   ],
                                    200);
         }
-        return \Response::json(['msg' => 'Error! could not send request to organization please try again.'], 400);
+        return \Response::json([
+                                   'responseMessage' => 'Error! could not send request to organization please try again.',
+                                   'responseCode'    => -1
+                               ], 400);
     }
 
     /**
@@ -126,10 +144,16 @@ class OrgController extends Controller
                     ->to(\Auth::user()->email, \Auth::user()->name)->cc('info@pakblood.com')
                     ->subject('Organization Registration');
             });
-            return \Response::json(['msg' => 'Organization registration successful, Your organization will be active after Pakblood admin review!!'],
+            return \Response::json([
+                                       'responseMessage' => 'Organization registration successful, Your organization will be active after Pakblood admin review.',
+                                       'responseCode'    => 1
+                                   ],
                                    200);
         }
-        return \Response::json(['msg' => 'Organization registration error, please try again!!'], 400);
+        return \Response::json([
+                                   'responseMessage' => 'Organization registration error, please try again.',
+                                   'responseCode'    => 1
+                               ], 400);
     }
 
     /**
@@ -178,9 +202,15 @@ class OrgController extends Controller
         $org->url = $input->get('org_url');
         $org->save();
         if ($org->save()) {
-            return \Response::json(['msg' => 'Organization Profile Successfully Updated!!'], 200);
+            return \Response::json([
+                                       'responseMessage' => 'Organization Profile Successfully Updated.',
+                                       'responseCode'    => 1
+                                   ], 200);
         }
-        return \Response::json(['msg' => 'There was some Problems Saving Organization Profile please try again.'], 400);
+        return \Response::json([
+                                   'responseMessage' => 'There was some Problems Saving Organization Profile please try again.',
+                                   'responseCode'    => -1
+                               ], 400);
     }
 
     /**
@@ -216,9 +246,15 @@ class OrgController extends Controller
         $user->status = 'active';
         $user->org_id = $orgId;
         if ($user->save()) {
-            return \Response::json(['msg' => $msg], 200);
+            return \Response::json([
+                                       'responseMessage' => $msg,
+                                       'responseCode'    => 1
+                                   ], 200);
         }
-        return \Response::json(['msg' => 'error adding member.'], 400);
+        return \Response::json([
+                                   'responseMessage' => 'error adding/updating member.',
+                                   'responseCode'    => -2
+                               ], 400);
     }
 
     /**
@@ -255,9 +291,15 @@ class OrgController extends Controller
                     ->to($data['oldEmail'])->cc($data['newEmail'])->cc('info@pakblood.com')
                     ->subject('Account Activated');
             });
-            return \Response::json(['msg' => 'Ownership successfully changed.'], 200);
+            return \Response::json([
+                                       'responseMessage' => 'Ownership successfully changed.',
+                                       'responseCode'    => 1
+                                   ], 200);
         }
-        return \Response::json(['msg' => 'Error! Changing ownership', 400]);
+        return \Response::json([
+                                   'responseMessage' => 'Error! Changing ownership',
+                                   'responseCode'    => -2
+                               ], 400);
     }
 
     /**
@@ -274,11 +316,20 @@ class OrgController extends Controller
         if ($user) {
             $user->is_deleted = 1;
             if ($user->save()) {
-                return \Response::json(['msg' => 'Member successfully deleted.'], 200);
+                return \Response::json([
+                                           'responseMessage' => 'Member successfully deleted.',
+                                           'responseCode'    => 1
+                                       ], 200);
             }
-            return \Response::json(['msg' => 'There was error deleting member.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'There was error deleting member.',
+                                       'responseCode'    => -2
+                                   ], 400);
         } else {
-            return \Response::json(['msg' => 'Member does not exist or not in ur organization.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'Member does not exist or not in ur organization.',
+                                       'responseCode'    => -4
+                                   ], 400);
         }
     }
 
@@ -292,7 +343,10 @@ class OrgController extends Controller
     public function getAllRequest($orgId)
     {
         $req = OrgRequests::where('org_id', $orgId)->get();
-        return \Response::json(compact('req'), 200);
+        return \Response::json([
+                                   'req'          => $req,
+                                   'responseCode' => 1
+                               ], 200);
     }
 
     /**
@@ -308,20 +362,32 @@ class OrgController extends Controller
     {
         $req = OrgRequests::where('id', $requestId)->where('org_id', $orgId)->first();
         if (count($req) == 0) {
-            return \Response::json(['msg' => 'Invalid request id.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'Invalid request id.',
+                                       'responseCode'    => -4
+                                   ], 400);
         }
         $user = User::where('id', $req->user_id)->first();
         if (count($user) == 0) {
-            return \Response::json(['msg' => 'Error! User not found.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'Error! User not found.',
+                                       'responseCode'    => -4
+                                   ], 400);
         }
         $org = Org::where('id', $orgId)->first();
         if (count($org) == 0) {
-            return \Response::json(['msg' => 'Error! Organization not found.'], 400);
+            return \Response::json([
+                                       'responseMessage' => 'Error! Organization not found.',
+                                       'responseCode'    => -4
+                                   ], 400);
         }
         $user->org_id = $orgId;
         if (!$request->input('status')) {
             $req->delete();
-            return \Response::json(['msg' => 'Request rejected.'], 200);
+            return \Response::json([
+                                       'responseMessage' => 'Request rejected.',
+                                       'responseCode'    => 1
+                                   ], 200);
         }
         if ($user->save()) {
             $data = array(
@@ -337,13 +403,20 @@ class OrgController extends Controller
                     ->subject('Request To Join Organization');
             });
             $req->delete();
-            return \Response::json(['msg' => 'Request accepted.'], 200);
+            return \Response::json([
+                                       'responseMessage' => 'Request accepted.',
+                                       'responseCode'    => 1
+                                   ], 200);
         }
-        return \Response::json(['msg' => 'Error! While updating request.'], 400);
+        return \Response::json([
+                                   'responseMessage' => 'Error! While updating request.',
+                                   'responseCode'    => -2
+                               ], 400);
     }
 
     /**
      * Get organization profile data (Eg users, request, country, city)
+     *
      * @param $id
      *
      * @return mixed
@@ -357,7 +430,10 @@ class OrgController extends Controller
         }
         $org = Org::whereIdAndStatus($id, 'active')->first();
         if (!$org) {
-            return \Response::json(['msg' => 'Error! Organization not found or not active.']);
+            return \Response::json([
+                                       'responseMessage' => 'Error! Organization not found or not active.',
+                                       'responseCode'    => -4
+                                   ]);
         }
         $countryId = City::where('id', $org->city_id)->pluck('country_id');
         $users = User::where('org_id', '=', $id)->where('id', '!=', \Auth::user()->id)->paginate(10);
@@ -370,12 +446,13 @@ class OrgController extends Controller
         $orgCities = City::where('country_id', $countryId)->get();
 
         return \Response::json([
-                                   'org'        => $org,
-                                   'orgCountry' => $countryId,
-                                   'orgCity'    => $orgCity,
-                                   'cities'     => $orgCities,
-                                   'users'      => $users,
-                                   'reqs'       => $reqs
+                                   'org'          => $org,
+                                   'orgCountry'   => $countryId,
+                                   'orgCity'      => $orgCity,
+                                   'cities'       => $orgCities,
+                                   'users'        => $users,
+                                   'reqs'         => $reqs,
+                                   'responseCode' => 1
                                ], 200);
     }
 
