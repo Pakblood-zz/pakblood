@@ -12,7 +12,11 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Password;
+
 use JWTAuth;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
@@ -194,18 +198,27 @@ class UserController extends Controller
     {
         $tokenOld = JWTAuth::getToken();
 
-
-
         $error = false;
         try {
-            $access_token = JWTAuth::refresh($tokenOld);
+            $access_token = \JWTAuth::refresh($tokenOld);
             $expires_in = \JWTAuth::getPayload($access_token)->get('exp');
             $token_type = 'bearer';
-        } catch (Exceptions\TokenInvalidException $e) {
+        } catch (TokenInvalidException $e) {
             return response()->json([
-                                        'responseMessage' => 'token_invalid',
+                                        'responseMessage' => 'Token Invalid',
                                         'responseCode'    => -2
                                     ], $e->getStatusCode());
+        } catch (TokenExpiredException $e) {
+            return response()->json([
+                                        'responseMessage' => 'Token Expired',
+                                        'responseCode'    => -2
+                                    ], $e->getStatusCode());
+        } catch (JWTException $e) {
+            return response()->json([
+                                        'responseMessage' => 'Token Absent',
+                                        'responseCode'    => -2
+                                    ], $e->getStatusCode());
+
         }
 
         if ($error) {
@@ -216,8 +229,8 @@ class UserController extends Controller
         } else {
             return \Response::json([
                                        'access_token' => $access_token,
-                                       'expires_in' => $expires_in,
-                                       'token_type' => $token_type,
+                                       'expires_in'   => $expires_in,
+                                       'token_type'   => $token_type,
                                        'responseCode' => 1
                                    ], 200);
         }
