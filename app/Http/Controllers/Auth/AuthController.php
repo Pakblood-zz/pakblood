@@ -73,17 +73,18 @@ class AuthController extends Controller
      * Get a validator for an incoming registration request.
      *
      * @param  array $data
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'username' => 'required|max:255|unique:pb_users',
-            'email' => 'required|email|max:255|unique:pb_users',
-            'password' => 'required|min:6|confirmed',
-            'city' => 'required',
-            'phone' => 'required',
+            'name'                 => 'required|max:255',
+            'username'             => 'required|max:255|unique:pb_users',
+            'email'                => 'required|email|max:255|unique:pb_users',
+            'password'             => 'required|min:6|confirmed',
+            'city'                 => 'required',
+            'phone'                => 'required',
             'g-recaptcha-response' => 'required|captcha',
         ]);
     }
@@ -92,22 +93,23 @@ class AuthController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array $data
+     *
      * @return User
      */
 
     protected function create(array $data)
     {
         return User::create([
-                                'name' => $data['name'],
+                                'name'     => $data['name'],
                                 'username' => $data['username'],
-                                'email' => $data['email'],
+                                'email'    => $data['email'],
                                 'password' => bcrypt($data['password']),
-                                'gender' => $data['gender'],
-                                'dob' => $data['dob'],
-                                'phone' => $data['phone'],
-                                'address' => $data['address'],
-                                'city_id' => $data['city_id'],
-                                'status' => 'inactive'
+                                'gender'   => $data['gender'],
+                                'dob'      => $data['dob'],
+                                'phone'    => $data['phone'],
+                                'address'  => $data['address'],
+                                'city_id'  => $data['city_id'],
+                                'status'   => 'inactive'
                             ]);
 
     }
@@ -125,7 +127,6 @@ class AuthController extends Controller
             );
         }
 
-        $confirmation_code = str_random(60);
         $user = new User;
         $user->name = $request->input('name');
         $user->username = $request->input('username');
@@ -133,39 +134,43 @@ class AuthController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->gender = $request->input('gender');
         $user->dob = date('Y-m-d', strtotime($request->input('dob')));
-        $user->phone = $request->input('phone');
+        $user->phone = $request->input('country_code') .' '. $request->input('phone');
         $user->mobile = $request->input('mobile');
         $user->address = $request->input('address');
         $user->city_id = $request->input('city');
         $user->blood_group = $request->input('bgroup');
         $user->status = 'inactive';
+
+        $confirmation_code = str_random(60);
         $user->confirmation_code = $confirmation_code;
 
         if ($user->save()) {
             $data = array(
-                'name' => $user->name,
-                'username' => $user->username,
-                'email' => $user->email,
-                'gender' => $user->gender,
-                'dob' => date('Y-m-d', strtotime($request->input('dob'))),
-                'phone' => $user->phone,
-                'mobile' => $user->mobile,
-                'address' => $user->address,
-                'city' => City::where('id', $user->city_id)->pluck('name'),
-                'blood_group' => $user->blood_group,
-                'status' => $user->status,
-                'confirmation_code' => $confirmation_code,
+                'name'              => $user->name,
+                'username'          => $user->username,
+                'email'             => $user->email,
+                'gender'            => $user->gender,
+                'dob'               => date('Y-m-d', strtotime($request->input('dob'))),
+                'phone'             => $user->phone,
+                'mobile'            => $user->mobile,
+                'address'           => $user->address,
+                'city'              => City::where('id', $user->city_id)->pluck('name'),
+                'blood_group'       => $user->blood_group,
+                'status'            => $user->status,
+                'confirmation_code' => $user->confirmation_code,
             );
-            Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
-                $message
-                    ->to(Input::get('email'), Input::get('username'))->cc('info@pakblood.com')
-                    ->subject('Verification Email');
-            });
-            Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
-                $message
-                    ->to('info@pakblood.com')
-                    ->subject('New User Registered');
-            });
+            if (\Config::get('settings.environment') == 'production') {
+                Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
+                    $message
+                        ->to(Input::get('email'), Input::get('username'))->cc('info@pakblood.com')
+                        ->subject('Verification Email');
+                });
+                Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
+                    $message
+                        ->to('info@pakblood.com')
+                        ->subject('New User Registered');
+                });
+            }
             return redirect('account/verify');
         } else {
             Session::flash('message', 'Your account couldn\'t be created please try again');
@@ -181,7 +186,7 @@ class AuthController extends Controller
     {
         if ($user->ActivateAccount($code)) {
             $data = array(
-                'name' => \Auth::user()->name,
+                'name'  => \Auth::user()->name,
                 'email' => \Auth::user()->email
             );
             Mail::queue('emails/welcome', $data, function ($message) use ($data) {
@@ -210,7 +215,7 @@ class AuthController extends Controller
 //        dd();
         $this->validate($request, [
             $this->loginUsername() => 'required',
-            'password' => 'required',
+            'password'             => 'required',
         ]);
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
@@ -262,7 +267,8 @@ class AuthController extends Controller
      * Send the response after the user was authenticated.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  bool $throttles
+     * @param  bool                     $throttles
+     *
      * @return \Illuminate\Http\Response
      */
     protected function handleUserWasAuthenticated(Request $request, $throttles)
@@ -290,6 +296,7 @@ class AuthController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function fbLoginCallback(Request $request)
@@ -325,7 +332,7 @@ class AuthController extends Controller
                 if (Auth::loginUsingId($userAccount->id)) {
                     User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $data = array(
-                        'name' => \Auth::user()->name,
+                        'name'  => \Auth::user()->name,
                         'email' => \Auth::user()->email,
                         'fb_id' => $user->id
                     );
@@ -379,7 +386,9 @@ class AuthController extends Controller
 
     /**
      * Facebook login register
+     *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function postFbLogin(Request $request)
@@ -398,17 +407,17 @@ class AuthController extends Controller
             if (Auth::loginUsingId($user->id)) {
                 User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                 $data = array(
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'gender' => $user->gender,
-                    'dob' => date('Y-m-d', strtotime($request->input('dob'))),
-                    'phone' => $user->phone,
-                    'mobile' => $user->mobile,
-                    'address' => $user->address,
-                    'city' => City::where('id', $user->city_id)->pluck('name'),
+                    'name'        => $user->name,
+                    'username'    => $user->username,
+                    'email'       => $user->email,
+                    'gender'      => $user->gender,
+                    'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
+                    'phone'       => $user->phone,
+                    'mobile'      => $user->mobile,
+                    'address'     => $user->address,
+                    'city'        => City::where('id', $user->city_id)->pluck('name'),
                     'blood_group' => $user->blood_group,
-                    'status' => $user->status,
+                    'status'      => $user->status,
                 );
                 Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
                     $message
@@ -423,6 +432,7 @@ class AuthController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function gpLoginCallback(Request $request)
@@ -441,7 +451,7 @@ class AuthController extends Controller
                 if (Auth::loginUsingId($userAccount->id)) {
                     User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                     $data = array(
-                        'name' => \Auth::user()->name,
+                        'name'  => \Auth::user()->name,
                         'email' => \Auth::user()->email,
                         'gp_id' => \Auth::user()->gp_id
                     );
@@ -497,7 +507,9 @@ class AuthController extends Controller
 
     /**
      * google+ login register
+     *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function postGpLogin(Request $request)
@@ -516,17 +528,17 @@ class AuthController extends Controller
             if (Auth::loginUsingId($user->id)) {
                 User::where('id', \Auth::user()->id)->update(['last_login' => Carbon::now()]);
                 $data = array(
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'gender' => $user->gender,
-                    'dob' => date('Y-m-d', strtotime($request->input('dob'))),
-                    'phone' => $user->phone,
-                    'mobile' => $user->mobile,
-                    'address' => $user->address,
-                    'city' => City::where('id', $user->city_id)->pluck('name'),
+                    'name'        => $user->name,
+                    'username'    => $user->username,
+                    'email'       => $user->email,
+                    'gender'      => $user->gender,
+                    'dob'         => date('Y-m-d', strtotime($request->input('dob'))),
+                    'phone'       => $user->phone,
+                    'mobile'      => $user->mobile,
+                    'address'     => $user->address,
+                    'city'        => City::where('id', $user->city_id)->pluck('name'),
                     'blood_group' => $user->blood_group,
-                    'status' => $user->status,
+                    'status'      => $user->status,
                 );
                 Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
                     $message

@@ -8277,4 +8277,16 @@ div.loading {
   margin-right: 20px;
   border-radius: 5px; }
 
+input.validationError, input.dataError, select.validationError, select.dataError {
+  outline: 1px solid red !important; }
+
+.no-padding {
+  padding: 0 !important; }
+
+.no-left-padding {
+  padding-left: 0 !important; }
+
+.no-right-padding {
+  padding-right: 0 !important; }
+
 /*# sourceMappingURL=style.css.map */

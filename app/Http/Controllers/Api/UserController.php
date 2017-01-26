@@ -26,6 +26,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         //        dd($request->input());
+//        dd(\Input::json());
         $email = $request->input('email');
         $password = ($request->input('password')) ? $request->input('password') : '';
         $provider = ($request->input('provider')) ? $request->input('provider') : 'default';
@@ -57,21 +58,21 @@ class UserController extends Controller
             $id = \Auth::user()->id;
             $user = User::find($id);
 
-            $access_token = JWTAuth::fromUser($user);
-            $expires_in = 10000;
+            $access_token = \JWTAuth::fromUser($user);
+            $expires_in = \JWTAuth::getPayload($access_token)->get('exp');
             $token_type = 'bearer';
 
             $newUser = new User;
             if (!($newUser->accountIsActive($user->email))) {
                 return \Response::json([
                                            'responseMessage' => 'Account Not Activated, you need to activate your account before login.',
-                                           'responseCode'    => -6 //Activation Required
+                                           'responseCode'    => -6
                                        ],
                                        400);
             } elseif ($newUser->isDeleted($user->email)) {
                 return \Response::json([
                                            'responseMessage' => 'Account is deleted.',
-                                           'responseCode'    => -2 //Exception
+                                           'responseCode'    => -1
                                        ],
                                        400);
             }
@@ -81,7 +82,7 @@ class UserController extends Controller
 
         } else {
             $responseMessage = 'These credentials do not match our records.';
-            $responseCode = -1;
+            $responseCode = -4;
             return \Response::json(compact('responseMessage', 'responseCode'), 400);
         }
 
@@ -112,21 +113,35 @@ class UserController extends Controller
                                    ], 400);
         }
         $data['password'] = bcrypt($data['password']);
-        $data['status'] = 'inactive';
-        $confirmation_code = str_random(60);
-        $data['confirmation_code'] = $confirmation_code;
+        $data['status'] = 'active';
+//        $confirmation_code = str_random(60);
+//        $data['confirmation_code'] = $confirmation_code;
         if (User::create($data)) {
-            \Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
-                $message
-                    ->to($user->email, $user->username)->cc('info@pakblood.com')
-                    ->replyTo('info@pakblood.com')
-                    ->subject('Verification Email');
-            });
-            \Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
-                $message
-                    ->to('info@pakblood.com')
-                    ->subject('New User Registered');
-            });
+//            \Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
+//                $message
+//                    ->to($user->email, $user->username)->cc('info@pakblood.com')
+//                    ->replyTo('info@pakblood.com')
+//                    ->subject('Verification Email');
+//            });
+//            \Mail::queue('emails/user_registered', $data, function ($message) use ($user) {
+//                $message
+//                    ->to('info@pakblood.com')
+//                    ->subject('New User Registered');
+//            });
+            $name = (isset($data['name']) ? $data['name'] : null);
+            if (\Config::get('settings.environment') == 'production') {
+                \Mail::queue('emails/welcome', ['name' => $name], function ($message) use ($user) {
+                    $message
+                        ->to($user->email)->cc('info@pakblood.com')
+                        ->replyTo('info@pakblood.com')
+                        ->subject('Verification Email');
+                });
+//                \Mail::queue('emails/welcome', ['name' => $name], function ($message) use ($user) {
+//                    $message
+//                        ->to('info@pakblood.com')
+//                        ->subject('New User Registered');
+//                });
+            }
             $msg = 'User is created successfully!';
             return \Response::json([
                                        'responseMessage' => $msg,
@@ -179,9 +194,13 @@ class UserController extends Controller
     {
         $tokenOld = JWTAuth::getToken();
 
+
+
         $error = false;
         try {
             $access_token = JWTAuth::refresh($tokenOld);
+            $expires_in = \JWTAuth::getPayload($access_token)->get('exp');
+            $token_type = 'bearer';
         } catch (Exceptions\TokenInvalidException $e) {
             return response()->json([
                                         'responseMessage' => 'token_invalid',
@@ -196,8 +215,10 @@ class UserController extends Controller
                                    ], 400);
         } else {
             return \Response::json([
-                                       'access_token'    => $access_token,
-                                       'responseCode'    => 1
+                                       'access_token' => $access_token,
+                                       'expires_in' => $expires_in,
+                                       'token_type' => $token_type,
+                                       'responseCode' => 1
                                    ], 200);
         }
 
@@ -211,8 +232,8 @@ class UserController extends Controller
     {
         if (\Auth::user()) {
             return \Response::json([
-                                       'user'            => \Auth::user(),
-                                       'responseCode'    => 1
+                                       'user'         => \Auth::user(),
+                                       'responseCode' => 1
                                    ], 200);
         }
         return \Response::json([
@@ -493,7 +514,7 @@ class UserController extends Controller
                 \Auth::logout();
                 return \Response::json([
                                            'responseMessage' => 'Password Successfully Change.Please login again with your new password.',
-                                           'responseCode'    => -2
+                                           'responseCode'    => 1
                                        ],
                                        200);
             }

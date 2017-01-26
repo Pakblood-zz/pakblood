@@ -45,10 +45,19 @@
 
     <script>
         $(function () {
-            jQuery('.datetimepicker').datetimepicker({
-                timepicker: false,
-                format: 'd-M-y'
-            });
+          /*  if (!Modernizr.inputtypes.date) {
+                $('input[type=date]').datetimepicker({
+                    timepicker: false,
+                    format: 'd-M-y'
+                });
+            } else {*/
+                jQuery('.datetimepicker').datetimepicker({
+                    timepicker: false,
+                    format: 'd-M-y',
+//                    minDate:'-1970/01/30',//yesterday is minimum date(for today use 0 or -1970/01/01)
+//                    maxDate:'+1970/01/02'//tomorrow is maximum date calendar
+                });
+           /* }*/
             $(document).foundation();
             $(document).confirmWithReveal({
                 ok_class: 'small button radius',

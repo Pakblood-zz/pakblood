@@ -187,3 +187,6 @@ Route::post('/gpAuth', 'Auth\AuthController@postGpLogin');
 Route::get('/getCities/{country_id}', 'SearchController@getCities');
 Route::get('/linkAccount/{type}', 'ProfileController@linkAccount');
 Route::get('/unlinkAccount/{type}', 'ProfileController@unlinkAccount');
+
+Route::post('/checkUserExist', 'MainController@checkUserExist');
+Route::get('/getCountryCallingCode/{country_id}', 'MainController@getCountryCallingCode');
