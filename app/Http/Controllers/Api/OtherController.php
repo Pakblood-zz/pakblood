@@ -33,11 +33,11 @@ class OtherController extends Controller
      *
      * @return mixed
      */
-    public function getCities(Request $request)
+    public function getCities($countryId = null)
     {
         $cities = City::get();
-        if ($request->input('country_id') != null) {
-            $cities = City::where('country_id', $request->input('country_id'))->get();
+        if ($countryId != null) {
+            $cities = City::where('country_id', $countryId)->get();
         }
         return \Response::json([
                                    'cities'       => $cities,
