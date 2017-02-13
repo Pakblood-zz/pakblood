@@ -10,38 +10,34 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class OtherController extends Controller
-{
+class OtherController extends Controller {
     /**
      * Get list of all countries
      * @return mixed
      */
-    public function getCountries()
-    {
+    public function getCountries() {
         $countries = Country::get();
 
         return \Response::json([
-                                   'countries'    => $countries,
-                                   'responseCode' => 1
-                               ], 200);
+            'countries' => $countries,
+            'responseCode' => 1
+        ], 200);
     }
 
     /**
      * Get list of all cities, if country id is provided then get list of cities in that country
      *
-     * @param Request $request
-     *
+     * @param null $countryId
      * @return mixed
      */
-    public function getCities($countryId = null)
-    {
+    public function getCities($countryId = null) {
         $cities = City::get();
         if ($countryId != null) {
             $cities = City::where('country_id', $countryId)->get();
         }
         return \Response::json([
-                                   'cities'       => $cities,
-                                   'responseCode' => 1
-                               ], 200);
+            'cities' => $cities,
+            'responseCode' => 1
+        ], 200);
     }
 }

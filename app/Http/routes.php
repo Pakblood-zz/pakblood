@@ -58,6 +58,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     Route::get('/getcountries', 'OtherController@getCountries');
     Route::get('/getcities', 'OtherController@getCities');
+    Route::get('/getcities/{country_id}', 'OtherController@getCities');
 });
 
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));

@@ -77,7 +77,7 @@ class SearchController extends Controller
         $country = $input['country'];
         $city = $input['city'];
         if (\Auth::guest()) {
-            if ($input->get('page') != NULL) {
+            /*if ($input->get('page') != NULL) {
                 $page = $request->input('page');
                 $page--;
             } else {
@@ -87,7 +87,7 @@ class SearchController extends Controller
             $currPage = $page;
             $perPage = 15;
 
-            $start = $currPage * $perPage;
+            $start = $currPage * $perPage;*/
 
             /* $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                  ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndOrg_idAndIs_deleted('active', 0, 0)
@@ -126,7 +126,7 @@ class SearchController extends Controller
                 ['path' => Paginator::resolveCurrentPath()]
             );*/
         } else {
-            if ($request->input('page') != NULL) {
+           /* if ($request->input('page') != NULL) {
                 $page = $request->input('page');
                 $page--;
             } else {
@@ -136,7 +136,7 @@ class SearchController extends Controller
             $currPage = $page;
             $perPage = 15;
 
-            $start = $currPage * $perPage;
+            $start = $currPage * $perPage;*/
 
             /*$totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndIs_deleted('active', 0)
