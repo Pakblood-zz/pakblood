@@ -10,7 +10,8 @@
     "illuminate/html": "5.*",
     "anhskohbo/no-captcha": "2.*",
     "laravel/socialite": "^2.0",
-    "tymon/jwt-auth": "^0.5.9"
+    "tymon/jwt-auth": "^0.5.9",
+    "intervention/image": "^2.3"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",

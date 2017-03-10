@@ -1,12 +1,18 @@
 @include('header')
-        <!-- Slider -->
+<!-- Slider -->
 <div class="row hide-for-small-only">
     <div class="slider">
         {!! HTML::image('images/bannerSloder.jpg', 'Slider', array('title' => 'Slider img','style' => 'width:100%')) !!}
     </div>
 </div>
 @include('search_bar')
-        <!-- Center Container-->
+<!-- Center Container-->
+
+@if(isset($pictorial) && count($pictorial) > 2)
+    <!-- Pictorial -->
+    @include('pictorial')
+@endif
+
 <style>
     #countriesRegForm_chosen, #citiesRegForm_chosen {
         margin: 0;
@@ -121,8 +127,8 @@
         </div>
         <div class="row">
             <div class="small-20 columns show-for-medium-up" style="margin: 10px 0;text-align: center;">
-                {{--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>--}}
-                        <!-- seostuff.com sidebar -->
+            {{--<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>--}}
+            <!-- seostuff.com sidebar -->
                 <ins class="adsbygoogle"
                      style="display:inline-block;width:300px;height:600px"
                      data-ad-client="ca-pub-1709767846664941"

@@ -30,10 +30,7 @@ class Handler extends ExceptionHandler
     public function report(Exception $e)
     {
         \Log::error($e);
-        //        dump($e);
         if (!$e instanceof NotFoundHttpException) {
-            //            dump(1);
-            //            dd();
             if (\Config::get('settings.environment') == 'production') {
                 $data = [
                     'exception' => $e,
@@ -62,9 +59,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-//        dump($e);
-//        dump($e->getStatusCode());
-//        dd();
         if (\Request::is('api/*')) {
             return \Response::json([
                                        'responseMessage' => 'Exception on server.!',

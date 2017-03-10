@@ -44,6 +44,10 @@
                             <a href="{{url('/admin/reports')}}" class=""><i class="fa fa-edit fa-fw"></i> User Reports
                             </a>
                         </li>
+                        <li class=@if(\Request::is('admin/bleedStatusList') || \Request::is('admin/reports/*')) "active" @endif>
+                            <a href="{{url('/admin/pictorial')}}" class=""><i class="fa fa-edit fa-fw"></i> Pictorial
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </ul>

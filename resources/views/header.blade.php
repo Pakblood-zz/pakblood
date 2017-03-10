@@ -42,6 +42,7 @@
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
     {!! HTML::script('js/vendor/select2/select2.full.js') !!}
     {!! HTML::script('js/myFunctions.js') !!}
+    {!! HTML::script('js/vendor/jquery.marquee.min.js') !!}
 
     <script>
         $(function () {

@@ -11,6 +11,7 @@
 |
 */
 
+//Api Routes
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     Route::group(['prefix' => 'users'], function () {
@@ -46,8 +47,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
             Route::delete('/deletemember/{id}', 'OrgController@deleteMember');
             Route::get('/requests', 'OrgController@getAllRequest');
             Route::get('/requests/{request_id}', 'OrgController@updateRequest');
-//        Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
-//        Route::post('/delete', 'OrgController@delete');
+            //        Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
+            //        Route::post('/delete', 'OrgController@delete');
         });
     });
 
@@ -62,13 +63,6 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 });
 
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));
-//Route::get('test', function () {
-//    return view('tests');
-//});
-//Route::get('/bulkEmail','ContactUsController@bulkEmail');
-/*Route::get('/bulkEmail', function () {
-    return view('emails.bulkEmail');
-});*/
 
 Route::get('/', function () {
     return view('index');
@@ -136,11 +130,11 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('/report/user', 'ReportsController@index');
 Route::post('/report/user', 'ReportsController@reportUser');
 Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin', 'before' => 'admin'], function () {
-//    Route::get('/login', 'MainController@login');
-//    Route::post('/login', 'MainController@login');
+    //    Route::get('/login', 'MainController@login');
+    //    Route::post('/login', 'MainController@login');
 
     //AutoComplete fetch data route
-//    Route::get('getData', 'MainController@getData');
+    //    Route::get('getData', 'MainController@getData');
 
     Route::get('/', 'MainController@index');
     Route::get('/dashboard', 'MainController@index');
@@ -174,6 +168,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin
     Route::post('/user/edit/bleed', 'BleedController@update');
     Route::get('/add/user/{id}/bleed', 'BleedController@index');
     Route::post('/add/user/bleed', 'BleedController@add');
+
+    //Pictorial
+    Route::get('/pictorial', 'PictorialController@index');
+    Route::get('/pictorial/{id}/approve', 'PictorialController@approve');
+
 });
 Route::get('/fblogin', function () {
     return Socialite::with('facebook')->redirect();

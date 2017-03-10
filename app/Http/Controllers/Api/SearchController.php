@@ -73,7 +73,7 @@ class SearchController extends Controller {
         $bg      = $input['bgroup'];
         $country = $input['country'];
         $city    = $input['city'];
-        if ($input['page'] != NULL) {
+        if (isset($input['page']) && $input['page'] != NULL) {
             $page = $request->input('page');
             $page--;
         } else {
@@ -182,10 +182,10 @@ class SearchController extends Controller {
             ->where('pb_org.city_id', '=', $request->input('city'))
             ->groupBy('pb_org.id')->get();*/
         $responseMessage = 'Success';
-        $responseCode = 1;
+        $responseCode    = 1;
         if (count($users) == 0) {
             $responseMessage = 'No Record found.';
-            $responseCode = -4;
+            $responseCode    = -4;
         }
         return \Response::json([
             'users' => $users,

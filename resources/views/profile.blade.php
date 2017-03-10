@@ -1,6 +1,6 @@
 @include('header')
 @include('search_bar')
-        <!-- Center Container-->
+<!-- Center Container-->
 <style>
     #countriesRegForm_chosen, #citiesRegForm_chosen {
         margin: 0;
@@ -33,8 +33,8 @@
                                                      aria-controls="ediprofile">Edit Profile </a></li>
         @if($user->password != '')
             <li class="tab-title" role="presentation">
-                <a href="#changepassword" role="tab" tabindex="0" aria-selected="false" aria-controls="changepassword">Change
-                    Password </a>
+                <a href="#changepassword" role="tab" tabindex="0" aria-selected="false" aria-controls="changepassword">
+                    Change Password </a>
             </li>
         @endif
         <li class="tab-title" role="presentation"><a href="#bleedhistory" role="tab" tabindex="0" aria-selected="false"
@@ -168,7 +168,8 @@
             </div>
         </section>
         <section role="tabpanel" aria-hidden="false" class="content" id="bleedstatus">
-            {!! Form::open(array('url' => '/bleed/update','id' => 'add_member_form')) !!}
+            {!! Form::open(array('url' => '/bleed/update','id' => 'add_member_form',
+            'enctype'=>'multipart/form-data')) !!}
             <div class="row">
                 <div class="small-20 large-20 columns">
                     <div class="row">
@@ -176,25 +177,71 @@
                             {!! Form::label('receiver_name', 'Receiver Name :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::text('receiver_name', Input::old('receiver_name'), array('class' => 'inline','required','id' => 'receiver_name','placeholder' => 'Receiver Name')) !!}
+                            {!! Form::text('receiver_name', Input::old('receiver_name'),
+                            array('class' => 'inline','required','id' => 'receiver_name',
+                            'placeholder' => 'Receiver Name')) !!}
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="hide-for-small-only medium-7 large-5 columns">
+                            {!! Form::label('country', 'Country :' ,array('class' => 'inline')) !!}
+                        </div>
+                        <div class="small-20 medium-10 large-10 columns left">
+                            <select name="country" id="countriesRegForm" data-placeholder="Choose a country..."
+                                    class="chosen-select">
+                                <option value=""></option>
+                                @foreach($countries as $row)
+                                    <option value="{{ $row->id }}"
+                                            {{ (isset($hCountry) && $hCountry== $row->id)?"selected":"" }}>
+                                        {{ $row->short_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
                             {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::text('city', Input::old('city'), array('class' => 'inline','id' => 'city','required','placeholder' => 'City')) !!}
+                            <select name="city" id="citiesRegForm" data-placeholder="Choose a city..."
+                                    class="chosen-select" {{ (isset($hCity))?"":"disabled" }}>
+                                <option value=""></option>
+                                @if(isset($hCities))
+                                    @foreach($hCities as $row)
+                                        <option value="{{ $row->id }}"
+                                                {{ (isset($hCity) && $hCity== $row->id)?"selected":"" }}>
+                                            {{ $row->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="hide-for-small-only medium-7 large-5 columns">
+                            {!! Form::label('image', 'Image :' ,array('class' => 'inline')) !!}
+                        </div>
+                        <div class="small-20 medium-10 large-10 columns left">
+                            {!!  Form::file('image', ['class' => 'inline', 'style'=>'margin: 10px 0;'])  !!}
+                            {{--{!! Form::textarea('comments', Input::old('comments'),--}}
+                            {{--array('style' => 'margin: 0 0 1rem 0;', 'size' => '30x5', 'class' => 'inline',--}}
+                            {{--'id' => 'comments','placeholder' => 'Comments')) !!}--}}
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
                             {!! Form::label('comments', 'Comments :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::textarea('comments', Input::old('comments'), array('style' => 'margin: 0 0 1rem 0;', 'size' => '30x5', 'class' => 'inline','id' => 'comments','placeholder' => 'Comments')) !!}
+                            {!! Form::textarea('comments', Input::old('comments'),
+                            array('style' => 'margin: 0 0 1rem 0;', 'size' => '30x5', 'class' => 'inline',
+                            'id' => 'comments','placeholder' => 'Comments')) !!}
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
                             {!! Form::label('date', 'Date :' ,array('class' => 'inline')) !!}
@@ -250,10 +297,12 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             <select id="gender" name="gender">
-                                <option value="m" <?php if ((\Auth::user()->gender) == 'm') echo 'selected="selected"'; ?>>
+                                <option value="m" <?php if ((\Auth::user()->gender) == 'm')
+                                    echo 'selected="selected"'; ?>>
                                     Male
                                 </option>
-                                <option value="f" <?php if ((\Auth::user()->gender) == 'f') echo 'selected="selected"'; ?>>
+                                <option value="f" <?php if ((\Auth::user()->gender) == 'f')
+                                    echo 'selected="selected"'; ?>>
                                     Female
                                 </option>
                             </select>
@@ -304,7 +353,9 @@
                                     class="chosen-select">
                                 <option value=""></option>
                                 @foreach($countries as $row)
-                                    <option value="{{ $row->id }}" {{ (isset($user->country_id) && $user->country_id== $row->id)?"selected":"" }}>{{ $row->short_name }}</option>
+                                    <option value="{{ $row->id }}"
+                                            {{ (isset($user->country_id) && $user->country_id== $row->id)?"selected":"" }}>
+                                        {{ $row->short_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -319,7 +370,9 @@
                                 <option value=""></option>
                                 @if(isset($cities))
                                     @foreach($cities as $row)
-                                        <option value="{{ $row->id }}" {{ (isset($user->city_id) && $user->city_id== $row->id)?"selected":"" }}>{{ $row->name }}</option>
+                                        <option value="{{ $row->id }}"
+                                                {{ (isset($user->city_id) && $user->city_id== $row->id)?"selected":"" }}>
+                                            {{ $row->name }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -331,28 +384,36 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             <select id="bgroup" name="bgroup">
-                                <option value="Ap"<?php if ((Auth::user()->blood_group) == 'Ap') echo 'selected="selected"'; ?>>
+                                <option value="Ap"<?php if ((Auth::user()->blood_group) == 'Ap')
+                                    echo 'selected="selected"'; ?>>
                                     A+
                                 </option>
-                                <option value="An"<?php if ((Auth::user()->blood_group) == 'An') echo 'selected="selected"'; ?>>
+                                <option value="An"<?php if ((Auth::user()->blood_group) == 'An')
+                                    echo 'selected="selected"'; ?>>
                                     A-
                                 </option>
-                                <option value="Bp"<?php if ((Auth::user()->blood_group) == 'Bp') echo 'selected="selected"'; ?>>
+                                <option value="Bp"<?php if ((Auth::user()->blood_group) == 'Bp')
+                                    echo 'selected="selected"'; ?>>
                                     B+
                                 </option>
-                                <option value="Bn"<?php if ((Auth::user()->blood_group) == 'Bn') echo 'selected="selected"'; ?>>
+                                <option value="Bn"<?php if ((Auth::user()->blood_group) == 'Bn')
+                                    echo 'selected="selected"'; ?>>
                                     B-
                                 </option>
-                                <option value="Op"<?php if ((Auth::user()->blood_group) == 'Op') echo 'selected="selected"'; ?>>
+                                <option value="Op"<?php if ((Auth::user()->blood_group) == 'Op')
+                                    echo 'selected="selected"'; ?>>
                                     O+
                                 </option>
-                                <option value="On"<?php if ((Auth::user()->blood_group) == 'On') echo 'selected="selected"'; ?>>
+                                <option value="On"<?php if ((Auth::user()->blood_group) == 'On')
+                                    echo 'selected="selected"'; ?>>
                                     O-
                                 </option>
-                                <option value="ABp"<?php if ((Auth::user()->blood_group) == 'ABp') echo 'selected="selected"'; ?>>
+                                <option value="ABp"<?php if ((Auth::user()->blood_group) == 'ABp')
+                                    echo 'selected="selected"'; ?>>
                                     AB+
                                 </option>
-                                <option value="ABn"<?php if ((Auth::user()->blood_group) == 'ABn') echo 'selected="selected"'; ?>>
+                                <option value="ABn"<?php if ((Auth::user()->blood_group) == 'ABn')
+                                    echo 'selected="selected"'; ?>>
                                     AB-
                                 </option>
                             </select>
@@ -370,7 +431,8 @@
         </section>
         <section role="tabpanel" aria-hidden="true" class="content" id="changepassword">
             <div id="login" class="row">
-                {!! Form::open(array('url' => 'change/password','class' => 'small-20 medium-10 large-8 columns','style' => 'margin: auto 30%;')) !!}
+                {!! Form::open(array('url' => 'change/password','class' => 'small-20 medium-10 large-8 columns',
+                'style' => 'margin: auto 30%;')) !!}
                 <h5>Change Password</h5>
                 @if (count($errors) > 0)
                     <div class="row">
@@ -384,7 +446,8 @@
                         {!! Form::label('old_password', 'Old Passowrd :' ,array('class' => 'inline')) !!}
                     </div>
                     <div class="small-20 medium-14 large-14 columns left">
-                        {!! Form::password('old_password', array('class' => 'inline','id' => 'old_password','placeholder' => 'Old Password')) !!}
+                        {!! Form::password('old_password', array('class' => 'inline','id' => 'old_password',
+                        'placeholder' => 'Old Password')) !!}
                     </div>
                 </div>
                 <div class="row">
@@ -392,15 +455,18 @@
                         {!! Form::label('new_password', 'New Password :',array('class' => 'inline')) !!}
                     </div>
                     <div class="small-20 medium-14 large-14 columns left">
-                        {!! Form::password('new_password', array('class' => 'inline','id' => 'new_password','placeholder' => 'New Password')) !!}
+                        {!! Form::password('new_password', array('class' => 'inline','id' => 'new_password',
+                        'placeholder' => 'New Password')) !!}
                     </div>
                 </div>
                 <div class="row">
                     <div class="hide-for-small-only medium-6 large-6 columns">
-                        {!! Form::label('new_password_confirmation', 'Confirm New Password :',array('class' => 'inline')) !!}
+                        {!! Form::label('new_password_confirmation', 'Confirm New Password :',
+                        array('class' => 'inline')) !!}
                     </div>
                     <div class="small-20 medium-14 large-14 columns left">
-                        {!! Form::password('new_password_confirmation', array('class' => 'inline','id' => 'new_password_confirmation','placeholder' => 'Confirm New Password')) !!}
+                        {!! Form::password('new_password_confirmation', array('class' => 'inline',
+                        'id' => 'new_password_confirmation','placeholder' => 'Confirm New Password')) !!}
                     </div>
                 </div>
                 <div style="text-align: center;" class="login_btn small-20 medium-14 large-15 columns">
