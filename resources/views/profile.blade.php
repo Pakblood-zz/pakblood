@@ -188,8 +188,8 @@
                             {!! Form::label('country', 'Country :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <select name="country" id="countriesRegForm" data-placeholder="Choose a country..."
-                                    class="chosen-select">
+                            <select name="country" id="countriesBleedStatus" data-placeholder="Choose a country..."
+                                    class="chosen-select" required>
                                 <option value=""></option>
                                 @foreach($countries as $row)
                                     <option value="{{ $row->id }}"
@@ -205,8 +205,8 @@
                             {!! Form::label('city', 'City :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            <select name="city" id="citiesRegForm" data-placeholder="Choose a city..."
-                                    class="chosen-select" {{ (isset($hCity))?"":"disabled" }}>
+                            <select name="city" id="citiesBleedStatus" data-placeholder="Choose a city..."
+                                    class="chosen-select" {{ (isset($hCity))?"":"disabled" }} required>
                                 <option value=""></option>
                                 @if(isset($hCities))
                                     @foreach($hCities as $row)
@@ -225,20 +225,17 @@
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
                             {!!  Form::file('image', ['class' => 'inline', 'style'=>'margin: 10px 0;'])  !!}
-                            {{--{!! Form::textarea('comments', Input::old('comments'),--}}
-                            {{--array('style' => 'margin: 0 0 1rem 0;', 'size' => '30x5', 'class' => 'inline',--}}
-                            {{--'id' => 'comments','placeholder' => 'Comments')) !!}--}}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="hide-for-small-only medium-7 large-5 columns">
-                            {!! Form::label('comments', 'Comments :' ,array('class' => 'inline')) !!}
+                            {!! Form::label('comment', 'Comment :' ,array('class' => 'inline')) !!}
                         </div>
                         <div class="small-20 medium-10 large-10 columns left">
-                            {!! Form::textarea('comments', Input::old('comments'),
+                            {!! Form::textarea('comment', Input::old('comment'),
                             array('style' => 'margin: 0 0 1rem 0;', 'size' => '30x5', 'class' => 'inline',
-                            'id' => 'comments','placeholder' => 'Comments')) !!}
+                            'id' => 'comment','placeholder' => 'Comment')) !!}
                         </div>
                     </div>
 
@@ -482,6 +479,7 @@
                     <th>Receiver Name</th>
                     <th>City</th>
                     <th width="500" class="hide-for-small-down">Comments</th>
+                    <th width="500" class="hide-for-small-down">image</th>
                     <th width="180">Date</th>
                 </tr>
                 <?php $count = 1; ?>
@@ -490,7 +488,12 @@
                         <td class="hide-for-small-down"><?php echo $count?></td>
                         <td>{{$bs->receiver_name}}</td>
                         <td>{{$bs->city}}</td>
-                        <td class="hide-for-small-down">{{$bs->comments}}</td>
+                        <td class="hide-for-small-down">{{$bs->comment}}</td>
+                        <td class="hide-for-small-down">
+                            @if($bs->image != '')
+                                <img src="{{$bs->image}}" style="height: 150px;width: auto;">
+                            @endif
+                        </td>
                         <td>{{$bs->date}}</td>
                     </tr>
                     <?php $count += 1; ?>
@@ -525,6 +528,7 @@
 </div>
 <script>
     //ID of select containing countries and ID of select containing cities.
+    countryAndCitySelect('countriesBleedStatus', 'citiesBleedStatus');
     countryAndCitySelect('countriesRegForm', 'citiesRegForm');
     $(document).on('change', '#tabSelect', function () {
         //        console.log($(this));

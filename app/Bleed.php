@@ -18,6 +18,6 @@ class Bleed extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'receiver_name', 'city', 'comments', 'date', 'mobile'];
+    protected $fillable = ['user_id', 'receiver_name', 'city', 'comment', 'date', 'mobile'];
 
 }

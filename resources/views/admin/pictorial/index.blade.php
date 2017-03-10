@@ -50,13 +50,13 @@
                                href="{{url('admin/pictorial/'.$row->id).'/approve'}}">
                                 <li class="fi-checkbox size-25"></li>
                             </a>
-                            <a data-tooltip aria-haspopup="true" class="has-tip" title="Edit"
-                               href="{{url('admin/pictorial/'.$row->id.'/edit')}}">
-                                <li class="fi-page-edit size-25"></li>
-                            </a>
-                            <a data-tooltip aria-haspopup="true" class="tip-left" title="Undo"
-                               href="{{url('/admin/pictorial/'.$row->id.'/delete')}}">
-                                <li class="fi-trash size-25"></li>
+                            {{--<a data-tooltip aria-haspopup="true" class="has-tip" title="Edit"--}}
+                               {{--href="{{url('admin/pictorial/'.$row->id.'/edit')}}">--}}
+                                {{--<li class="fi-page-edit size-25"></li>--}}
+                            {{--</a>--}}
+                            {{--<a data-tooltip aria-haspopup="true" class="tip-left" title="Undo"--}}
+                               {{--href="{{url('/admin/pictorial/'.$row->id.'/delete')}}">--}}
+                                {{--<li class="fi-trash size-25"></li>--}}
                             </a>
                         </td>
                     </tr>
