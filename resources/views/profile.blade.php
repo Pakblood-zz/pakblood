@@ -247,6 +247,16 @@
                             <input required id="date" class="inline datetimepicker" name="date" type="text">
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="medium-7 large-5 columns">
+                            {!! Form::label('from_pakblood', 'Did donor called you from pakblood?' ,array('class' => 'inline')) !!}
+                        </div>
+                        <div class="small-20 medium-10 large-10 columns left">
+                            {!! Form::input('checkbox','from_pakblood',null,array('class' => 'inline','style'=>'margin:0;vertical-align: -webkit-baseline-middle;')) !!}
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div style="text-align: center;" class="small-20 medium-20 large-20 columns">
                             <input type="submit" class="small button radius" name="submit" value="Save">

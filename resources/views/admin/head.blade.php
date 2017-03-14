@@ -19,6 +19,7 @@
     {!! HTML::style('css/jquery.datetimepicker.css') !!}
     {!! HTML::style('css/jquery-ui.min.css') !!}
     {!! HTML::style('css/select2.css') !!}
+    {!! HTML::style('css/lightbox.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
     {!! HTML::script('js/vendor/fastclick.js') !!}
@@ -32,6 +33,7 @@
     {!! HTML::script('js/vendor/confirm_with_reveal.js') !!}
     {!! HTML::script('js/vendor/select2/select2.full.js') !!}
     {!! HTML::script('js/myFunctions.js') !!}
+    {!! HTML::script('js/vendor/lightbox.js') !!}
 
     <script>
         $(function () {

@@ -27,6 +27,7 @@ class BleedController extends Controller {
         $bleed->country       = $country->short_name;
         $bleed->city          = $city->name;
         $bleed->comment       = $request->input('comment');
+        $bleed->from_pakblood = ($request->input('from_pakblood')) ? 1 : 0;
         $bleed->date          = date('Y-m-d', strtotime($request->input('date')));
         $user                 = Auth::user();
         $date1                = new Carbon($user->last_bleed);

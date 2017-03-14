@@ -171,7 +171,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin
 
     //Pictorial
     Route::get('/pictorial', 'PictorialController@index');
-    Route::get('/pictorial/{id}/approve', 'PictorialController@approve');
+    Route::get('/pictorial/updateApproval', 'PictorialController@updateApproval');
 
 });
 Route::get('/fblogin', function () {

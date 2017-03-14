@@ -7507,11 +7507,11 @@ th {
   padding: 0; }
 
 /* Font */
-@font-face {
+/*@font-face {
   font-family: 'Abel';
   src: url("../fonts/Abel.ttf.woff") format("woff"), url("../fonts/Abel.ttf.svg#Abel") format("svg"), url("../fonts/Abel.ttf.eot"), url("../fonts/Abel.ttf.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
-  font-style: normal; }
+  font-style: normal; }*/
 .text-red {
   color: red; }
 

@@ -30,6 +30,7 @@
     {!! HTML::style('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.css') !!}
     {!! HTML::style('css/select2.css') !!}
     {!! HTML::style('css/foundation-icons/foundation-icons.css') !!}
+    {!! HTML::style('css/lightbox.css') !!}
 
     {!! HTML::script('js/vendor/modernizr.js') !!}
     {!! HTML::script('js/vendor/fastclick.js') !!}
@@ -43,6 +44,7 @@
     {!! HTML::script('js/vendor/select2/select2.full.js') !!}
     {!! HTML::script('js/myFunctions.js') !!}
     {!! HTML::script('js/vendor/jquery.marquee.min.js') !!}
+    {!! HTML::script('js/vendor/lightbox.js') !!}
 
     <script>
         $(function () {
