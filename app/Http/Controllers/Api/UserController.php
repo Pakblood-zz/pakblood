@@ -117,7 +117,7 @@ class UserController extends Controller {
         $data['status']   = 'active';
         //        $confirmation_code = str_random(60);
         //        $data['confirmation_code'] = $confirmation_code;
-        if (User::create($data)) {
+        if ($user = User::create($data)) {
             //            \Mail::queue('emails/email_verify', $data, function ($message) use ($user) {
             //                $message
             //                    ->to($user->email, $user->username)->cc('info@pakblood.com')

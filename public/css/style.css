@@ -7507,11 +7507,11 @@ th {
   padding: 0; }
 
 /* Font */
-/*@font-face {
+@font-face {
   font-family: 'Abel';
   src: url("../fonts/Abel.ttf.woff") format("woff"), url("../fonts/Abel.ttf.svg#Abel") format("svg"), url("../fonts/Abel.ttf.eot"), url("../fonts/Abel.ttf.eot?#iefix") format("embedded-opentype");
   font-weight: normal;
-  font-style: normal; }*/
+  font-style: normal; }
 .text-red {
   color: red; }
 
@@ -7546,7 +7546,7 @@ div.loading {
   width: 100%;
   height: 110px;
   float: left;
-  margin: 30px 0 0 0; }
+  margin: 30px 0 25px 0; }
   .logo a {
     color: black; }
   .logo #tag-save-life {
@@ -7562,6 +7562,45 @@ div.loading {
     top: 105px;
     left: 15px; }
 
+.breadcrumbs li {
+  float: none;
+  display: inline-block; }
+
+.download-app {
+  padding: 0 15px 10px; }
+  .download-app img {
+    width: 200px;
+    height: auto; }
+
+.social-icons-header, .social-icons-footer {
+  padding: 0 15px; }
+  .social-icons-header a, .social-icons-footer a {
+    font-size: 30px;
+    color: inherit;
+    padding: 0 5px; }
+    .social-icons-header a.fb, .social-icons-footer a.fb {
+      color: #48649f; }
+    .social-icons-header a.tw, .social-icons-footer a.tw {
+      color: #1da1f2; }
+    .social-icons-header a.ig, .social-icons-footer a.ig {
+      color: #9b6954; }
+
+.app-button {
+  float: right !important; }
+  .app-button .download-app {
+    padding: 0; }
+    .app-button .download-app a {
+      padding: 8px 0 0 !important; }
+      .app-button .download-app a:before {
+        background: transparent; }
+
+.social-icons-footer {
+  text-align: right; }
+  .social-icons-footer a {
+    font-size: 20px; }
+    .social-icons-footer a:hover {
+      color: rgba(152, 152, 152, 0.84); }
+
 @media only screen and (max-width: 40em) {
   .logo {
     text-align: center !important;
@@ -7570,7 +7609,15 @@ div.loading {
 
   .breadcrumbs {
     height: initial !important;
-    margin: 0 !important; } }
+    margin: 0 !important;
+    padding: 10px; }
+
+  .social-icons-header, .social-icons-footer {
+    text-align: center; }
+
+  .download-app a img {
+    margin: 0 auto;
+    display: block; } }
 @media only screen and (min-width: 40.0625em) and (max-width: 64em) {
   .breadcrumbs {
     height: initial !important;
@@ -7691,8 +7738,6 @@ div.loading {
 .myCenter {
   width: 85%;
   margin: 0 auto; }
-  .myCenter .breadcrumbs {
-    height: 148px; }
 
 /*Search Bar*/
 .search-bar {
@@ -7858,7 +7903,7 @@ div.loading {
     width: 85%;
     margin: 0 auto;
     padding-top: 35px; }
-  .footer div:first-child {
+  .footer div.row:first-of-type {
     border-bottom: 1px solid #424242; }
   .footer nav {
     height: 30px;
@@ -8211,7 +8256,8 @@ div.loading {
 .page_heading {
   padding-bottom: 9px;
   margin: 35px 20px 10px 5px;
-  display: inline-block; }
+  display: inline-block;
+  float: left; }
 
 .bg_icon {
   height: 90px;

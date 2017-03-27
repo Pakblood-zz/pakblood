@@ -40,4 +40,15 @@ class OtherController extends Controller {
             'responseCode' => 1
         ], 200);
     }
+
+    public function sendErrorReport() {
+        $input         = \Input::json();
+        $data['error'] = $input->get('error');
+
+        \Mail::send(['html' => 'emails/app_error'], $data, function ($message) {
+            $message
+                ->to('info@pakblood.com')
+                ->subject('App Error Message');
+        });
+    }
 }
