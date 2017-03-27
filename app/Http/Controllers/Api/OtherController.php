@@ -45,10 +45,20 @@ class OtherController extends Controller {
         $input         = \Input::json();
         $data['error'] = $input->get('error');
 
-        \Mail::send(['html' => 'emails/app_error'], $data, function ($message) {
+        $mail = \Mail::send(['html' => 'emails/app_error'], $data, function ($message) {
             $message
                 ->to('info@pakblood.com')
                 ->subject('App Error Message');
         });
+        if ($mail) {
+            return \Response::json([
+                'responseCode' => 1,
+                'responseMessage' => 'error delivered successfully'
+            ], 200);
+        }
+        return \Response::json([
+            'responseCode' => -2,
+            'responseMessage' => 'unexpected error wile sending mail'
+        ], 200);
     }
 }

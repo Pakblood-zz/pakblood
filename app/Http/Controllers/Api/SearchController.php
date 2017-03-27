@@ -89,17 +89,17 @@ class SearchController extends Controller {
                  ->selectraw('COUNT(pb_users.id) as tottalrec')->whereStatusAndOrg_idAndIs_deleted('active', 0, 0)
                  ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'), '<', 2)
                  ->first();*/
-            /*$totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
-                            ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
-                            ->addselect('pb_users.*')
-                            ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
-                            ->where(function ($query) {
-                                $query->where('phone', '!=', '')
-                                      ->whereOr('mobile', '!=', '');
-                            })
-                            ->where('pb_users.city_id', $city)
-                            ->where('pb_users.blood_group', $bg)
-                            ->having('report_count', '<', 2)->groupby('pb_users.id')->get();*/
+            $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
+                ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
+                ->addselect('pb_users.*')
+                ->whereOrg_idAndIs_deleted(0, 0)->where('status', 'active')
+                ->where(function ($query) {
+                    $query->where('phone', '!=', '')
+                        ->whereOr('mobile', '!=', '');
+                })
+                ->where('pb_users.city_id', $city)
+                ->where('pb_users.blood_group', $bg)
+                ->having('report_count', '<', 2)->groupby('pb_users.id')->get();
 
             $users = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
@@ -131,7 +131,7 @@ class SearchController extends Controller {
                 ->where(DB::raw('(select count(p2.reported_user_id) from pb_user_reports as p2 where p2.reported_user_id = pb_users.id)'), '<', 2)
                 ->first();*/
 
-            /*$totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
+            $totalrec = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
                 ->addselect('pb_users.*')
                 ->whereStatusAndIs_deleted('active', 0)
@@ -145,7 +145,7 @@ class SearchController extends Controller {
                 })
                 ->where('pb_users.city_id', $city)
                 ->where('pb_users.blood_group', $bg)
-                ->having('report_count', '<', 2)->groupby('pb_users.id')->get();*/
+                ->having('report_count', '<', 2)->groupby('pb_users.id')->get();
 
             $users = User::leftjoin('pb_user_reports', 'pb_users.id', '=', 'pb_user_reports.reported_user_id')
                 ->selectraw('COUNT(pb_user_reports.reported_user_id) as report_count')
@@ -188,6 +188,9 @@ class SearchController extends Controller {
             $responseCode    = -4;
         }
         return \Response::json([
+            'currentPage' => $currPage + 1,
+            'perPage' => $perPage,
+            'totalRecords' => $totalrec->count(),
             'users' => $users,
             'bloodGroup' => $bg,
             'country' => $country,
