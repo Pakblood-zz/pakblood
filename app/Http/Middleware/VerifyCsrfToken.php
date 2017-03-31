@@ -30,7 +30,7 @@ class VerifyCsrfToken extends BaseVerifier
 //        dump($explode);
 //        dump(in_array('api', $explode));
 //        dd($request->server('REQUEST_URI'));
-        if ($this->isReading($request) || in_array('api', $explode) || $this->shouldPassThrough($request) || $this->tokensMatch($request)) {
+        if ($this->isReading($request) || in_array('api', $explode) || in_array('api-ember', $explode) || $this->shouldPassThrough($request) || $this->tokensMatch($request)) {
             return $this->addCookieToResponse($request, $next($request));
         }
 

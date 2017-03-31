@@ -15,17 +15,74 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 |
 */
 
-//Api Routes
-Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+//Ember Api Routes
+Route::group(['prefix' => 'api-ember', 'namespace' => 'ApiEmber'], function () {
 
     Route::group(['prefix' => 'users'], function () {
         Route::any('/login', 'UserController@login');
+
         Route::post('/register', 'UserController@register');
         Route::any('/logout', 'UserController@logout');
         Route::any('/revoke', 'UserController@logout');
         Route::post('/refreshtoken', 'UserController@refresh');
         Route::get('/forgotpassword', 'UserController@forgotPassword');
         Route::group(['middleware' => 'jwt.auth'], function () {
+            Route::get('/{id}', 'UserController@getProfile');
+            Route::put('/{id}', 'UserController@update');
+            Route::get('/bleedhistory', 'UserController@bleedHistory');
+            Route::post('/bleedhistory/create', 'UserController@createBleed');
+            Route::put('/bleedhistory/{bleed_id}/update', 'UserController@updateBleed');
+            Route::get('/deactivateaccount', 'UserController@deactivateAccount');
+            Route::post('/changepassword', 'UserController@changePassword');
+            Route::get('/getnotifications', 'UserController@getNotifications');
+        });
+        Route::post('/activateaccount', 'UserController@activateAccount');
+    });
+
+    Route::group(['prefix' => 'organizations', 'middleware' => 'jwt.auth'], function () {
+        Route::get('/', 'OrgController@index');
+        Route::post('/create', 'OrgController@store');
+        Route::group(['prefix' => '{orgId}'], function () {
+            Route::get('/', 'OrgController@getProfile');
+            Route::post('/join', 'OrgController@orgJoinRequest');
+            Route::put('/update', 'OrgController@update');
+            Route::post('/addmember', 'OrgController@addMember');
+            Route::put('/updatemember/{uId}', 'OrgController@addMember');
+            Route::post('/changeadmin', 'OrgController@changeAdmin');
+            Route::delete('/deletemember/{id}', 'OrgController@deleteMember');
+            Route::get('/requests', 'OrgController@getAllRequest');
+            Route::get('/requests/{request_id}', 'OrgController@updateRequest');
+            //        Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
+            //        Route::post('/delete', 'OrgController@delete');
+        });
+    });
+
+    Route::get('/search', 'SearchController@getSearchData');
+
+    Route::post('/reportuser', 'UserController@reportUser');
+    Route::post('/currentlocation', 'UserController@currentLocation');
+
+    Route::get('/getcountries', 'OtherController@getCountries');
+    Route::get('/getcities', 'OtherController@getCities');
+    Route::get('/getcities/{country_id}', 'OtherController@getCities');
+
+    Route::post('/sendErrorReport', 'OtherController@sendErrorReport');
+});
+
+//App Api Routes
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::any('/login', 'UserController@login');
+
+        Route::post('/register', 'UserController@register');
+        Route::any('/logout', 'UserController@logout');
+        Route::any('/revoke', 'UserController@logout');
+        Route::post('/refreshtoken', 'UserController@refresh');
+        Route::get('/forgotpassword', 'UserController@forgotPassword');
+        Route::group(['middleware' => 'jwt.auth'], function () {
+            Route::get('/{id}', 'UserController@getProfile');
+            Route::put('/{id}', 'UserController@update');
             Route::get('/profile', 'UserController@getProfile');
             Route::put('/update', 'UserController@update');
             Route::get('/bleedhistory', 'UserController@bleedHistory');
@@ -65,10 +122,10 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('/getcities', 'OtherController@getCities');
     Route::get('/getcities/{country_id}', 'OtherController@getCities');
 
-   /* Route::post('/sendErrorReport', function () {
-        echo 1;
-    });*/
-        Route::post('/sendErrorReport', 'OtherController@sendErrorReport');
+    /* Route::post('/sendErrorReport', function () {
+         echo 1;
+     });*/
+    Route::post('/sendErrorReport', 'OtherController@sendErrorReport');
 });
 
 Route::Controllers(array('auth' => 'Auth\AuthController', 'password' => 'Auth\PasswordController'));
