@@ -7,7 +7,9 @@ use App\Notification;
 use App\Report;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Request;
+//use App\Http\Requests\Request;
+use Illuminate\Http\Request;
+use App\Http\Requests;
 use App\User;
 
 use Illuminate\Mail\Message;
@@ -245,14 +247,32 @@ class UserController extends Controller {
      */
     public function update() {
         $input = \Input::json();
-
+        //        dump($input);
+        //        dd();
         $user = User::find(\Auth::user()->id);
 
         $data = $input->get('user');
+
+        $oldImage = $data['profile_image'];
+
+        if (isset($data['image_path']) || isset($data['image_name'])) {
+            $imgName = $user->id . '_' . $data['image_name'];
+            $imgPath = $data['image_path'];
+            unset($data['image_name']);
+            unset($data['image_path']);
+            $oldPath = public_path() . $imgPath;
+            $newPath = public_path() . "/images/users/" . $imgName;
+            if (\File::exists($oldPath)) {
+                \File::move($oldPath, $newPath);
+                $data['profile_image'] = $imgName;
+            }
+        }
         //        $data['password'] = bcrypt($data['password']);
-        //        unset($data['password']);
-        //        dd($data);
         if ($user) {
+            if (\File::exists(public_path() . "/images/users/" . $oldImage)) {
+                \File::delete(public_path() . "/images/users/" . $oldImage);
+            }
+            $user->profile_image = $data['profile_image'];
             $user->update($data);
             //            $user->update(['name' => $data['name'], 'email' => $data['email']]);
             if ($user->save()) {
@@ -317,10 +337,7 @@ class UserController extends Controller {
     public function bleedHistory() {
         $data = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->get();
 
-        return \Response::json([
-            'data' => $data,
-            'responseCode' => 1
-        ], 200);
+        return \Response::json(['bleed' => $data], 200);
     }
 
     /**
@@ -330,27 +347,50 @@ class UserController extends Controller {
     public function createBleed() {
         $input = \Input::json();
 
+        $data = $input->get('bleed');
+
+        $user = User::find(\Auth::user()->id);
+
+        //        dd($data);
+        if (count($user) == 0) {
+            return \Response::json([
+                'responseMessage' => 'Error! user not found.',
+                'responseCode' => -4
+            ], 400);
+        }
+
         $bleed                = new Bleed();
-        $bleed->user_id       = \Auth::user()->id;
-        $bleed->receiver_name = $input->get('receiver_name');
-        $bleed->city          = $input->get('city');
-        $bleed->comments      = $input->get('comments');
-        $bleed->date          = $input->get('date');
+        $bleed->user_id       = $user->id;
+        $bleed->receiver_name = $data['receiver_name'];
+        $bleed->country       = $data['country'];
+        $bleed->city          = $data['city'];
+        $bleed->comment       = $data['comment'];
+        $bleed->date          = $data['date'];
+
         if ($bleed->save()) {
-            $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
-            $user        = User::find(\Auth::user()->id);
-            if (count($user) == 0) {
-                return \Response::json([
-                    'responseMessage' => 'Error! user not found.',
-                    'responseCode' => -4
-                ], 400);
+
+            if (isset($data['image_path']) || isset($data['image_name'])) {
+                $imgName = $user->id . '_' . $bleed->id . '_' . $data['image_name'];
+                $imgPath = $data['image_path'];
+                unset($data['image_name']);
+                unset($data['image_path']);
+                $oldPath = public_path() . $imgPath;
+                $newPath = public_path() . "/images/users/bleed/" . $imgName;
+                if (\File::exists($oldPath)) {
+                    \File::move($oldPath, $newPath);
+                    $bleed->image = $imgName;
+                    $bleed->save();
+                }
             }
+
+            $latestBleed = Bleed::where('user_id', $user->id)->orderBy('date', 'DESC')->first();
+
             $user->last_bleed = $latestBleed->date;
             $user->save();
             $this->addNotification('Bleed Status Added.');
             return \Response::json([
-                'responseMessage' => 'User bleed status added.',
-                'responseCode' => 1
+                'user' => $user,
+                'bleed' => $bleed
             ], 200);
         }
         return \Response::json([
@@ -373,7 +413,7 @@ class UserController extends Controller {
         if ($bleed) {
             $bleed->receiver_name = $input->get('receiver_name');
             $bleed->city          = $input->get('city');
-            $bleed->comments      = $input->get('comments');
+            $bleed->comment       = $input->get('comment');
             $bleed->date          = $input->get('date');
             if ($bleed->save()) {
                 $latestBleed      = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
@@ -405,21 +445,24 @@ class UserController extends Controller {
      * @return mixed
      */
     public function deactivateAccount(Request $request) {
-        $input = \Input::json();
+        //        $input = \Input::json();
+        $input = $request->input();
 
         $user = User::where('email', \Auth::user()->email)->first();
         if (count($user) > 0) {
             //            $user->is_deleted = '0';
             $user->status = 'inactive';
             //            $user->password = bcrypt($pass);
-            $data = array('name' => $user->name, 'email' => $user->email, 'reason' => $input->get('reason'));
+            $data = array('name' => $user->name, 'email' => $user->email, 'reason' => $input['reason']);
             if ($user->save()) {
-                \Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
-                    $message
-                        ->to($user->email, $user->name)->cc('info@pakblood.com')
-                        ->replyTo('info@pakblood.com', 'Pakblood Team')
-                        ->subject('Account Deactivated');
-                });
+                if (\Config::get('settings.environment') == 'production') {
+                    \Mail::queue('emails/unjoin', $data, function ($message) use ($user) {
+                        $message
+                            ->to($user->email, $user->name)->cc('info@pakblood.com')
+                            ->replyTo('info@pakblood.com', 'Pakblood Team')
+                            ->subject('Account Deactivated');
+                    });
+                }
                 return \Response::json([
                     'responseMessage' => 'User account deactivated.',
                     'responseCode' => 1
@@ -440,10 +483,11 @@ class UserController extends Controller {
      * @return mixed
      */
     public function activateAccount(Request $request) {
-        $input = \Input::json();
+        //        $input = \Input::json();
+        $input = $request->input();
 
         $pass = str_random(15);
-        $user = User::where('email', $input->get('email'))->first();
+        $user = User::where('email', $input['email'])->first();
         if (count($user) > 0) {
             //            $user->is_deleted = '0';
             $user->status   = 'active';
@@ -451,12 +495,14 @@ class UserController extends Controller {
             $data           = array('name' => $user->name, 'email' => $user->email, 'password' => $pass);
             if ($user->save()) {
                 $this->addNotification('Account activated.');
-                \Mail::queue('emails/rejoin', $data, function ($message) use ($user) {
-                    $message
-                        ->to($user->email, $user->name)->cc('info@pakblood.com')
-                        ->replyTo('info@pakblood.com', 'Pakblood Team')
-                        ->subject('Account Activated');
-                });
+                if (\Config::get('settings.environment') == 'production') {
+                    \Mail::queue('emails/rejoin', $data, function ($message) use ($user) {
+                        $message
+                            ->to($user->email, $user->name)->cc('info@pakblood.com')
+                            ->replyTo('info@pakblood.com', 'Pakblood Team')
+                            ->subject('Account Activated');
+                    });
+                }
                 return \Response::json([
                     'responseMessage' => 'Account activation details sent to email, please follow the process to access account.',
                     'responseCode' => 1
@@ -482,23 +528,26 @@ class UserController extends Controller {
      * @return mixed
      */
     public function changePassword(Request $request) {
-        $input = \Input::json();
+        //        $input = \Input::json();
+        $input = $request->input();
 
         $user = User::find(\Auth::user()->id);
-        if (\Hash::check($input->get('old_password'), $user->password)) {
-            $user->password = bcrypt($input->get('new_password'));
+        if (\Hash::check($input['old_password'], $user->password)) {
+            $user->password = bcrypt($input['new_password']);
             if ($user->save()) {
                 $this->addNotification('Password Updated.');
                 $data = [
                     'email' => $user->email,
                     'name' => $user->name,
                 ];
-                \Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
-                    $message
-                        ->to($data['email'], $data['name'])->cc('info@pakblood.com')
-                        ->replyTo('info@pakblood.com', 'Pakblood Team')
-                        ->subject('Password Changed');
-                });
+                if (\Config::get('settings.environment') == 'production') {
+                    \Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
+                        $message
+                            ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                            ->replyTo('info@pakblood.com', 'Pakblood Team')
+                            ->subject('Password Changed');
+                    });
+                }
                 \Auth::logout();
                 return \Response::json([
                     'responseMessage' => 'Password Successfully Change.Please login again with your new password.',
@@ -712,5 +761,25 @@ class UserController extends Controller {
                     'responseCode' => -4
                 ], 400);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getOrgUsers(Request $request) {
+        $input = $request->input();
+        //        dump(\Auth::guest());
+        //        dump(\Auth::user());
+        //        dd();
+        if (\Auth::user()) {
+            $users = User::where('org_id', $input['org'])->where('id', '!=', \Auth::user()->id)->get();
+        } else {
+            $users = User::where('org_id', $input['org'])->get();
+        }
+
+        return \Response::json([
+            'users' => $users
+        ], 200);
     }
 }

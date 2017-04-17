@@ -61,4 +61,29 @@ class OtherController extends Controller {
             'responseMessage' => 'unexpected error wile sending mail'
         ], 200);
     }
+
+    public function fileManager() {
+        $file = \Input::file('file');
+        if ($file && $file != null) {
+            $name = uniqid() . '.' . $file->getClientOriginalExtension();
+            $path = '/uploads/tmp';
+
+            $file->move(
+                public_path() . $path, $name
+            );
+
+            $path = '/uploads/tmp/' . $name;
+
+            $data = [
+                'name' => $name,
+                'path' => $path
+            ];
+            return \Response::json($data);
+        } else {
+            $data = [
+                'errror' => 'No file data found.'
+            ];
+            return \Response::json($data);
+        }
+    }
 }

@@ -43,23 +43,25 @@ class OrgRequestsController extends Controller {
                 ->with('message', 'You have already sent a request to join this organization, please wait until organization admin approve your request.')
                 ->with('type', 'error');
         }
-        $org = Org::find($request->input('org_id'));
-        $orgreq = new OrgRequests;
+        $org             = Org::find($request->input('org_id'));
+        $orgreq          = new OrgRequests;
         $orgreq->user_id = Auth::user()->id;
-        $orgreq->org_id = $org->id;
-        $orgreq->reason = $request->input('reason');
+        $orgreq->org_id  = $org->id;
+        $orgreq->reason  = $request->input('reason');
         if ($orgreq->save()) {
             $data = [
-                'name'   => $org->admin_name,
-                'email'  => $org->email,
-                'org'    => $org->name,
+                'name' => $org->admin_name,
+                'email' => $org->email,
+                'org' => $org->name,
                 'member' => Auth::user()->name,
             ];
-            Mail::send(['html' => 'emails/org_member_request'], $data, function ($message) use ($data) {
-                $message
-                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
-                    ->subject('User Join Request.');
-            });
+            if (\Config::get('settings.environment') == 'production') {
+                Mail::send(['html' => 'emails/org_member_request'], $data, function ($message) use ($data) {
+                    $message
+                        ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                        ->subject('User Join Request.');
+                });
+            }
             return redirect()->back()
                 ->with('message', 'Request successfully submitted, please wait for organization admin to approve your request.')
                 ->with('type', 'success');

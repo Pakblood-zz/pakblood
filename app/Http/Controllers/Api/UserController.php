@@ -354,7 +354,7 @@ class UserController extends Controller {
         $bleed->user_id       = \Auth::user()->id;
         $bleed->receiver_name = $input->get('receiver_name');
         $bleed->city          = $input->get('city');
-        $bleed->comments      = $input->get('comments');
+        $bleed->comment      = $input->get('comment');
         $bleed->date          = $input->get('date');
         if ($bleed->save()) {
             $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
@@ -393,7 +393,7 @@ class UserController extends Controller {
         if ($bleed) {
             $bleed->receiver_name = $input->get('receiver_name');
             $bleed->city          = $input->get('city');
-            $bleed->comments      = $input->get('comments');
+            $bleed->comment      = $input->get('comment');
             $bleed->date          = $input->get('date');
             if ($bleed->save()) {
                 $latestBleed      = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
@@ -582,7 +582,7 @@ class UserController extends Controller {
         $report->reporter_name    = $reporter['name'];
         $report->reporter_email   = $reporter['email'];
         $report->type             = $input->get('report_type');
-        $report->reporter_message = $input->get('comments');
+        $report->reporter_message = $input->get('comment');
         //        dump($request->input());
         $user = User::find($input->get('reported_user_id'));
         //        dd($user);
@@ -591,7 +591,7 @@ class UserController extends Controller {
                 'email' => $user->email,
                 'name' => $user->name,
                 'reason' => $input->get('report_type'),
-                'msg' => $input->get('comments')
+                'msg' => $input->get('comment')
             ];
             //            dump($data['msg']);
             \Mail::send(['html' => 'emails/user_reported'], $data, function ($message) use ($data) {

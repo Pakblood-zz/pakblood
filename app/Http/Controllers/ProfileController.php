@@ -97,11 +97,13 @@ class ProfileController extends Controller {
                 'email' => $user->email,
                 'name' => $user->name,
             ];
-            Mail::send(['html' => 'emails/profile_updated'], $data, function ($message) use ($data) {
-                $message
-                    ->to($data['email'], $data['name'])->cc('info@pakblood.com')
-                    ->subject('Pakblood Profile Updated');
-            });
+            if (\Config::get('settings.environment') == 'production') {
+                Mail::send(['html' => 'emails/profile_updated'], $data, function ($message) use ($data) {
+                    $message
+                        ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                        ->subject('Pakblood Profile Updated');
+                });
+            }
             return Redirect::to('profile/' . $redirectId)->with('message',
                 'Profile Successfully Updated!!')->with('type',
                 'success');
@@ -162,11 +164,13 @@ class ProfileController extends Controller {
                         'email' => $user->email,
                         'name' => $user->name,
                     ];
-                    Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
-                        $message
-                            ->to($data['email'], $data['name'])->cc('info@pakblood.com')
-                            ->subject('Password Changed');
-                    });
+                    if (\Config::get('settings.environment') == 'production') {
+                        Mail::send(['html' => 'emails/password_changed'], $data, function ($message) use ($data) {
+                            $message
+                                ->to($data['email'], $data['name'])->cc('info@pakblood.com')
+                                ->subject('Password Changed');
+                        });
+                    }
                     Auth::logout();
                     return Redirect::to('/login')
                         ->with('message',

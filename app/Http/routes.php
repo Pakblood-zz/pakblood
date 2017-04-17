@@ -19,6 +19,7 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 Route::group(['prefix' => 'api-ember', 'namespace' => 'ApiEmber'], function () {
 
     Route::group(['prefix' => 'users'], function () {
+
         Route::any('/login', 'UserController@login');
 
         Route::post('/register', 'UserController@register');
@@ -27,33 +28,38 @@ Route::group(['prefix' => 'api-ember', 'namespace' => 'ApiEmber'], function () {
         Route::post('/refreshtoken', 'UserController@refresh');
         Route::get('/forgotpassword', 'UserController@forgotPassword');
         Route::group(['middleware' => 'jwt.auth'], function () {
+            Route::get('/', 'UserController@getOrgUsers');
             Route::get('/{id}', 'UserController@getProfile');
             Route::put('/{id}', 'UserController@update');
-            Route::get('/bleedhistory', 'UserController@bleedHistory');
-            Route::post('/bleedhistory/create', 'UserController@createBleed');
-            Route::put('/bleedhistory/{bleed_id}/update', 'UserController@updateBleed');
-            Route::get('/deactivateaccount', 'UserController@deactivateAccount');
             Route::post('/changepassword', 'UserController@changePassword');
             Route::get('/getnotifications', 'UserController@getNotifications');
+            Route::post('/deactivateaccount', 'UserController@deactivateAccount');
         });
         Route::post('/activateaccount', 'UserController@activateAccount');
     });
 
-    Route::group(['prefix' => 'organizations', 'middleware' => 'jwt.auth'], function () {
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('/bleeds', 'UserController@bleedHistory');
+        Route::post('/bleeds', 'UserController@createBleed');
+        Route::put('/bleeds/{bleed_id}', 'UserController@updateBleed');
+    });
+
+    Route::group(['prefix' => 'orgs', 'middleware' => 'jwt.auth'], function () {
         Route::get('/', 'OrgController@index');
-        Route::post('/create', 'OrgController@store');
+        Route::post('/', 'OrgController@store');
+        Route::post('/join', 'OrgController@orgJoinRequest');
+
         Route::group(['prefix' => '{orgId}'], function () {
+            Route::delete('/', 'OrgController@delete');
             Route::get('/', 'OrgController@getProfile');
-            Route::post('/join', 'OrgController@orgJoinRequest');
-            Route::put('/update', 'OrgController@update');
+            Route::put('/', 'OrgController@update');
             Route::post('/addmember', 'OrgController@addMember');
             Route::put('/updatemember/{uId}', 'OrgController@addMember');
             Route::post('/changeadmin', 'OrgController@changeAdmin');
             Route::delete('/deletemember/{id}', 'OrgController@deleteMember');
             Route::get('/requests', 'OrgController@getAllRequest');
-            Route::get('/requests/{request_id}', 'OrgController@updateRequest');
-            //        Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
-            //        Route::post('/delete', 'OrgController@delete');
+            Route::post('/requests/{request_id}', 'OrgController@updateRequest');
+            //            Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
         });
     });
 
@@ -67,6 +73,8 @@ Route::group(['prefix' => 'api-ember', 'namespace' => 'ApiEmber'], function () {
     Route::get('/getcities/{country_id}', 'OtherController@getCities');
 
     Route::post('/sendErrorReport', 'OtherController@sendErrorReport');
+
+    Route::post('/fileManager', 'OtherController@fileManager');
 });
 
 //App Api Routes
