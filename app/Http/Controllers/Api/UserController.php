@@ -29,14 +29,33 @@ class UserController extends Controller {
     public function login(Request $request) {
         //        dd($request->input());
         //        dd(\Input::json());
-        $email    = $request->input('email');
+        $email    = ($request->input('email')) ? $request->input('email') : '';
         $password = ($request->input('password')) ? $request->input('password') : '';
         $provider = ($request->input('provider')) ? $request->input('provider') : 'default';
+        $name = ($request->input('name')) ? $request->input('name') : '';
+       
+       if($email == ''){
+            return \Response::json([
+                    'responseMessage' => 'Email is required.',
+                    'responseCode' => -3
+                ],
+                    400);
+       }
+
+       if($name == ''){
+            return \Response::json([
+                    'responseMessage' => 'Name is required.',
+                    'responseCode' => -3
+                ],
+                    400);
+       }
+       
         if ($provider == 'facebook') {
-            $name = $request->input('name');
+            $fbId = ($request->input('fbId')) ? $request->input('fbId') : '';
             $user = User::where('email', $email)->first();
             if (count($user) == 0) {
-                $newUser = User::create(['name' => $name, 'email' => $email]);
+                $newUser = User::create(['name' => $name, 'email' => $email, 
+                'status' => 'active','fb_id' => $fbId]);
                 //Login new created user by id here
                 $user = \Auth::loginUsingId($newUser->id);
             } else {
@@ -44,9 +63,11 @@ class UserController extends Controller {
             }
         } else if ($provider == 'google') {
             $name = $request->input('name');
+            $gpId = ($request->input('gpId')) ? $request->input('gpId') : '';
             $user = User::where('email', $email)->first();
             if (count($user) == 0) {
-                $newUser = User::create(['name' => $name, 'email' => $email]);
+                $newUser = User::create(['name' => $name, 'email' => $email, 
+                'status' => 'active','gp_id' => $gpId]);
                 //Login new created user by id here
                 $user = \Auth::loginUsingId($newUser->id);
             } else {
