@@ -32,30 +32,29 @@ class UserController extends Controller {
         $email    = ($request->input('email')) ? $request->input('email') : '';
         $password = ($request->input('password')) ? $request->input('password') : '';
         $provider = ($request->input('provider')) ? $request->input('provider') : 'default';
-        $name = ($request->input('name')) ? $request->input('name') : '';
-       
-       if($email == ''){
-            return \Response::json([
-                    'responseMessage' => 'Email is required.',
-                    'responseCode' => -3
-                ],
-                    400);
-       }
+        $name     = ($request->input('name')) ? $request->input('name') : '';
 
-       if($name == ''){
+        if ($email == '') {
             return \Response::json([
-                    'responseMessage' => 'Name is required.',
-                    'responseCode' => -3
-                ],
-                    400);
-       }
-       
+                'responseMessage' => 'Email is required.',
+                'responseCode' => -3
+            ],
+                400);
+        }
+
         if ($provider == 'facebook') {
             $fbId = ($request->input('fbId')) ? $request->input('fbId') : '';
             $user = User::where('email', $email)->first();
             if (count($user) == 0) {
-                $newUser = User::create(['name' => $name, 'email' => $email, 
-                'status' => 'active','fb_id' => $fbId]);
+                if ($name == '') {
+                    return \Response::json([
+                        'responseMessage' => 'Name is required.',
+                        'responseCode' => -3
+                    ],
+                        400);
+                }
+                $newUser = User::create(['name' => $name, 'email' => $email,
+                    'status' => 'active', 'fb_id' => $fbId]);
                 //Login new created user by id here
                 $user = \Auth::loginUsingId($newUser->id);
             } else {
@@ -66,8 +65,15 @@ class UserController extends Controller {
             $gpId = ($request->input('gpId')) ? $request->input('gpId') : '';
             $user = User::where('email', $email)->first();
             if (count($user) == 0) {
-                $newUser = User::create(['name' => $name, 'email' => $email, 
-                'status' => 'active','gp_id' => $gpId]);
+                if($name == ''){
+                    return \Response::json([
+                        'responseMessage' => 'Name is required.',
+                        'responseCode' => -3
+                    ],
+                        400);
+                }
+                $newUser = User::create(['name' => $name, 'email' => $email,
+                    'status' => 'active', 'gp_id' => $gpId]);
                 //Login new created user by id here
                 $user = \Auth::loginUsingId($newUser->id);
             } else {
@@ -375,7 +381,7 @@ class UserController extends Controller {
         $bleed->user_id       = \Auth::user()->id;
         $bleed->receiver_name = $input->get('receiver_name');
         $bleed->city          = $input->get('city');
-        $bleed->comment      = $input->get('comment');
+        $bleed->comment       = $input->get('comment');
         $bleed->date          = $input->get('date');
         if ($bleed->save()) {
             $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
@@ -414,7 +420,7 @@ class UserController extends Controller {
         if ($bleed) {
             $bleed->receiver_name = $input->get('receiver_name');
             $bleed->city          = $input->get('city');
-            $bleed->comment      = $input->get('comment');
+            $bleed->comment       = $input->get('comment');
             $bleed->date          = $input->get('date');
             if ($bleed->save()) {
                 $latestBleed      = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();

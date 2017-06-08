@@ -48,6 +48,7 @@ class OtherController extends Controller {
         $mail = \Mail::send(['html' => 'emails/app_error'], $data, function ($message) {
             $message
                 ->to('info@pakblood.com')
+                ->cc('arslan.yasin@aalasolutions.com')
                 ->subject('App Error Message');
         });
         if ($mail) {
