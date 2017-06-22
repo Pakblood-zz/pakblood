@@ -99,6 +99,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
             Route::get('/deactivateaccount', 'UserController@deactivateAccount');
             Route::post('/changepassword', 'UserController@changePassword');
             Route::get('/getnotifications', 'UserController@getNotifications');
+            Route::post('/uploadfile', 'OtherController@uploadFile');
         });
         Route::post('/activateaccount', 'UserController@activateAccount');
     });

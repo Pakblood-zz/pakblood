@@ -6,6 +6,7 @@ use App\City;
 use App\Country;
 use App\Notification;
 use Illuminate\Http\Request;
+use App\User;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -61,5 +62,37 @@ class OtherController extends Controller {
             'responseCode' => -2,
             'responseMessage' => 'unexpected error wile sending mail'
         ], 200);
+    }
+
+    public function uploadFile() {
+        $input = \Input::json();
+        if (\Auth::guest()) {
+            return \Response::json([
+                'responseCode' => -2,
+                'responseMessage' => 'You need to be logedin to perform this action.'
+            ], 200);
+        } else {
+            $user = User::find(\Auth::user()->id);
+
+            if ($input->get('profile_image') && $input->get('profile_image') != null) {
+                $base64_str = substr($input->get('profile_image'), strpos($input->get('profile_image'), ",") + 1);
+                $image      = base64_decode($base64_str);
+                $imageName  = uniqid($user->id . '_') . '.png';
+                $path       = public_path('images/users/' . $imageName);
+                \Image::make($image)->save($path);
+                $user->profile_image = 'public/images/users/' . $imageName;
+                $user->save();
+                return \Response::json([
+                    'responseCode' => 1,
+                    'responseMessage' => 'Image Updated Successfully.',
+                    'profile_image' => $user->profile_image
+                ], 200);
+                //                $request->file('profile_image')->move(
+                //                    base_path() . '/public/images/users/', $img
+                //                );
+                //                $user->profile_image = '/images/users/' . $img;
+                //                $user->save();
+            }
+        }
     }
 }

@@ -289,7 +289,7 @@ class UserController extends Controller {
      * Update user profile details
      * @return mixed
      */
-    public function update() {
+    public function update(Request $request) {
         $input = \Input::json();
 
         $user = User::find(\Auth::user()->id);
@@ -297,11 +297,16 @@ class UserController extends Controller {
         $data = $input->get('user');
         //        $data['password'] = bcrypt($data['password']);
         //        unset($data['password']);
-        //        dd($data);
+        // dump($request->input());
+        // $user->update(['city_id'=> 1]);
+            //    dd($user);
+        // $user->blood_group = 'Bp';
+        // $user->save();
+            //    dd($user);
         if ($user) {
-            $user->update($data);
-            //            $user->update(['name' => $data['name'], 'email' => $data['email']]);
-            if ($user->save()) {
+            // $user->update($data);
+                    //    $user->update(['blood_group' => $data['blood_group']]);
+            if ($user->update($data)) {
                 $this->addNotification('Profile Successfully Updated.');
                 return \Response::json([
                     'responseMessage' => 'Profile Successfully Updated.',
