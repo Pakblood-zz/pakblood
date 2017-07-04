@@ -46,6 +46,11 @@ class Handler extends ExceptionHandler
                 //                return Response::view('errors.500', array(), 500);
             }
         }
+
+        if ($e instanceof TokenMismatchException) {
+            return redirect(route('login'))->with('message', 'You page session expired. Please try again');
+        }
+
         parent::report($e);
     }
 
