@@ -7,8 +7,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that should not be reported.
      *
@@ -27,15 +26,14 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function report(Exception $e)
-    {
+    public function report(Exception $e) {
         \Log::error($e);
         if (!$e instanceof NotFoundHttpException) {
             if (\Config::get('settings.environment') == 'production') {
                 $data = [
                     'exception' => $e,
-                    'url'       => \Request::url(),
-                    'method'    => \Request::method()
+                    'url' => \Request::url(),
+                    'method' => \Request::method()
                 ];
                 \Mail::send('emails.site_error', $data, function ($message) {
                     //            $message->from($email_app);
@@ -58,17 +56,27 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Exception               $e
+     * @param  \Exception $e
      *
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
-    {
+    public function render($request, Exception $e) {
+//        dd(($e instanceof \Symfony\Component\Debug\Exception\FatalErrorException));
         if (\Request::is('api/*')) {
+            if ($e instanceof \Illuminate\Database\QueryException) {
+                $code    = $e->getCode();
+                $message = $e->getMessage();
+            } else if ($e instanceof \Symfony\Component\Debug\Exception\FatalErrorException) {
+                $code    = $e->getCode();
+                $message = $e->getMessage();
+            } else {
+                $code    = $e->getStatusCode();
+                $message = $e->getMessage();
+            }
             return \Response::json([
-                                       'responseMessage' => 'Exception on server.!',
-                                       'responseCode'    => $e->getStatusCode()
-                                   ]);
+                'responseMessage' => $message,
+                'responseCode' => $code
+            ]);
         }
         return parent::render($request, $e);
     }

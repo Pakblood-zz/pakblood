@@ -65,7 +65,7 @@ class UserController extends Controller {
             $gpId = ($request->input('gpId')) ? $request->input('gpId') : '';
             $user = User::where('email', $email)->first();
             if (count($user) == 0) {
-                if($name == ''){
+                if ($name == '') {
                     return \Response::json([
                         'responseMessage' => 'Name is required.',
                         'responseCode' => -3
@@ -299,13 +299,13 @@ class UserController extends Controller {
         //        unset($data['password']);
         // dump($request->input());
         // $user->update(['city_id'=> 1]);
-            //    dd($user);
+        //    dd($user);
         // $user->blood_group = 'Bp';
         // $user->save();
-            //    dd($user);
+        //    dd($user);
         if ($user) {
             // $user->update($data);
-                    //    $user->update(['blood_group' => $data['blood_group']]);
+            //    $user->update(['blood_group' => $data['blood_group']]);
             if ($user->update($data)) {
                 $this->addNotification('Profile Successfully Updated.');
                 return \Response::json([
@@ -379,15 +379,23 @@ class UserController extends Controller {
      * Create user bleed details
      * @return mixed
      */
-    public function createBleed() {
-        $input = \Input::json();
-
+    public function createBleed(Request $request) {
+        $input  = \Input::json();
+        $isJson = true;
+        if (count($input) == 0) {
+            $isJson = false;
+            $input  = $request->input();
+        }
+        //        dump($request->input());
+        //dump($input);
         $bleed                = new Bleed();
         $bleed->user_id       = \Auth::user()->id;
-        $bleed->receiver_name = $input->get('receiver_name');
-        $bleed->city          = $input->get('city');
-        $bleed->comment       = $input->get('comment');
-        $bleed->date          = $input->get('date');
+        $bleed->receiver_name = ($isJson) ? $input->get('receiver_name') : $request->input('receiver_name');
+        $bleed->city          = ($isJson) ? $input->get('city') : $request->input('city');
+        $bleed->comment       = ($isJson) ? $input->get('comment') : $request->input('comment');
+        $bleed->date          = ($isJson) ? $input->get('date') : $request->input('date');
+
+        //        dd($bleed);
         if ($bleed->save()) {
             $latestBleed = Bleed::where('user_id', \Auth::user()->id)->orderBy('date', 'DESC')->first();
             $user        = User::find(\Auth::user()->id);

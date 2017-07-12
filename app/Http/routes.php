@@ -83,14 +83,15 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::group(['prefix' => 'users'], function () {
         Route::any('/login', 'UserController@login');
 
+
         Route::post('/register', 'UserController@register');
         Route::any('/logout', 'UserController@logout');
         Route::any('/revoke', 'UserController@logout');
         Route::post('/refreshtoken', 'UserController@refresh');
         Route::get('/forgotpassword', 'UserController@forgotPassword');
         Route::group(['middleware' => 'jwt.auth'], function () {
-            Route::get('/{id}', 'UserController@getProfile');
-            Route::put('/{id}', 'UserController@update');
+//            Route::get('/profile/{id}', 'UserController@getProfile');
+            Route::put('/profile', 'UserController@update');
             Route::get('/profile', 'UserController@getProfile');
             Route::put('/update', 'UserController@update');
             Route::get('/bleedhistory', 'UserController@bleedHistory');
