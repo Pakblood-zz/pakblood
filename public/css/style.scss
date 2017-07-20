@@ -400,15 +400,23 @@ div.loading {
 
 /*Blood Need*/
 #blood-need {
-  margin: 10px 0px 10px 0px;
+  margin: 10px 0 10px 0;
   padding: 2px;
-  h5 {
+  &.privacy_policy{
+    padding: 0;
+  }
+  .columns h5.heading{
+    margin: 20px 0 0 0;
+  }
+  h5.heading {
     color: $secondary-color;
-    margin: 20px 0px 0px 0px;
+    margin: 0 0 10px 0;
   }
   .fa-plus:before {
-    color: $secondary-color;
     content: "?";
+  }
+  i {
+    color: $secondary-color;
     margin-right: 15px;
     font-size: 12px;
   }

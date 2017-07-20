@@ -10,6 +10,7 @@ use App\User;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Geocoder\Laravel\Facades\Geocoder;
 
 class OtherController extends Controller {
     /**

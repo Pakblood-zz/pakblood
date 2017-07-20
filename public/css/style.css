@@ -7795,14 +7795,19 @@ div.loading {
 
 /*Blood Need*/
 #blood-need {
-  margin: 10px 0px 10px 0px;
+  margin: 10px 0 10px 0;
   padding: 2px; }
-  #blood-need h5 {
+  #blood-need.privacy_policy {
+    padding: 0; }
+  #blood-need .columns h5.heading {
+    margin: 20px 0 0 0; }
+  #blood-need h5.heading {
     color: #d32118;
-    margin: 20px 0px 0px 0px; }
+    margin: 0 0 10px 0; }
   #blood-need .fa-plus:before {
+    content: "?"; }
+  #blood-need i {
     color: #d32118;
-    content: "?";
     margin-right: 15px;
     font-size: 12px; }
   #blood-need ul {

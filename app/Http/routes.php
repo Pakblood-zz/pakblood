@@ -15,6 +15,70 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 |
 */
 
+//App ApiV1 Routes
+Route::group(['prefix' => 'api/v2', 'namespace' => 'Api\V2'], function () {
+
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('/search', 'SearchController@getSearchData');
+    });
+
+    //    Route::group(['prefix' => 'users'], function () {
+    //        Route::any('/login', 'UserController@login');
+    //
+    //
+    //        Route::post('/register', 'UserController@register');
+    //        Route::any('/logout', 'UserController@logout');
+    //        Route::any('/revoke', 'UserController@logout');
+    //        Route::post('/refreshtoken', 'UserController@refresh');
+    //        Route::get('/forgotpassword', 'UserController@forgotPassword');
+    //        Route::group(['middleware' => 'jwt.auth'], function () {
+    //            //            Route::get('/profile/{id}', 'UserController@getProfile');
+    //            Route::put('/profile', 'UserController@update');
+    //            Route::get('/profile', 'UserController@getProfile');
+    //            Route::put('/update', 'UserController@update');
+    //            Route::get('/bleedhistory', 'UserController@bleedHistory');
+    //            Route::post('/bleedhistory/create', 'UserController@createBleed');
+    //            Route::put('/bleedhistory/{bleed_id}/update', 'UserController@updateBleed');
+    //            Route::get('/deactivateaccount', 'UserController@deactivateAccount');
+    //            Route::post('/changepassword', 'UserController@changePassword');
+    //            Route::get('/getnotifications', 'UserController@getNotifications');
+    //            Route::post('/uploadfile', 'OtherController@uploadFile');
+    //        });
+    //        Route::post('/activateaccount', 'UserController@activateAccount');
+    //    });
+    //
+    //    Route::group(['prefix' => 'organizations', 'middleware' => 'jwt.auth'], function () {
+    //        Route::get('/', 'OrgController@index');
+    //        Route::post('/create', 'OrgController@store');
+    //        Route::group(['prefix' => '{orgId}'], function () {
+    //            Route::get('/', 'OrgController@getProfile');
+    //            Route::post('/join', 'OrgController@orgJoinRequest');
+    //            Route::put('/update', 'OrgController@update');
+    //            Route::post('/addmember', 'OrgController@addMember');
+    //            Route::put('/updatemember/{uId}', 'OrgController@addMember');
+    //            Route::post('/changeadmin', 'OrgController@changeAdmin');
+    //            Route::delete('/deletemember/{id}', 'OrgController@deleteMember');
+    //            Route::get('/requests', 'OrgController@getAllRequest');
+    //            Route::get('/requests/{request_id}', 'OrgController@updateRequest');
+    //            //        Route::get('/request/reject/{id}', 'OrgController@rejectRequest');
+    //            //        Route::post('/delete', 'OrgController@delete');
+    //        });
+    //    });
+    //
+    //    Route::post('/reportuser', 'UserController@reportUser');
+    //    Route::post('/currentlocation', 'UserController@currentLocation');
+    //
+    //    Route::get('/getcountries', 'OtherController@getCountries');
+    //    Route::get('/getcities', 'OtherController@getCities');
+    //    Route::get('/getcities/{country_id}', 'OtherController@getCities');
+    //
+    //    /* Route::post('/sendErrorReport', function () {
+    //         echo 1;
+    //     });*/
+    //    Route::post('/sendErrorReport', 'OtherController@sendErrorReport');
+});
+
+
 //Ember Api Routes
 Route::group(['prefix' => 'api-ember', 'namespace' => 'ApiEmber'], function () {
 
@@ -80,6 +144,12 @@ Route::group(['prefix' => 'api-ember', 'namespace' => 'ApiEmber'], function () {
 //App Api Routes
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
+
+    Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::post('/reportuser', 'UserController@reportUser');
+        Route::get('/search', 'SearchController@getSearchData');
+    });
+
     Route::group(['prefix' => 'users'], function () {
         Route::any('/login', 'UserController@login');
 
@@ -90,7 +160,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         Route::post('/refreshtoken', 'UserController@refresh');
         Route::get('/forgotpassword', 'UserController@forgotPassword');
         Route::group(['middleware' => 'jwt.auth'], function () {
-//            Route::get('/profile/{id}', 'UserController@getProfile');
+            Route::post('/reportuser', 'UserController@reportUser');
+            Route::get('/search', 'SearchController@getSearchData');
+            //            Route::get('/profile/{id}', 'UserController@getProfile');
             Route::put('/profile', 'UserController@update');
             Route::get('/profile', 'UserController@getProfile');
             Route::put('/update', 'UserController@update');
@@ -123,9 +195,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         });
     });
 
-    Route::get('/search', 'SearchController@getSearchData');
 
-    Route::post('/reportuser', 'UserController@reportUser');
     Route::post('/currentlocation', 'UserController@currentLocation');
 
     Route::get('/getcountries', 'OtherController@getCountries');
@@ -164,6 +234,12 @@ Route::get('account/verified', function () {
 });
 Route::get('about', function () {
     return view('about_us');
+});
+Route::get('privacy', function () {
+    return view('privacy');
+});
+Route::get('terms', function () {
+    return view('terms');
 });
 Route::get('FAQ', function () {
     return view('FAQ');
@@ -205,6 +281,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 Route::get('/report/user', 'ReportsController@index');
 Route::post('/report/user', 'ReportsController@reportUser');
+
 Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin', 'before' => 'admin'], function () {
     //    Route::get('/login', 'MainController@login');
     //    Route::post('/login', 'MainController@login');
@@ -250,6 +327,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin
     Route::get('/pictorial/updateApproval', 'PictorialController@updateApproval');
 
 });
+
 Route::get('/fblogin', function () {
     return Socialite::with('facebook')->redirect();
 });

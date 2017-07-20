@@ -2,7 +2,7 @@
 <!-- Slider -->
 <div class="row hide-for-small-only">
     <div class="slider">
-        {!! HTML::image('images/bannerSloder.jpg', 'Slider', array('title' => 'Slider img','style' => 'width:100%')) !!}
+        {!! HTML::image('images/pakblood-banner.jpg', 'Slider', array('title' => 'Slider img','style' => 'width:100%')) !!}
     </div>
 </div>
 @include('search_bar')
@@ -23,35 +23,52 @@
     <div class="small-20 medium-20 large-13 columns">
         <div id="donation-vid" class="">
             <div class="small-20 large-20">
+                <h5 class="heading">Want to make a difference? Donate blood and save a life today with PakBlood!</h5>
+                <br/>
                 <iframe width="100%" height="315" src="https://www.youtube.com/embed/ezafVzfJw60" frameborder="0"
                         allowfullscreen></iframe>
-                <h5 class="heading"> Your blood donation may be even more special than you realize</h5>
 
-                <p><br/>A single donation from you can help one or more patients. This is possible because whole blood
-                    is
-                    made up
-                    of
-                    several useful components.These components perform special functions in body. The various blood
-                    components are Platelets, Plasma and selected Plasma Proteins.Each of these components can be
-                    separated
-                    from your donatedvolume of blood and transfused into a specific patient requiring that particular
-                    component. Thus, many can benefit from one unit of blood.</p>
+                <p><br/>Blood is invaluable. It is enriched with useful components that are vital for a healthy human
+                    body and above all- ‘life’. While you are gifted with good health, others may not be. Share your
+                    gift with those who are suffering. Even a single blood donation is enough to help multiple patients.
+                </p>
+
+                <p>Remember! Nothing can substitute blood, but the blood itself. And somewhere, someone may be
+                    holding on to dear life with a hope that someone (you!) will come to the rescue. Trust us, it hardly
+                    takes 10-12 minutes to donate a single bottle of blood, which can bring smiles on hundreds of faces
+                    and keep you satisfied by the mere thought of saving a life!
+                </p>
             </div>
         </div>
         <div id="blood-need" class="row">
             <div class="small-19 large-19 columns">
-                <h5 class="heading"> Blood is needed every minute <br/> <br/></h5>
+                <h5 class="heading">Why You Need to Donate Blood:<br/> <br/></h5>
                 <ul>
-                    <li><i class="fa fa-plus"></i>To replace blood lost because of accidents or diseases.</li>
-                    <li><i class="fa fa-plus"></i>For major & minor surgeries including open heart surgeries,
-                        transplants
-                        etc.
+                    <li><i class="fa fa-arrow-right"></i>To replace blood lost due to accidents and blood diseases</li>
+                    <li><i class="fa fa-arrow-right"></i>For major and minor operations like open heart surgery, transplants,
+                        dialysis, etc
                     </li>
-                    <li><i class="fa fa-plus"></i>For patients suffering from Anemia.</li>
-                    <li><i class="fa fa-plus"></i>During child birth for the mother.</li>
-                    <li><i class="fa fa-plus"></i>For exchange transfusion for new born infants.</li>
-                    <li><i class="fa fa-plus"></i>For children suffering from ailments like Thalassaemia, Hemophilia.
+                    <li><i class="fa fa-arrow-right"></i>For the Anaemic patients and those who suffer hereditary diseases</li>
+                    <li><i class="fa fa-arrow-right"></i>For mothers during child birth</li>
+                    <li><i class="fa fa-arrow-right"></i>For new born infants during transfusion</li>
+                    <li><i class="fa fa-arrow-right"></i>For children suffering from Thalassaemia and Hemophilia</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="blood-need" class="row">
+            <div class="small-19 large-19 columns">
+                <h5 class="heading">Donating Blood is Beneficial for You too:<br/> <br/></h5>
+                <ul>
+                    <li><i class="fa fa-arrow-right"></i>Reduces harmful iron stored that can lead to a heart attack</li>
+                    <li><i class="fa fa-arrow-right"></i>You get a free check-up prior to the donation</li>
+                    <li><i class="fa fa-arrow-right"></i>Normal iron-level reduces the risk of cancer</li>
+                    <li><i class="fa fa-arrow-right"></i>You get a feeling of self-satisfaction by helping others</li>
+                    <li><i class="fa fa-arrow-right"></i>Reduces laziness and accelerates weight loss (Good news for
+                        over-weight fellows)
                     </li>
+                    <li><i class="fa fa-arrow-right"></i>Stimulates the production of fresh blood cells</li>
+                    <li><i class="fa fa-arrow-right"></i>You feel refreshed</li>
                 </ul>
             </div>
         </div>

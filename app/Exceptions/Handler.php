@@ -6,6 +6,7 @@ use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ReflectionException;
 
 class Handler extends ExceptionHandler {
     /**
@@ -61,12 +62,13 @@ class Handler extends ExceptionHandler {
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $e) {
-//        dd(($e instanceof \Symfony\Component\Debug\Exception\FatalErrorException));
+        //        dd(($e instanceof \Symfony\Component\Debug\Exception\FatalErrorException));
+        //        dd(is_callable($e->getStatusCode()));
+        //        dump($e->code);
+        //       dump();
+//                dd($e);
         if (\Request::is('api/*')) {
-            if ($e instanceof \Illuminate\Database\QueryException) {
-                $code    = $e->getCode();
-                $message = $e->getMessage();
-            } else if ($e instanceof \Symfony\Component\Debug\Exception\FatalErrorException) {
+            if (($e instanceof \Illuminate\Database\QueryException) || ($e instanceof ReflectionException) || ($e instanceof \Symfony\Component\Debug\Exception\FatalErrorException)) {
                 $code    = $e->getCode();
                 $message = $e->getMessage();
             } else {
