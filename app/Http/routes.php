@@ -20,6 +20,7 @@ Route::group(['prefix' => 'api/v2', 'namespace' => 'Api\V2'], function () {
 
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::get('/search', 'SearchController@getSearchData');
+        Route::resource('/bleedrequest', 'BleedRequestsController');
     });
 
     //    Route::group(['prefix' => 'users'], function () {
